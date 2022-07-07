@@ -7,6 +7,9 @@ edition = "2021"
 gtk = { version = "0.4.8", package = "gtk4" }
 vtracer = "0.4.0"
 
+[build-dependencies]
+gtk = { version = "0.4.8", package = "gtk4" } # Allows use to use gtk in our build.rs file.
+
 # Strip debug symbols in release mode
 [profile.release]
 strip = "symbols"
