@@ -1,7 +1,7 @@
 # BinVec
 
 ## Windows cross-compile hint
-
+More info: https://wiki.archlinux.org/title/Rust#Windows
 Install `mingw-w64-gcc`: https://archlinux.org/packages/?name=mingw-w64-gcc
 
 Enable pkg-config to cross-compile for Windows.
