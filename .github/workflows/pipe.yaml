@@ -52,7 +52,7 @@ jobs:
 
       - name: Prepare build environment
         run: |
-          sudo apt install -y libpango1.0-dev
+          sudo apt install -y libgtk-4-dev build-essential
 
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
@@ -75,7 +75,7 @@ jobs:
 
       - name: Prepare build environment
         run: |
-          sudo apt install -y libpango1.0-dev
+          sudo apt install -y libgtk-4-dev build-essential
 
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
@@ -98,7 +98,7 @@ jobs:
 
       - name: Prepare build environment
         run: |
-          sudo apt install -y libpango1.0-dev
+          sudo apt install -y libgtk-4-dev build-essential
 
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
@@ -125,7 +125,7 @@ jobs:
 
       - name: Prepare build environment
         run: |
-          sudo apt install -y libpango1.0-dev
+          sudo apt install -y libgtk-4-dev build-essential
 
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
