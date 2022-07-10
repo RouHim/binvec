@@ -1,6 +1,13 @@
 [package]
 name = "binvec"
 version = "0.1.0"
+authors = ["Rouven Himmelstein <rouven@himmelstein.info>"]
+license = "MIT"
+description = "Binarize and vectorize your raster graphics."
+readme = "README.md"
+homepage = "https://github.com/RouHim/binvec"
+repository = "https://github.com/RouHim/binvec"
+keywords = ["binarize", "vector"]
 edition = "2021"
 
 [dependencies]

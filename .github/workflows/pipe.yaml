@@ -1,0 +1,173 @@
+name: CI/CD
+on:
+  push:
+  pull_request:
+    types:
+      - opened
+  workflow_dispatch: # allow manual execution
+
+jobs:
+
+  check-repo:
+    name: Check git repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          severity: 'CRITICAL,HIGH'
+
+  check-code-style:
+    name: Check code style
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+
+      - uses: Swatinem/rust-cache@v1 # use /rust/cargo caching
+
+      - name: Check the code style
+        run: cargo fmt --all -- --check
+
+  check-code:
+    name: Check rust code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+
+      - uses: Swatinem/rust-cache@v1 # use /rust/cargo caching
+
+      - name: Verify code
+        run: cargo clippy
+
+  test:
+    name: Run application tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+
+      - uses: Swatinem/rust-cache@v1 # use /rust/cargo caching
+
+      - name: Test code
+        run: cargo test
+
+  check-unused-dependencies:
+    name: Check for unused deps
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+
+      - uses: Swatinem/rust-cache@v1 # use /rust/cargo caching
+        continue-on-error: true # upload cache even if there are errors in this step
+
+      - name: Install cargo-udeps
+        run: cargo install cargo-udeps --locked
+
+      - name: Analyze dependencies
+        run: cargo +nightly udeps
+
+  build-linux-bin:
+    name: Build executable
+    needs: [ check-repo, check-code-style, check-code, test ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: default
+          toolchain: stable
+
+      - uses: Swatinem/rust-cache@v1 # use /rust/cargo caching
+
+      - name: Build application
+        run: |
+          cargo build --release --target x86_64-unknown-linux-gnu
+          cp target/x86_64-unknown-linux-gnu/release/binvec ./binvec-x86_64-unknown-linux-gnu
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: x86_64-unknown-linux-gnu
+          path: binvec-x86_64-unknown-linux-gnu
+
+  github-release:
+    name: Create GitHub release
+    runs-on: ubuntu-latest
+    needs: [ build-linux-bin ]
+    if: github.ref_name == 'main' # only publish if the branch is main
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Download previous built application
+        uses: actions/download-artifact@v3
+        with:
+          name: x86_64-unknown-linux-gnu
+          path: .
+
+      - name: Create GitHub release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v1.${{ github.run_number }}.0
+          release_name: Release 1.0.${{ github.run_number }}
+          draft: false
+          prerelease: false
+
+      - name: Upload plain linux-x86_64 asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: binvec-x86_64-unknown-linux-gnu
+          asset_name: binvec-x86_64-unknown-linux-gnu
+          asset_content_type: application/x-executable
+
+      - name: Delete old releases
+        uses: dev-drprasad/delete-older-releases@v0.2.0
+        with:
+          keep_latest: 3
+          delete_tags: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
