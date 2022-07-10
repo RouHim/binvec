@@ -50,6 +50,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Prepare build environment
+        run: |
+          sudo apt install -y libpango1.0-dev
+
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
         with:
@@ -68,6 +72,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Prepare build environment
+        run: |
+          sudo apt install -y libpango1.0-dev
 
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
@@ -88,6 +96,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Prepare build environment
+        run: |
+          sudo apt install -y libpango1.0-dev
+
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
         with:
@@ -104,12 +116,16 @@ jobs:
         run: cargo +nightly udeps
 
   build-linux-bin:
-    name: Build executable
+    name: Build linux executable
     needs: [ check-repo, check-code-style, check-code, test ]
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Prepare build environment
+        run: |
+          sudo apt install -y libpango1.0-dev
 
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
@@ -118,6 +134,7 @@ jobs:
           toolchain: stable
 
       - uses: Swatinem/rust-cache@v1 # use /rust/cargo caching
+        continue-on-error: true # upload cache even if there are errors in this step
 
       - name: Build application
         run: |
@@ -130,10 +147,38 @@ jobs:
           name: x86_64-unknown-linux-gnu
           path: binvec-x86_64-unknown-linux-gnu
 
+  build-windows-bin:
+    name: Build windows executable
+    needs: [ check-repo, check-code-style, check-code, test ]
+    runs-on: windows-2022
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: default
+          toolchain: stable
+
+      - uses: Swatinem/rust-cache@v1 # use /rust/cargo caching
+        continue-on-error: true # upload cache even if there are errors in this step
+
+      - name: Build application
+        run: |
+          cargo build --release --target x86_64-pc-windows-gnu
+          cp target/x86_64-pc-windows-gnu/release/binvec ./binvec-x86_64-pc-windows-gnu
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: x86_64-pc-windows-gnu
+          path: binvec-x86_64-pc-windows-gnu
+
   github-release:
     name: Create GitHub release
     runs-on: ubuntu-22.04
-    needs: [ build-linux-bin ]
+    needs: [ build-linux-bin, build-windows-bin ]
     if: github.ref_name == 'main' # only publish if the branch is main
     permissions:
       contents: write
