@@ -4,11 +4,10 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-gtk = { version = "0.4.1", package = "gtk4" }
-relm4 = "0.4.4"
-image = "0.24.2"
-vtracer = "0.4.0"
-visioncortex = "0.6.0"
+gtk = { version = "0.4.1", package = "gtk4" } # As base UI framework
+relm4 = "0.4.4" # For gtk4 state management
+vtracer = "0.4.0" # For generating the actual vector graphic
+visioncortex = "0.6.0" # Helper library for vtracer
 
 # Strip debug symbols in release mode
 [profile.release]

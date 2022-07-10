@@ -8,7 +8,7 @@ Enable pkg-config to cross-compile for Windows.
 
 ```sh
 export PKG_CONFIG_ALLOW_CROSS=1
-export PKG_CONFIG_PATH=/usr/i686-w64-mingw32/lib/pkgconfig
+export PKG_CONFIG_SYSROOT_DIR=/usr/x86_64-w64-mingw32
 ```
 
 Then build with:
