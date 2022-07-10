@@ -10,7 +10,7 @@ jobs:
 
   check-repo:
     name: Check git repository
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -26,7 +26,7 @@ jobs:
 
   check-code-style:
     name: Check code style
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -44,7 +44,7 @@ jobs:
 
   check-code:
     name: Check rust code
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -62,7 +62,7 @@ jobs:
 
   test:
     name: Run application tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -80,7 +80,7 @@ jobs:
 
   check-unused-dependencies:
     name: Check for unused deps
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -129,7 +129,7 @@ jobs:
 
   github-release:
     name: Create GitHub release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [ build-linux-bin ]
     if: github.ref_name == 'main' # only publish if the branch is main
     permissions:
