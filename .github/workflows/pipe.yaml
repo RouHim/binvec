@@ -38,6 +38,7 @@ jobs:
           toolchain: stable
 
       - uses: Swatinem/rust-cache@v1 # use /rust/cargo caching
+        continue-on-error: true # upload cache even if there are errors in this step
 
       - name: Check the code style
         run: cargo fmt --all -- --check
@@ -56,6 +57,7 @@ jobs:
           toolchain: stable
 
       - uses: Swatinem/rust-cache@v1 # use /rust/cargo caching
+        continue-on-error: true # upload cache even if there are errors in this step
 
       - name: Verify code
         run: cargo clippy
@@ -74,6 +76,7 @@ jobs:
           toolchain: stable
 
       - uses: Swatinem/rust-cache@v1 # use /rust/cargo caching
+        continue-on-error: true # upload cache even if there are errors in this step
 
       - name: Test code
         run: cargo test
