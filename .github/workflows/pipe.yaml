@@ -103,7 +103,7 @@ jobs:
   build-linux-bin:
     name: Build executable
     needs: [ check-repo, check-code-style, check-code, test ]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
