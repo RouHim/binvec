@@ -164,10 +164,10 @@ jobs:
           update: false # don't update the MSYS2 repository, it takes too long
           path-type: inherit
           install: >-
-            base-devel
             mingw-w64-x86_64-gtk4
             mingw-w64-x86_64-pkgconf
             mingw-w64-x86_64-gcc
+            zip
 
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
@@ -187,15 +187,28 @@ jobs:
       - name: Build application
         run: |
           cargo build --release --target x86_64-pc-windows-gnu
-          ls -lsh target/x86_64-pc-windows-gnu/release
-          cp target/x86_64-pc-windows-gnu/release/binvec.exe binvec-x86_64-pc-windows-gnu.exe
-          ls -lsh .
+          mkdir distribution
+          cp target/x86_64-pc-windows-gnu/release/binvec.exe distribution/binvec-x86_64-pc-windows-gnu.exe
+
+      - name: Copy gtk4 required dependencies
+        run: |
+          cp %MSYS2_ROOT%\msys64\mingw64\bin\ *.dll distribution
+
+      - name: Zip distribution package
+        run: |
+          zip -r binvec-x86_64-pc-windows-gnu.zip distribution
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: x86_64-pc-windows-gnu
+          name: x86_64-pc-windows-gnu.exe
           path: binvec-x86_64-pc-windows-gnu.exe
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: x86_64-pc-windows-gnu.zip
+          path: binvec-x86_64-pc-windows-gnu.zip
 
   github-release:
     name: Create GitHub release
@@ -216,7 +229,13 @@ jobs:
       - name: Download previous built windows binary
         uses: actions/download-artifact@v3
         with:
-          name: x86_64-pc-windows-gnu
+          name: x86_64-pc-windows-gnu.exe
+          path: .
+
+      - name: Download previous built windows binary
+        uses: actions/download-artifact@v3
+        with:
+          name: x86_64-pc-windows-gnu.zip
           path: .
 
       - name: Create GitHub release
@@ -249,6 +268,16 @@ jobs:
           asset_path: binvec-x86_64-pc-windows-gnu.exe
           asset_name: binvec-x86_64-pc-windows-gnu.exe
           asset_content_type: application/x-executable
+
+      - name: Upload x86_64-pc-windows-gnu asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: binvec-x86_64-pc-windows-gnu.zip
+          asset_name: binvec-x86_64-pc-windows-gnu.zip
+          asset_content_type: application/zip
 
       - name: Delete old releases
         uses: dev-drprasad/delete-older-releases@v0.2.0
