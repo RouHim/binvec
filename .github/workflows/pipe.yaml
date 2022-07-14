@@ -205,10 +205,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Download previous built application
+      - name: Download previous built linux binary
         uses: actions/download-artifact@v3
         with:
           name: x86_64-unknown-linux-gnu
+          path: .
+
+      - name: Download previous built windows binary
+        uses: actions/download-artifact@v3
+        with:
+          name: x86_64-pc-windows-gnu
           path: .
 
       - name: Create GitHub release
@@ -222,7 +228,7 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Upload plain linux-x86_64 asset
+      - name: Upload x86_64-unknown-linux-gnu asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -230,6 +236,16 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: binvec-x86_64-unknown-linux-gnu
           asset_name: binvec-x86_64-unknown-linux-gnu
+          asset_content_type: application/x-executable
+
+      - name: Upload x86_64-pc-windows-gnu asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: binvec-x86_64-pc-windows-gnu
+          asset_name: binvec-x86_64-pc-windows-gnu.exe
           asset_content_type: application/x-executable
 
       - name: Delete old releases
