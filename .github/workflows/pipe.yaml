@@ -187,13 +187,15 @@ jobs:
       - name: Build application
         run: |
           cargo build --release --target x86_64-pc-windows-gnu
-          cp target/x86_64-pc-windows-gnu/release/binvec ./binvec-x86_64-pc-windows-gnu
+          ls -lsh target/x86_64-pc-windows-gnu/release
+          cp target/x86_64-pc-windows-gnu/release/binvec.exe binvec-x86_64-pc-windows-gnu.exe
+          ls -lsh .
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: x86_64-pc-windows-gnu
-          path: binvec-x86_64-pc-windows-gnu
+          path: binvec-x86_64-pc-windows-gnu.exe
 
   github-release:
     name: Create GitHub release
@@ -244,7 +246,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: binvec-x86_64-pc-windows-gnu
+          asset_path: binvec-x86_64-pc-windows-gnu.exe
           asset_name: binvec-x86_64-pc-windows-gnu.exe
           asset_content_type: application/x-executable
 
