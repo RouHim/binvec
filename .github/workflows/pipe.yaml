@@ -170,6 +170,7 @@ jobs:
         with:
           profile: default
           toolchain: stable
+          target: x86_64-pc-windows-gnu
 
       - name: Switch to gnu rust toolchain
         run: |
