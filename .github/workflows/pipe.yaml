@@ -192,7 +192,7 @@ jobs:
 
       - name: Copy gtk4 required dependencies
         run: |
-          cp $MSYS2_ROOT/msys64/mingw64/bin/*.dll distribution
+          cp $MSYS2_ROOT/mingw64/bin/*.dll distribution
 
       - name: Zip distribution package
         run: |
