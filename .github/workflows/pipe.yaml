@@ -198,13 +198,13 @@ jobs:
         run: |
           zip -r binvec-x86_64-pc-windows-gnu.zip distribution
 
-      - name: Upload artifact
+      - name: Upload exe artifact
         uses: actions/upload-artifact@v3
         with:
           name: x86_64-pc-windows-gnu.exe
-          path: binvec-x86_64-pc-windows-gnu.exe
+          path: distribution/binvec-x86_64-pc-windows-gnu.exe
 
-      - name: Upload artifact
+      - name: Upload zip artifact
         uses: actions/upload-artifact@v3
         with:
           name: x86_64-pc-windows-gnu.zip
