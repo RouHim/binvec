@@ -2,8 +2,9 @@
   "build": {
     "beforeBuildCommand": "",
     "beforeDevCommand": "",
-    "devPath": "http://localhost:63342/binvec/ui/index.html?_ijt=ka7qo8paqqebplsklj7rj8g20f&_ij_reload=RELOAD_ON_SAVE",
-    "distDir": "../ui"
+    "devPath": "http://localhost:63342/binvec/ui/index.html?_ijt=b71oj4hkkd254j5i6j91m1k3uj&_ij_reload=RELOAD_ON_SAVE",
+    "distDir": "../ui",
+    "withGlobalTauri": true
   },
   "package": {
     "productName": "binvec",
@@ -11,7 +12,18 @@
   },
   "tauri": {
     "allowlist": {
-      "all": true
+      "dialog": {
+        "all": true,
+        "open": true,
+        "save": true
+      },
+      "protocol": {
+        "asset": true,
+        "assetScope": ["**"]
+      },
+      "fs": {
+        "all": true
+      }
     },
     "bundle": {
       "active": true,
@@ -28,7 +40,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "com.rouhim.binvec",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -55,10 +67,10 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
+        "height": 768,
         "resizable": true,
         "title": "BinVec",
-        "width": 800
+        "width": 1024
       }
     ]
   }

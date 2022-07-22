@@ -1,0 +1,30 @@
+#baseLayout {
+    display: block;
+}
+
+#imgSvgPreview {
+    height: 500px;
+    width: 750px;
+    max-height: 500px;
+    max-width: 750px;
+
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#sliderThreshold {
+    width: 90%;
+
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#btnOpenImage {
+    width: 90%;
+
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
