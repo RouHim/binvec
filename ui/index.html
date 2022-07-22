@@ -11,9 +11,11 @@
 </head>
 <body>
 <div id="baseLayout">
-    <button id="btnOpenImage" onclick="openImage()">Open image</button>
+    <button id="btnOpenImage" class="center" onclick="openImage()">Open image</button>
     <img id="imgSvgPreview" src="" alt=""/>
-    <input id="sliderThreshold" type="range" min="0" max="128" step="1" value="4"
+    <input id="sliderBinarizeThreshold" class="center" type="range" min="0" max="128" step="1" value="4"
+           onchange="generateSvg()">
+    <input id="sliderSpeckleThreshold" class="center" type="range" min="0" max="128" step="1" value="4"
            onchange="generateSvg()">
 </div>
 </body>

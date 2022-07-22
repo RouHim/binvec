@@ -1,9 +1,30 @@
 use std::path::{Path, PathBuf};
+
+use image::imageops::FilterType;
+
 use visioncortex::PathSimplifyMode;
 use vtracer::{ColorMode, Hierarchical};
 
-pub fn create_vector_preview(image_path: &Path, filter_speckle: usize) -> PathBuf {
-    save_vector_image(image_path, filter_speckle)
+pub fn create_vector_preview(
+    image_path: &Path,
+    binarize_threshold: u8,
+    filter_speckle: usize,
+) -> PathBuf {
+    let preview_image_path = image_path.with_extension("preview.png");
+
+    // Binarize the image.
+    let mut img = image::io::Reader::open(image_path)
+        .unwrap()
+        .decode()
+        .unwrap();
+    img = img.resize(750, 500, FilterType::Lanczos3);
+    let gray_image = img.into_luma8();
+    let binary_image = imageproc::contrast::threshold(&gray_image, binarize_threshold);
+    binary_image
+        .save_with_format(&preview_image_path, image::ImageFormat::Png)
+        .unwrap();
+
+    save_vector_image(&preview_image_path, filter_speckle)
 }
 
 pub fn save_vector_image(input_path: &Path, filter_speckle: usize) -> PathBuf {

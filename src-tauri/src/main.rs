@@ -15,14 +15,25 @@ fn main() {
 }
 
 #[tauri::command]
-fn generate_svg(image_path: String, threshold: String) -> String {
-    println!("Generating svg image with threshold: {}", threshold);
+fn generate_svg(
+    image_path: String,
+    binarize_threshold: String,
+    speckle_threshold: String,
+) -> String {
+    println!("image_path: {}", image_path);
+    println!("binarize_threshold: {}", binarize_threshold);
+    println!("speckle_threshold: {}", speckle_threshold);
 
-    image_processor::create_vector_preview(
+    let vector_path = image_processor::create_vector_preview(
         Path::new(&image_path),
-        threshold.parse::<usize>().unwrap(),
+        binarize_threshold.parse::<u8>().unwrap(),
+        speckle_threshold.parse::<usize>().unwrap(),
     )
-    .to_str()
-    .unwrap()
-    .to_string()
+        .to_str()
+        .unwrap()
+        .to_string();
+
+    println!("vector_path: {}", vector_path);
+
+    vector_path
 }

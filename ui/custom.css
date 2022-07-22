@@ -3,25 +3,17 @@
 }
 
 #imgSvgPreview {
-    height: 500px;
     width: 750px;
-    max-height: 500px;
+    height: 500px;
     max-width: 750px;
+    max-height: 500px;
 
     display: block;
     margin-left: auto;
     margin-right: auto;
 }
 
-#sliderThreshold {
-    width: 90%;
-
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-#btnOpenImage {
+.center {
     width: 90%;
 
     display: block;

@@ -16,8 +16,14 @@ async function openImage() {
 }
 
 async function generateSvg() {
-    const threshold = document.getElementById("sliderThreshold").value;
+    const binarizeThreshold = document.getElementById("sliderBinarizeThreshold").value;
+    const speckleThreshold = document.getElementById("sliderSpeckleThreshold").value;
 
-    invoke('generate_svg', {imagePath: imagePath, threshold: threshold})
-        .then((svgPath) => document.getElementById("imgSvgPreview").src = "asset://" + svgPath);
+    invoke('generate_svg', {
+        imagePath: imagePath,
+        speckleThreshold: speckleThreshold,
+        binarizeThreshold: binarizeThreshold
+    }).then((svgPath) =>
+        document.getElementById("imgSvgPreview").src = "asset://" + svgPath
+    );
 }
