@@ -1,7 +1,7 @@
 const invoke = window.__TAURI__.invoke;
 const {open} = window.__TAURI__.dialog;
 
-var imagePath = null;
+let imagePath = null;
 
 async function openImage() {
     const selected = await open({
@@ -23,7 +23,7 @@ async function generateSvg() {
         imagePath: imagePath,
         speckleThreshold: speckleThreshold,
         binarizeThreshold: binarizeThreshold
-    }).then((svgPath) =>
-        document.getElementById("imgSvgPreview").src = "asset://" + svgPath + "?x=" + new Date().getTime()
+    }).then((svgData) =>
+        document.getElementById("imgSvgPreview").innerHTML = svgData
     );
 }

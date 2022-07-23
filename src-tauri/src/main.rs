@@ -30,17 +30,13 @@ fn generate_svg(
     // measure time
     let start = std::time::Instant::now();
 
-    let vector_path = image_processor::create_vector_preview(
+    let vector_data = image_processor::create_vector_preview(
         Path::new(&image_path),
         binarize_threshold.parse::<u8>().unwrap(),
         speckle_threshold.parse::<usize>().unwrap(),
-    )
-    .to_str()
-    .unwrap()
-    .to_string();
+    );
 
-    println!("vector_path: {}", vector_path);
     println!("time: {}", start.elapsed().as_millis());
 
-    vector_path
+    vector_data
 }
