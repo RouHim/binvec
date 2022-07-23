@@ -7,19 +7,22 @@ use image::imageops::FilterType;
 use visioncortex::PathSimplifyMode;
 use vtracer::{ColorMode, Hierarchical};
 
+const PREVIEW_WIDTH: u32 = 750;
+const PREVIEW_HEIGHT: u32 = 500;
+
 pub fn create_vector_preview(
     image_path: &Path,
     binarize_threshold: u8,
     filter_speckle: usize,
 ) -> PathBuf {
-    let preview_image_path = image_path.with_extension("preview.png");
-
-    // Binarize the image.
     let mut img = image::io::Reader::open(image_path)
         .unwrap()
         .decode()
         .unwrap();
-    img = img.resize(750, 500, FilterType::Lanczos3);
+
+    if img.width() > PREVIEW_WIDTH || img.height() > PREVIEW_HEIGHT {
+        img = img.resize(PREVIEW_WIDTH, PREVIEW_HEIGHT, FilterType::Lanczos3);
+    }
 
     let mut bin_img = ImageBuffer::new(img.width(), img.height());
 
@@ -36,6 +39,7 @@ pub fn create_vector_preview(
         }
     });
 
+    let preview_image_path = image_path.with_extension("preview.png");
     bin_img
         .save_with_format(&preview_image_path, image::ImageFormat::Png)
         .unwrap();
@@ -62,7 +66,7 @@ pub fn save_vector_image(input_path: &Path, filter_speckle: usize) -> PathBuf {
         max_iterations: 10,
         path_precision: Some(8),
     })
-    .expect("Failed to convert image to svg");
+        .expect("Failed to convert image to svg");
 
     svg_path
 }

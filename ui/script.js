@@ -24,6 +24,6 @@ async function generateSvg() {
         speckleThreshold: speckleThreshold,
         binarizeThreshold: binarizeThreshold
     }).then((svgPath) =>
-        document.getElementById("imgSvgPreview").src = "asset://" + svgPath
+        document.getElementById("imgSvgPreview").src = "asset://" + svgPath + "?x=" + new Date().getTime()
     );
 }
