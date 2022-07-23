@@ -66,7 +66,7 @@ pub fn save_vector_image(input_path: &Path, filter_speckle: usize) -> PathBuf {
         max_iterations: 10,
         path_precision: Some(8),
     })
-        .expect("Failed to convert image to svg");
+    .expect("Failed to convert image to svg");
 
     svg_path
 }
