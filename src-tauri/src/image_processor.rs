@@ -1,5 +1,7 @@
 use std::path::{Path, PathBuf};
 
+use image::{GenericImageView, ImageBuffer, Pixel};
+
 use image::imageops::FilterType;
 
 use visioncortex::PathSimplifyMode;
@@ -18,9 +20,23 @@ pub fn create_vector_preview(
         .decode()
         .unwrap();
     img = img.resize(750, 500, FilterType::Lanczos3);
-    let gray_image = img.into_luma8();
-    let binary_image = imageproc::contrast::threshold(&gray_image, binarize_threshold);
-    binary_image
+
+    let mut bin_img = ImageBuffer::new(img.width(), img.height());
+
+    img.pixels().for_each(|pixel| {
+        let x = pixel.0;
+        let y = pixel.1;
+        let pixel_value = pixel.2;
+        let grayscale_value = pixel_value.to_luma().0[0] as u8;
+
+        if grayscale_value > binarize_threshold {
+            bin_img.put_pixel(x, y, image::Rgb::<u8>([255, 255, 255]));
+        } else {
+            bin_img.put_pixel(x, y, image::Rgb::<u8>([0, 0, 0]));
+        }
+    });
+
+    bin_img
         .save_with_format(&preview_image_path, image::ImageFormat::Png)
         .unwrap();
 
