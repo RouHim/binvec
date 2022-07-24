@@ -13,18 +13,11 @@
   "tauri": {
     "allowlist": {
       "dialog": {
-        "all": true,
-        "open": true,
-        "save": true
-      },
-      "protocol": {
-        "asset": true,
-        "assetScope": [
-          "**"
-        ]
+        "open": true
       },
       "fs": {
-        "all": true
+        "readFile": true,
+        "writeFile": true
       }
     },
     "bundle": {
@@ -68,11 +61,11 @@
     },
     "windows": [
       {
-        "fullscreen": false,
-        "height": 750,
-        "resizable": true,
         "title": "BinVec",
-        "width": 900
+        "width": 900,
+        "height": 800,
+        "fullscreen": false,
+        "resizable": false
       }
     ]
   }
