@@ -2,21 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link rel="stylesheet" href="water.css">
-    <link rel="stylesheet" href="custom.css">
-    <script type="text/javascript" src="script.js"></script>
-    <title>Document</title>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <link href="water.css" rel="stylesheet">
+    <link href="custom.css" rel="stylesheet">
+    <script src="script.js" type="text/javascript"></script>
+    <title>BinVec</title>
 </head>
 <body>
 <div id="baseLayout">
-    <button id="btnOpenImage" class="center" onclick="openImage()">Open image</button>
+    <button id="btnOpenImage" onclick="openImage()">Open image</button>
     <div id="imgSvgPreview"></div>
-    <input id="sliderBinarizeThreshold" class="center" type="range" min="0" max="255" step="1" value="128"
-           oninput="generateSvg()">
-    <input id="sliderSpeckleThreshold" class="center" type="range" min="0" max="128" step="1" value="4"
-           oninput="generateSvg()">
+    <input id="sliderBinarizeThreshold" max="255" min="0" oninput="generateSvg()" step="1" type="range"
+           value="128">
+    <input id="sliderSpeckleThreshold" max="128" min="0" oninput="generateSvg()" step="1" type="range"
+           value="4">
+    <button id="btnSaveSvg" onclick="saveSvg()">Save SVG</button>
 </div>
 </body>
 </html>

@@ -19,7 +19,9 @@
       },
       "protocol": {
         "asset": true,
-        "assetScope": ["**"]
+        "assetScope": [
+          "**"
+        ]
       },
       "fs": {
         "all": true
@@ -67,10 +69,10 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 768,
+        "height": 750,
         "resizable": true,
         "title": "BinVec",
-        "width": 1024
+        "width": 900
       }
     ]
   }

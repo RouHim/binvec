@@ -2,21 +2,21 @@
     display: block;
 }
 
+/* Center all child elements */
+#baseLayout > * {
+    display: block;
+
+    width: 90%;
+    margin: 10px auto;
+
+    /* Center image and text */
+    text-align: center
+}
+
+/* Limit the size of the svg preview */
 #imgSvgPreview {
     width: 750px;
     height: 500px;
     max-width: 750px;
     max-height: 500px;
-
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.center {
-    width: 90%;
-
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
 }

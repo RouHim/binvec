@@ -1,32 +1,25 @@
+use std::fs::File;
+use std::io::Write;
 use std::path::{Path, PathBuf};
 
-use image::{GenericImageView, Pixel};
-
 use image::imageops::FilterType;
-
+use image::{DynamicImage, GenericImageView, Pixel};
 use visioncortex::{BinaryImage, PathSimplifyMode};
 use vtracer::{ColorMode, Hierarchical};
 
 const PREVIEW_WIDTH: u32 = 750;
 const PREVIEW_HEIGHT: u32 = 500;
 
-pub fn create_vector_preview(
-    image_path: &Path,
+pub fn create_vector(
+    preview_image: DynamicImage,
     binarize_threshold: u8,
     filter_speckle: usize,
 ) -> String {
-    // TODO: do not do this every time
-    let mut img = image::io::Reader::open(image_path)
-        .unwrap()
-        .decode()
-        .unwrap();
-
-    if img.width() > PREVIEW_WIDTH || img.height() > PREVIEW_HEIGHT {
-        img = img.resize(PREVIEW_WIDTH, PREVIEW_HEIGHT, FilterType::Lanczos3);
-    };
-
-    let mut out = BinaryImage::new_w_h(img.width() as usize, img.height() as usize);
-    img.pixels().for_each(|pixel| {
+    let mut out = BinaryImage::new_w_h(
+        preview_image.width() as usize,
+        preview_image.height() as usize,
+    );
+    preview_image.pixels().for_each(|pixel| {
         let x = pixel.0 as usize;
         let y = pixel.1 as usize;
         let pixel_value = pixel.2;
@@ -56,26 +49,33 @@ pub fn create_vector_preview(
     )
 }
 
-pub fn save_vector_image(input_path: &Path, filter_speckle: usize) -> PathBuf {
-    let image_path = input_path.to_path_buf();
-    let svg_path = image_path.with_extension("svg");
+/// Converts an image into svg xml data string
+/// # Arguments
+/// * `image_path` - path to the image file
+pub fn save_vector_image(image_path: PathBuf, binarize_threshold: u8, filter_speckle: usize) {
+    let target_svg_path = image_path.with_extension("svg");
 
-    vtracer::convert_image_to_svg(vtracer::Config {
-        input_path: image_path,
-        output_path: svg_path.clone(),
-        color_mode: ColorMode::Binary,
-        hierarchical: Hierarchical::Cutout,
-        mode: PathSimplifyMode::Spline,
-        filter_speckle,
-        color_precision: 6,
-        layer_difference: 16,
-        corner_threshold: 60,
-        length_threshold: 4.0,
-        splice_threshold: 45,
-        max_iterations: 10,
-        path_precision: Some(8),
-    })
-        .expect("Failed to convert image to svg");
+    let input_image = image::open(image_path).unwrap();
 
-    svg_path
+    let svg_data = create_vector(input_image, binarize_threshold, filter_speckle);
+
+    let mut out_file = File::create(target_svg_path).expect("Cannot create file.");
+    out_file
+        .write_all(svg_data.as_bytes())
+        .expect("Cannot write to file.");
+}
+
+/// Creates a preview image of the given image.
+/// The preview image is a resized version of the given image.
+pub fn generate_preview(image_path: &Path) -> DynamicImage {
+    let mut img = image::io::Reader::open(image_path)
+        .unwrap()
+        .decode()
+        .unwrap();
+
+    if img.width() > PREVIEW_WIDTH || img.height() > PREVIEW_HEIGHT {
+        img = img.resize(PREVIEW_WIDTH, PREVIEW_HEIGHT, FilterType::Lanczos3);
+    };
+
+    img
 }
