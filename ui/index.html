@@ -12,12 +12,25 @@
 <body>
 <div id="baseLayout">
     <button id="btnOpenImage" onclick="openImage()">Open image</button>
+
     <div id="imgSvgPreview"></div>
-    <input id="sliderBinarizeThreshold" max="255" min="0" oninput="generateSvg()" step="1" type="range"
-           value="128">
-    <input id="sliderSpeckleThreshold" max="128" min="0" oninput="generateSvg()" step="1" type="range"
-           value="4">
-    <button id="btnSaveSvg" onclick="saveSvg()">Save SVG</button>
+
+    <fieldset id="optionsLayoutFieldset" style="visibility: hidden">
+        <div id="optionsLayout">
+            <div id="colorLayout">
+                <input id="chkColor" type="checkbox" onchange="changeColorState()"/>
+                <label for="chkColor">With colors</label>
+            </div>
+
+            <input id="sliderColorCount" max="20" min="0" oninput="generateSvg()" step="1" type="range"
+                   value="5" style="visibility: collapse"/>
+            <input id="sliderBinarizeThreshold" max="255" min="0" oninput="generateSvg()" step="1" type="range"
+                   value="128"/>
+            <input id="sliderSpeckleThreshold" max="128" min="0" oninput="generateSvg()" step="1" type="range"
+                   value="4"/>
+            <button id="btnSaveSvg" onclick="saveSvg()">Save SVG</button>
+        </div>
+    </fieldset>
 </div>
 </body>
 </html>

@@ -3,14 +3,23 @@
 }
 
 /* Center all child elements */
-#baseLayout > * {
+#btnOpenImage {
     display: block;
 
     width: 90%;
-    margin: 10px auto;
+    margin: 5px auto;
+}
 
-    /* Center image and text */
-    text-align: center
+/* Center all child elements */
+#optionsLayout > * {
+    display: block;
+
+    width: 90%;
+    margin: 5px auto;
+}
+
+#optionsLayoutFieldset {
+    border: 0;
 }
 
 /* Limit the size of the svg preview */
@@ -19,4 +28,16 @@
     height: 500px;
     max-width: 750px;
     max-height: 500px;
+
+    /* Center image and text */
+    text-align: center
+}
+
+#colorLayout {
+    display: flex;
+    align-items: center;
+}
+
+#colorLayout > * {
+    margin: auto 5px;
 }

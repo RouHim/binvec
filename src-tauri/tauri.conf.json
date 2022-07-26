@@ -2,7 +2,7 @@
   "build": {
     "beforeBuildCommand": "",
     "beforeDevCommand": "",
-    "devPath": "http://localhost:63342/binvec/ui/index.html?_ijt=lbreasup7vjgnat9om8d8n329t&_ij_reload=RELOAD_ON_SAVE",
+    "devPath": "../ui",
     "distDir": "../ui",
     "withGlobalTauri": true
   },
@@ -62,8 +62,8 @@
     "windows": [
       {
         "title": "BinVec",
-        "width": 900,
-        "height": 800,
+        "width": 850,
+        "height": 825,
         "fullscreen": false,
         "resizable": false
       }

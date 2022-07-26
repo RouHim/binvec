@@ -57,6 +57,7 @@ checksum = "bb07d2053ccdbe10e2af2995a2f116c1330396493dc1269f6a91d0ae82e19704"
 name = "app"
 version = "0.1.0"
 dependencies = [
+ "exoquant",
  "image",
  "serde",
  "serde_json",
@@ -658,6 +659,12 @@ name = "embed_plist"
 version = "1.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4ef6b89e5b37196644d8796de5268852ff179b44e96276cf4290264843743bb7"
+
+[[package]]
+name = "exoquant"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5048aeecde83b7455a63b44aa54da5321d6171cff2adb8a5959849e142e5e4aa"
 
 [[package]]
 name = "exr"
@@ -3273,7 +3280,6 @@ dependencies = [
 [[package]]
 name = "vtracer"
 version = "0.4.1"
-source = "git+https://github.com/RouHim/vtracer#2a25661a41ca94b381e47c35ba96fc5c3e3f42cb"
 dependencies = [
  "clap",
  "image",
