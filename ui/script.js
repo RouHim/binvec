@@ -4,6 +4,7 @@ const {open} = window.__TAURI__.dialog;
 function enableControls() {
     document.getElementById("sliderBinarizeThreshold").value = 128;
     document.getElementById("sliderSpeckleThreshold").value = 4;
+    document.getElementById("sliderColorCount").value = 5;
     document.getElementById("optionsLayoutFieldset").style.visibility = "visible";
 }
 

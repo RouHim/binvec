@@ -1,10 +1,10 @@
 use std::fs::File;
-use std::io::Write;
+use std::io::{Cursor, Write};
 use std::path::{Path, PathBuf};
 
+use image::{DynamicImage, EncodableLayout, GenericImageView, ImageBuffer, Pixel, Rgb};
 use image::imageops::FilterType;
-use image::{DynamicImage, GenericImageView, ImageBuffer, Pixel, Rgb};
-
+use image::io::Reader;
 use visioncortex::{BinaryImage, PathSimplifyMode};
 use vtracer::{ColorMode, Hierarchical};
 
@@ -25,7 +25,7 @@ pub fn create_vector(
     }
 }
 
-fn create_color_vector(preview_image: DynamicImage, color_count: usize, filter_speckle: usize) -> String {
+pub fn create_color_vector(preview_image: DynamicImage, color_count: usize, filter_speckle: usize) -> String {
     let mut colors: Vec<exoquant::Color> = Vec::new();
 
     preview_image.pixels().for_each(|pixel| {
@@ -62,8 +62,12 @@ fn create_color_vector(preview_image: DynamicImage, color_count: usize, filter_s
         pixel_pointer += 1;
     });
 
+    let bin_image_data = out.as_bytes();
+    let bla = Reader::new(Cursor::new(bin_image_data)).with_guessed_format().unwrap().decode().unwrap();
+    // TODO smh convert the buffer reader out result into a proper dynamic image
+
     vtracer::color_image_to_svg(
-        out,
+        bla,
         vtracer::Config {
             input_path: PathBuf::default(),
             output_path: PathBuf::default(),
