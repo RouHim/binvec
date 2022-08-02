@@ -6,16 +6,20 @@
 #btnOpenImage {
     display: block;
 
-    width: 90%;
+    width: 95%;
     margin: 5px auto;
+}
+
+#baseLayout > * {
+    margin-bottom: 10px;
 }
 
 /* Center all child elements */
 #optionsLayout > * {
     display: block;
 
-    width: 90%;
-    margin: 5px auto;
+    width: 95%;
+    margin: 10px auto;
 }
 
 #optionsLayoutFieldset {
@@ -25,19 +29,22 @@
 /* Limit the size of the svg preview */
 #imgSvgPreview {
     width: 750px;
-    height: 500px;
     max-width: 750px;
+
+    height: 500px;
     max-height: 500px;
 
-    /* Center image and text */
-    text-align: center
-}
-
-#colorLayout {
-    display: flex;
-    align-items: center;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border: none;
 }
 
 #colorLayout > * {
     margin: auto 5px;
+}
+
+/* Disable the weired blue box when selecting an element */
+button, select, input {
+    box-shadow: none !important;
 }

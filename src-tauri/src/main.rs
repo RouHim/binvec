@@ -1,6 +1,6 @@
 #![cfg_attr(
-all(not(debug_assertions), target_os = "windows"),
-windows_subsystem = "windows"
+    all(not(debug_assertions), target_os = "windows"),
+    windows_subsystem = "windows"
 )]
 
 use std::path::{Path, PathBuf};
@@ -16,7 +16,7 @@ mod image_processor_test;
 /// Struct to hold the current application state
 struct AppState {
     image_path: Option<PathBuf>,
-    preview_image: Option<DynamicImage>,
+    image_data: Option<DynamicImage>,
     with_color: bool,
 }
 
@@ -24,11 +24,11 @@ fn main() {
     tauri::Builder::default()
         .manage(Mutex::new(AppState {
             image_path: None,
-            preview_image: None,
+            image_data: None,
             with_color: false,
         }))
         .invoke_handler(tauri::generate_handler![
-            generate_preview,
+            load_image,
             color_state_changed,
             generate_svg,
             save_svg,
@@ -38,12 +38,12 @@ fn main() {
 }
 
 #[tauri::command]
-fn generate_preview(image_path: String, state: tauri::State<Mutex<AppState>>) {
+fn load_image(image_path: String, state: tauri::State<Mutex<AppState>>) {
     let mut state = state.lock().unwrap();
-    let image_preview_data = image_processor::generate_preview(Path::new(&image_path));
+    let image_data = image_processor::load_image(Path::new(&image_path));
 
     state.image_path = Some(PathBuf::from(image_path));
-    state.preview_image = Some(image_preview_data);
+    state.image_data = Some(image_data);
 }
 
 #[tauri::command]
@@ -54,29 +54,35 @@ fn color_state_changed(with_color: bool, state: tauri::State<Mutex<AppState>>) {
 
 #[tauri::command]
 fn generate_svg(
-    binarize_threshold: String,
     speckle_threshold: String,
+    binarize_threshold: String,
+    invert_binary: bool,
     color_count: String,
+    gradient_step: String,
     state: tauri::State<Mutex<AppState>>,
 ) -> String {
     let state = state.lock().unwrap();
-    let image_preview_data = state.preview_image.clone().unwrap();
+    let image_data = state.image_data.clone().unwrap();
     let with_color = state.with_color;
 
     image_processor::create_vector(
-        image_preview_data,
+        image_data,
         binarize_threshold.parse::<u8>().unwrap(),
+        invert_binary,
         speckle_threshold.parse::<usize>().unwrap(),
-        color_count.parse::<usize>().unwrap(),
         with_color,
+        color_count.parse::<i32>().unwrap(),
+        gradient_step.parse::<i32>().unwrap(),
     )
 }
 
 #[tauri::command]
 fn save_svg(
-    binarize_threshold: String,
     speckle_threshold: String,
+    binarize_threshold: String,
+    invert_binary: bool,
     color_count: String,
+    gradient_step: String,
     state: tauri::State<Mutex<AppState>>,
 ) {
     let state = state.lock().unwrap();
@@ -86,8 +92,10 @@ fn save_svg(
     image_processor::save_vector_image(
         image_path,
         binarize_threshold.parse::<u8>().unwrap(),
+        invert_binary,
         speckle_threshold.parse::<usize>().unwrap(),
-        color_count.parse::<usize>().unwrap(),
         with_color,
+        color_count.parse::<i32>().unwrap(),
+        gradient_step.parse::<i32>().unwrap(),
     )
 }

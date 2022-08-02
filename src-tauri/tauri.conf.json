@@ -7,7 +7,7 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "binvec",
+    "productName": "BinVec",
     "version": "0.1.0"
   },
   "tauri": {
@@ -36,7 +36,7 @@
         "icons/icon.ico"
       ],
       "identifier": "com.rouhim.binvec",
-      "longDescription": "",
+      "longDescription": "Convert any image to a svg file.",
       "macOS": {
         "entitlements": null,
         "exceptionDomain": "",
@@ -45,7 +45,7 @@
         "signingIdentity": null
       },
       "resources": [],
-      "shortDescription": "",
+      "shortDescription": "Convert any image to a svg file.",
       "targets": "all",
       "windows": {
         "certificateThumbprint": null,
@@ -63,7 +63,7 @@
       {
         "title": "BinVec",
         "width": 850,
-        "height": 825,
+        "height": 975,
         "fullscreen": false,
         "resizable": false
       }
