@@ -150,8 +150,10 @@ jobs:
         run: cargo install tauri-cli
 
       - name: Set release version
+        # FIXME: file replacement does not work
         run: |
-          sed -i 's/"version": "0.0.0"/"version": "1.0.${{ github.run_number }}"/g' src-tauri/tauri.conf.json
+          cargo install xq
+          cat src-tauri/tauri.conf.json | xq '.package.version = "1.0.${{ github.run_number }}"' > src-tauri/tauri.conf.json
 
       - name: Build the app
         run: cargo tauri build
