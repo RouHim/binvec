@@ -1,0 +1,46 @@
+#baseLayout {
+    display: block;
+}
+
+/* Center all child elements */
+#btnOpenImage {
+    display: block;
+
+    width: 95%;
+    margin: 5px auto;
+}
+
+#baseLayout > * {
+    margin-bottom: 10px;
+}
+
+/* Center all child elements */
+#optionsLayout > * {
+    display: block;
+
+    width: 95%;
+    margin: 10px auto;
+}
+
+#optionsLayoutFieldset {
+    border: 0;
+}
+
+/* Limit the size of the svg preview */
+#imgSvgPreview {
+    width: 750px;
+    max-width: 750px;
+
+    height: 500px;
+    max-height: 500px;
+
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border: none;
+}
+
+/* Disable the weired blue box when selecting an element */
+button, select, input {
+    box-shadow: none !important;
+}

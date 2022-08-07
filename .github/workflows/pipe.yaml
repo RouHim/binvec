@@ -10,7 +10,7 @@ jobs:
 
   check-repo:
     name: Check git repository
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -26,7 +26,7 @@ jobs:
 
   check-code-style:
     name: Check code style
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -41,18 +41,19 @@ jobs:
         continue-on-error: true # upload cache even if there are errors in this step
 
       - name: Check the code style
-        run: cargo fmt --all -- --check
+        run: cd src-tauri && cargo fmt --all -- --check
 
   check-code:
     name: Check rust code
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Prepare build environment
+      - name: install dependencies
         run: |
-          sudo apt update && sudo apt install -y libgtk-4-dev build-essential
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev webkit2gtk-4.0 libappindicator3-dev librsvg2-dev patchelf
 
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
@@ -64,18 +65,22 @@ jobs:
         continue-on-error: true # upload cache even if there are errors in this step
 
       - name: Verify code
-        run: cargo clippy
+        run: cd src-tauri && cargo clippy
 
   test:
     name: Run application tests
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
+    env:
+      BIGDATA_CLOUD_API_KEY: ${{ secrets.BIGDATA_CLOUD_API_KEY }}
+      OPEN_WEATHER_MAP_API_KEY: ${{ secrets.OPEN_WEATHER_MAP_API_KEY }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Prepare build environment
+      - name: install dependencies
         run: |
-          sudo apt update && sudo apt install -y libgtk-4-dev build-essential
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev webkit2gtk-4.0 libappindicator3-dev librsvg2-dev patchelf
 
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
@@ -87,18 +92,19 @@ jobs:
         continue-on-error: true # upload cache even if there are errors in this step
 
       - name: Test code
-        run: cargo test
+        run: cd src-tauri && cargo test
 
   check-unused-dependencies:
     name: Check for unused deps
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Prepare build environment
+      - name: install dependencies
         run: |
-          sudo apt update && sudo apt install -y libgtk-4-dev build-essential
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev webkit2gtk-4.0 libappindicator3-dev librsvg2-dev patchelf
 
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
@@ -113,129 +119,69 @@ jobs:
         run: cargo install cargo-udeps --locked
 
       - name: Analyze dependencies
-        run: cargo +nightly udeps
+        run: cd src-tauri && cargo +nightly udeps
 
-  build-linux-bin:
-    name: Build linux executable
+  build:
     needs: [ check-repo, check-code-style, check-code, test ]
-    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ macos-latest, ubuntu-latest, windows-latest ]
+
+    runs-on: ${{ matrix.platform }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v2
 
-      - name: Prepare build environment
-        run: |
-          sudo apt update && sudo apt install -y libgtk-4-dev build-essential
-
-      - name: Install rust toolchain
+      - name: install Rust stable
         uses: actions-rs/toolchain@v1
         with:
-          profile: default
           toolchain: stable
 
       - uses: Swatinem/rust-cache@v1 # use /rust/cargo caching
         continue-on-error: true # upload cache even if there are errors in this step
 
-      - name: Build application
+      - name: install dependencies (ubuntu only)
+        if: matrix.platform == 'ubuntu-latest'
         run: |
-          cargo build --release --target x86_64-unknown-linux-gnu
-          cp target/x86_64-unknown-linux-gnu/release/binvec ./binvec-x86_64-unknown-linux-gnu
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev webkit2gtk-4.0 libappindicator3-dev librsvg2-dev patchelf
 
-      - name: Upload artifact
+      - name: Install Tauri-CLI
+        run: cargo install tauri-cli
+
+      - name: Set release version
+        run: |
+          sed -i 's/"version": "0.0.0"/"version": "1.0.${{ github.run_number }}"/g' src-tauri/tauri.conf.json
+
+      - name: Build the app
+        run: cargo tauri build
+
+      - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: x86_64-unknown-linux-gnu
-          path: binvec-x86_64-unknown-linux-gnu
-
-  build-windows-bin:
-    name: Build windows executable
-    needs: [ check-repo, check-code-style, check-code, test ]
-    runs-on: windows-2022
-    defaults:
-      run:
-        shell: msys2 {0} # Set the msys2 shell as default, so all command will be executed in msys2 environment.
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Prepare GTK4 build env
-        uses: msys2/setup-msys2@v2
-        with:
-          update: false # don't update the MSYS2 repository, it takes too long
-          path-type: inherit
-          install: >-
-            mingw-w64-x86_64-gtk4
-            mingw-w64-x86_64-pkgconf
-            mingw-w64-x86_64-gcc
-            zip
-
-      - name: Install rust toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: default
-          toolchain: stable
-          target: x86_64-pc-windows-gnu
-
-      - name: Switch to gnu rust toolchain
-        run: |
-          rustup toolchain install stable-gnu
-          rustup default stable-gnu
-
-      - uses: Swatinem/rust-cache@v1 # use /rust/cargo caching
-        continue-on-error: true # upload cache even if there are errors in this step
-
-      - name: Build application
-        run: |
-          cargo build --release --target x86_64-pc-windows-gnu
-          mkdir distribution
-          cp target/x86_64-pc-windows-gnu/release/binvec.exe distribution/binvec-x86_64-pc-windows-gnu.exe
-
-      - name: Copy gtk4 required dependencies
-        run: |
-          cp $MSYS2_ROOT/mingw64/bin/*.dll distribution
-
-      - name: Zip distribution package
-        run: |
-          zip -r binvec-x86_64-pc-windows-gnu.zip distribution
-
-      - name: Upload exe artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: x86_64-pc-windows-gnu.exe
-          path: distribution/binvec-x86_64-pc-windows-gnu.exe
-
-      - name: Upload zip artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: x86_64-pc-windows-gnu.zip
-          path: binvec-x86_64-pc-windows-gnu.zip
+          name: artifacts
+          path: |
+            src-tauri/target/release/bundle/macos/BinVec.app
+            src-tauri/target/release/bundle/dmg/BinVec_1.0.${{ github.run_number }}_x64.dmg
+            src-tauri/target/release/bundle/deb/bin-vec_1.0.${{ github.run_number }}_amd64.deb
+            src-tauri/target/release/bundle/appimage/bin-vec_1.0.${{ github.run_number }}_amd64.AppImage.AppImage
+            src-tauri/target/release/bundle/msi/BinVec_1.0.${{ github.run_number }}_x64_en-US.msi
+  
 
   github-release:
     name: Create GitHub release
-    runs-on: ubuntu-22.04
-    needs: [ build-linux-bin, build-windows-bin ]
+    runs-on: ubuntu-latest
+    needs: [ build ]
     if: github.ref_name == 'main' # only publish if the branch is main
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v3
 
-      - name: Download previous built linux binary
+      - name: Download previous built application
         uses: actions/download-artifact@v3
         with:
-          name: x86_64-unknown-linux-gnu
-          path: .
-
-      - name: Download previous built windows binary
-        uses: actions/download-artifact@v3
-        with:
-          name: x86_64-pc-windows-gnu.exe
-          path: .
-
-      - name: Download previous built windows binary
-        uses: actions/download-artifact@v3
-        with:
-          name: x86_64-pc-windows-gnu.zip
+          name: artifacts
           path: .
 
       - name: Create GitHub release
@@ -249,40 +195,30 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Upload x86_64-unknown-linux-gnu asset
+      - name: Upload appimage asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: binvec-x86_64-unknown-linux-gnu
-          asset_name: binvec-x86_64-unknown-linux-gnu
+          asset_path: appimage/bin-vec_1.0.${{ github.run_number }}_amd64.AppImage.AppImage
+          asset_name: binvec_1.0.${{ github.run_number }}.AppImage
           asset_content_type: application/x-executable
 
-      - name: Upload x86_64-pc-windows-gnu asset
+      - name: Upload deb asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: binvec-x86_64-pc-windows-gnu.exe
-          asset_name: binvec-x86_64-pc-windows-gnu.exe
-          asset_content_type: application/x-executable
-
-      - name: Upload x86_64-pc-windows-gnu asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: binvec-x86_64-pc-windows-gnu.zip
-          asset_name: binvec-x86_64-pc-windows-gnu.zip
-          asset_content_type: application/zip
+          asset_path: deb/bin-vec_1.0.${{ github.run_number }}_amd64.deb
+          asset_name: binvec_1.0.${{ github.run_number }}.deb
+          asset_content_type: application/x-deb
 
       - name: Delete old releases
         uses: dev-drprasad/delete-older-releases@v0.2.0
         with:
-          keep_latest: 3
+          keep_latest: 50
           delete_tags: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
