@@ -153,7 +153,7 @@ jobs:
         run: |
           cargo install xq
           cat src-tauri/tauri.conf.json | xq '.package.version = "1.0.${{ github.run_number }}"' > src-tauri/tauri.conf.json.new
-          mv src-tauri/tauri.conf.json.new src-tauri/tauri.conf.json
+          mv -f src-tauri/tauri.conf.json.new src-tauri/tauri.conf.json
 
       - name: Build the app
         run: cargo tauri build
