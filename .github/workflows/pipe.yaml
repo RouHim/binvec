@@ -37,7 +37,7 @@ jobs:
           profile: minimal
           toolchain: stable
 
-      - uses: Swatinem/rust-cache@v1 # use /rust/cargo caching
+      - uses: Swatinem/rust-cache@v2 # use /rust/cargo caching
         continue-on-error: true # upload cache even if there are errors in this step
 
       - name: Check the code style
@@ -61,7 +61,7 @@ jobs:
           profile: minimal
           toolchain: stable
 
-      - uses: Swatinem/rust-cache@v1 # use /rust/cargo caching
+      - uses: Swatinem/rust-cache@v2 # use /rust/cargo caching
         continue-on-error: true # upload cache even if there are errors in this step
 
       - name: Verify code
@@ -88,7 +88,7 @@ jobs:
           profile: minimal
           toolchain: stable
 
-      - uses: Swatinem/rust-cache@v1 # use /rust/cargo caching
+      - uses: Swatinem/rust-cache@v2 # use /rust/cargo caching
         continue-on-error: true # upload cache even if there are errors in this step
 
       - name: Test code
@@ -112,7 +112,7 @@ jobs:
           profile: minimal
           toolchain: nightly
 
-      - uses: Swatinem/rust-cache@v1 # use /rust/cargo caching
+      - uses: Swatinem/rust-cache@v2 # use /rust/cargo caching
         continue-on-error: true # upload cache even if there are errors in this step
 
       - name: Install cargo-udeps
@@ -132,15 +132,22 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: install Rust stable
+      - name: Install Rust stable
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
 
-      - uses: Swatinem/rust-cache@v1 # use /rust/cargo caching
+      - uses: Swatinem/rust-cache@v2 # use /rust/cargo caching
         continue-on-error: true # upload cache even if there are errors in this step
 
-      - name: install dependencies (ubuntu only)
+      - name: Set release version
+        if: matrix.platform != 'windows-latest'
+        run: |
+          cargo install sd
+          sd '"version": "0.0.0"' '"version": "1.0.${{ github.run_number }}"' src-tauri/tauri.conf.json
+          echo "Version is now: 1.0.${{ github.run_number }}"
+
+      - name: Install Tauri dependencies (ubuntu only)
         if: matrix.platform == 'ubuntu-latest'
         run: |
           sudo apt-get update
@@ -148,12 +155,6 @@ jobs:
 
       - name: Install Tauri-CLI
         run: cargo install tauri-cli
-
-      - name: Set release version
-        if: matrix.platform != 'windows-latest'
-        run: |
-          cargo install sd
-          sd '"version": "0.0.0"' '"version": "1.0.${{ github.run_number }}"' src-tauri/tauri.conf.json
 
       - name: Build the app
         run: cargo tauri build
@@ -166,9 +167,8 @@ jobs:
             src-tauri/target/release/bundle/macos/BinVec.app
             src-tauri/target/release/bundle/dmg/BinVec_1.0.${{ github.run_number }}_x64.dmg
             src-tauri/target/release/bundle/deb/bin-vec_1.0.${{ github.run_number }}_amd64.deb
-            src-tauri/target/release/bundle/appimage/bin-vec_1.0.${{ github.run_number }}_amd64.AppImage.AppImage
-            src-tauri/target/release/bundle/msi/BinVec_1.0.${{ github.run_number }}_x64_en-US.msi
-  
+            src-tauri/target/release/bundle/appimage/bin-vec_1.0.${{ github.run_number }}_amd64.AppImage
+            src-tauri/target/release/bundle/msi/BinVec_1.0.${{ github.run_number }}_x64_en-US.msi  
 
   github-release:
     name: Create GitHub release
@@ -220,7 +220,7 @@ jobs:
       - name: Delete old releases
         uses: dev-drprasad/delete-older-releases@v0.2.0
         with:
-          keep_latest: 50
+          keep_latest: 3
           delete_tags: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
