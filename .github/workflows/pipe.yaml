@@ -149,19 +149,11 @@ jobs:
       - name: Install Tauri-CLI
         run: cargo install tauri-cli
 
-      - name: Set release version in non-windows 
+      - name: Set release version
         if: matrix.platform != 'windows-latest'
         run: |
-          cargo install xq
-          xq --from-file src-tauri/tauri.conf.json '.package.version = "1.0.${{ github.run_number }}"' > src-tauri/tauri.conf.json.new
-          mv -f src-tauri/tauri.conf.json.new src-tauri/tauri.conf.json
-
-      - name: Set release version in windows
-        if: matrix.platform == 'windows-latest'
-        run: |
-          cargo install xq
-          xq --from-file src-tauri/tauri.conf.json '.package.version = "1.0.${{ github.run_number }}"' > src-tauri/tauri.conf.json.new
-          mv -Force src-tauri/tauri.conf.json.new src-tauri/tauri.conf.json
+          cargo install sd
+          sd '"version": "0.0.0"' '"version": "1.0.${{ github.run_number }}"' src-tauri/tauri.conf.json
 
       - name: Build the app
         run: cargo tauri build

@@ -1,43 +1,63 @@
+html, body {
+    height: 100%;
+    max-width: 100%;
+}
+
 #baseLayout {
-    display: block;
+    /* Stretch https://stackoverflow.com/a/40445860/4046388 */
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
 }
 
-/* Center all child elements */
 #btnOpenImage {
+    height: 50px;
+
+    max-width: 850px;
+    width: 100%;
+
+    /* Center horizontally */
     display: block;
-
-    width: 95%;
-    margin: 5px auto;
+    margin: 0 auto 10px;
 }
 
-#baseLayout > * {
-    margin-bottom: 10px;
+#imgSvgPreview {
+    /* fill app space */
+    flex-grow: 1;
+
+    /* hide borders */
+    border: none;
+
+    /* set img limits */
+    max-width: 95%;
+    /* total - open button - option layout - spacer */
+    max-height: calc(100% - 50px - 300px - 100px);
+    object-fit: contain;
+
+    /* Center horizontally */
+    display:block;
+    margin-left:auto;
+    margin-right:auto;
 }
 
-/* Center all child elements */
+#optionsLayout {
+    height: 300px;
+    max-width: 850px;
+
+    /* Center horizontally */
+    display: block;
+    margin: 0 auto;
+}
+
 #optionsLayout > * {
     display: block;
-
-    width: 95%;
     margin: 10px auto;
+    width: 100%;
 }
 
 #optionsLayoutFieldset {
     border: 0;
-}
-
-/* Limit the size of the svg preview */
-#imgSvgPreview {
-    width: 750px;
-    max-width: 750px;
-
-    height: 500px;
-    max-height: 500px;
-
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    border: none;
 }
 
 /* Disable the weired blue box when selecting an element */
