@@ -38,7 +38,9 @@ jobs:
           toolchain: stable
 
       - uses: Swatinem/rust-cache@v2 # use /rust/cargo caching
-        continue-on-error: true # upload cache even if there are errors in this step
+        with:
+          workspaces: "src-tauri -> target"
+          cache-on-failure: true # upload cache even if there are errors in this step
 
       - name: Check the code style
         run: cd src-tauri && cargo fmt --all -- --check
@@ -62,7 +64,9 @@ jobs:
           toolchain: stable
 
       - uses: Swatinem/rust-cache@v2 # use /rust/cargo caching
-        continue-on-error: true # upload cache even if there are errors in this step
+        with:
+          workspaces: "src-tauri -> target"
+          cache-on-failure: true # upload cache even if there are errors in this step
 
       - name: Verify code
         run: cd src-tauri && cargo clippy
@@ -89,7 +93,9 @@ jobs:
           toolchain: stable
 
       - uses: Swatinem/rust-cache@v2 # use /rust/cargo caching
-        continue-on-error: true # upload cache even if there are errors in this step
+        with:
+          workspaces: "src-tauri -> target"
+          cache-on-failure: true # upload cache even if there are errors in this step
 
       - name: Test code
         run: cd src-tauri && cargo test
@@ -113,7 +119,9 @@ jobs:
           toolchain: nightly
 
       - uses: Swatinem/rust-cache@v2 # use /rust/cargo caching
-        continue-on-error: true # upload cache even if there are errors in this step
+        with:
+          workspaces: "src-tauri -> target"
+          cache-on-failure: true # upload cache even if there are errors in this step
 
       - name: Install cargo-udeps
         run: cargo install cargo-udeps --locked
@@ -138,7 +146,9 @@ jobs:
           toolchain: stable
 
       - uses: Swatinem/rust-cache@v2 # use /rust/cargo caching
-        continue-on-error: true # upload cache even if there are errors in this step
+        with:
+          workspaces: "src-tauri -> target"
+          cache-on-failure: true # upload cache even if there are errors in this step
 
       - name: Set release version
         if: matrix.platform != 'windows-latest'
