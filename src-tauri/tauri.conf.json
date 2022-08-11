@@ -57,7 +57,8 @@
       "csp": null
     },
     "updater": {
-      "active": false
+      "active": true,
+      "dialog": true
     },
     "windows": [
       {
