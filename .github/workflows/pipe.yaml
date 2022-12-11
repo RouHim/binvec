@@ -36,6 +36,7 @@ jobs:
         with:
           profile: minimal
           toolchain: stable
+          components: rustfmt
 
       - uses: Swatinem/rust-cache@v2 # use /rust/cargo caching
         with:
@@ -62,6 +63,7 @@ jobs:
         with:
           profile: minimal
           toolchain: stable
+          components: clippy
 
       - uses: Swatinem/rust-cache@v2 # use /rust/cargo caching
         with:
