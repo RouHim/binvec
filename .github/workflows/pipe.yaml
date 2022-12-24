@@ -210,6 +210,7 @@ jobs:
           mkdir release-artifacts
           export VERSION=1.0.${{ github.run_number }}
           find . -name "BinVec.app"
+          pwd
           
           mv src-tauri/target/release/bundle/macos/BinVec.app release-artifacts/BinVec_$VERSION.app
           mv src-tauri/target/release/bundle/macos/BinVec.app.tar.gz release-artifacts/BinVec_$VERSION.app.tar.gz
