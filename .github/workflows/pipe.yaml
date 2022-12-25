@@ -211,6 +211,7 @@ jobs:
           export VERSION=1.0.${{ github.run_number }}
           find . -name "BinVec.app"
           pwd
+          tree
           
           mv ./macos/BinVec.app release-artifacts/BinVec_$VERSION.app
           mv ./macos/BinVec.app.tar.gz release-artifacts/BinVec_$VERSION.app.tar.gz
