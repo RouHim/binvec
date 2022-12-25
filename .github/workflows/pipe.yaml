@@ -155,7 +155,9 @@ jobs:
       - name: Set release version
         run: |
           cargo install sd
-          sd '"version": "0.0.0"' '"version": "1.0.${{ github.run_number }}"' src-tauri/tauri.conf.json
+          cd src-tauri
+          sd '"version": "0.0.0"' '"version": "1.0.${{ github.run_number }}"' tauri.conf.json
+          cd ..
           echo "Version is now: 1.0.${{ github.run_number }}"
 
       - name: Install Tauri dependencies (ubuntu only)
@@ -208,9 +210,6 @@ jobs:
         run: |
           mkdir release-artifacts
           export VERSION=1.0.${{ github.run_number }}
-          find . -name "BinVec.app"
-          pwd
-          tree
           
           mv "./macos/BinVec.app" "release-artifacts/BinVec_${VERSION}.app"
           mv "./macos/BinVec.app.tar.gz" "release-artifacts/BinVec_${VERSION}.app.tar.gz"
