@@ -156,8 +156,8 @@ jobs:
         run: |
           cargo install sd
           cd src-tauri
-          sd --preview '"version": "0.0.0"' '"version": "1.0.${{ github.run_number }}"' tauri.conf.json
-          sd '"version": "0.0.0"' '"version": "1.0.${{ github.run_number }}"' tauri.conf.json
+          sd --preview '0.0.0' '1.0.${{ github.run_number }}' tauri.conf.json
+          sd '0.0.0' '1.0.${{ github.run_number }}' tauri.conf.json
           cd ..
           echo "Version is now: 1.0.${{ github.run_number }}"
 
