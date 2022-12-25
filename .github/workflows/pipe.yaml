@@ -213,7 +213,7 @@ jobs:
           pwd
           tree
           
-          mv ./macos/BinVec.app release-artifacts/BinVec_$VERSION.app
+          mv ./macos/BinVec.app "release-artifacts/BinVec_${VERSION}.app"
           mv ./macos/BinVec.app.tar.gz release-artifacts/BinVec_$VERSION.app.tar.gz
           mv ./macos/BinVec.app.tar.gz.sig release-artifacts/BinVec_$VERSION.app.tar.gz.sig
           
