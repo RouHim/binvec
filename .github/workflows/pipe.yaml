@@ -153,7 +153,6 @@ jobs:
           cache-on-failure: true # upload cache even if there are errors in this step
 
       - name: Set release version
-        if: matrix.platform != 'windows-latest'
         run: |
           cargo install sd
           sd '"version": "0.0.0"' '"version": "1.0.${{ github.run_number }}"' src-tauri/tauri.conf.json
@@ -186,8 +185,8 @@ jobs:
             src-tauri/target/release/bundle/appimage/bin-vec_1.0.${{ github.run_number }}_amd64.AppImage.tar.gz
             src-tauri/target/release/bundle/appimage/bin-vec_1.0.${{ github.run_number }}_amd64.AppImage.tar.gz.sig
             src-tauri/target/release/bundle/msi/BinVec_1.0.${{ github.run_number }}_x64_en-US.msi
-            src-tauri/target/release/bundle/msi/BinVec_1.0.${{ github.run_number }}_x64_en-US.msi.tar.gz
-            src-tauri/target/release/bundle/msi/BinVec_1.0.${{ github.run_number }}_x64_en-US.msi.tar.gz.sig
+            src-tauri/target/release/bundle/msi/BinVec_1.0.${{ github.run_number }}_x64_en-US.msi.zip
+            src-tauri/target/release/bundle/msi/BinVec_1.0.${{ github.run_number }}_x64_en-US.msi.zip.sig
 
   github-release:
     name: Create GitHub release
