@@ -230,13 +230,13 @@ jobs:
           export NOW=$(date +"%Y-%m-%d %k:%M")
           export NOTES=$(jq -r '.head_commit.message' "$GITHUB_EVENT_PATH")
           
-          export MACOS_URL=https://github.com/RouHim/binvec/releases/download/v$VERSION/BinVec_$VERSION.app.tar.gz
+          export MACOS_URL=https://github.com/RouHim/binvec/releases/download/$VERSION/BinVec_$VERSION.app.tar.gz
           export MACOS_SIG=$(cat release-artifacts/BinVec_$VERSION.app.tar.gz.sig)
           
-          export APPIMAGE_URL=https://github.com/RouHim/binvec/releases/download/v$VERSION/BinVec_$VERSION.AppImage.tar.gz
+          export APPIMAGE_URL=https://github.com/RouHim/binvec/releases/download/$VERSION/BinVec_$VERSION.AppImage.tar.gz
           export APPIMAGE_SIG=$(cat release-artifacts/BinVec_$VERSION.AppImage.tar.gz.sig)
           
-          export MSI_URL=https://github.com/RouHim/binvec/releases/download/v$VERSION/BinVec_$VERSION.msi.zip
+          export MSI_URL=https://github.com/RouHim/binvec/releases/download/$VERSION/BinVec_$VERSION.msi.zip
           export MSI_SIG=$(cat release-artifacts/BinVec_$VERSION.msi.zip.sig)
           
           cat <<< $(jq --arg VERSION "$VERSION" '.version = "\($VERSION)"' binvec_update.json) > binvec_update.json
