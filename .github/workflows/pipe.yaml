@@ -246,7 +246,7 @@ jobs:
           
           cat <<< $(jq --arg VERSION "$VERSION" '.version = "\($VERSION)"' binvec_update.json) > binvec_update.json
           cat <<< $(jq --arg NOTES "$NOTES" '.notes = "]\($NOTES)"' binvec_update.json) > binvec_update.json
-          cat <<< $(jq --arg NOW "NOW" '.pub_date = "\(NOW)"' binvec_update.json) > binvec_update.json
+          cat <<< $(jq --arg NOW "$NOW" '.pub_date = "\($NOW)"' binvec_update.json) > binvec_update.json
           
           cat <<< $(jq --arg MACOS_URL "$MACOS_URL" '.platforms."darwin-x86_64".url = "\($MACOS_URL)"' binvec_update.json) > binvec_update.json
           cat <<< $(jq --arg MACOS_SIG "$MACOS_SIG" '.platforms."darwin-x86_64".signature = "\($MACOS_SIG)"' binvec_update.json) > binvec_update.json
