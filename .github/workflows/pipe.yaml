@@ -221,8 +221,8 @@ jobs:
           mv "./appimage/bin-vec_${VERSION}_amd64.AppImage.tar.gz.sig" "release-artifacts/BinVec_${VERSION}.AppImage.tar.gz.sig"
           
           mv "./msi/BinVec_${VERSION}_x64_en-US.msi" "release-artifacts/BinVec_${VERSION}.msi"
-          mv "./msi/BinVec_${VERSION}_x64_en-US.msi.tar.gz" "release-artifacts/BinVec_${VERSION}.msi.tar.gz"
-          mv "./msi/BinVec_${VERSION}_x64_en-US.msi.tar.gz.sig" "release-artifacts/BinVec_${VERSION}.msi.tar.gz.sig"
+          mv "./msi/BinVec_${VERSION}_x64_en-US.msi.zip" "release-artifacts/BinVec_${VERSION}.msi.zip"
+          mv "./msi/BinVec_${VERSION}_x64_en-US.msi.zip.sig" "release-artifacts/BinVec_${VERSION}.msi.zip.sig"
 
       - name: Patch updater json
         run: |
