@@ -226,8 +226,6 @@ jobs:
 
       - name: Patch updater json
         run: |
-          tree .github
-          
           export VERSION=1.0.${{ github.run_number }}
           echo "VERSION: ${VERSION}"
           
@@ -243,8 +241,8 @@ jobs:
           export APPIMAGE_URL=https://github.com/RouHim/binvec/releases/download/v$VERSION/BinVec_$VERSION.AppImage.tar.gz
           export APPIMAGE_SIG=$(cat release-artifacts/BinVec_$VERSION.AppImage.tar.gz.sig)
           
-          export MSI_URL=https://github.com/RouHim/binvec/releases/download/v$VERSION/BinVec_$VERSION.msi.tar.gz
-          export MSI_SIG=$(cat release-artifacts/BinVec_$VERSION.msi.tar.gz.sig)
+          export MSI_URL=https://github.com/RouHim/binvec/releases/download/v$VERSION/BinVec_$VERSION.msi.zip
+          export MSI_SIG=$(cat release-artifacts/BinVec_$VERSION.msi.zip.sig)
           
           cat <<< $(jq --arg VERSION "$VERSION" '.version = "\($VERSION)"' binvec_update.json) > binvec_update.json
           cat <<< $(jq --arg NOTES "$NOTES" '.notes = "]\($NOTES)"' binvec_update.json) > binvec_update.json
@@ -272,8 +270,8 @@ jobs:
             release-artifacts/BinVec_1.0.${{ github.run_number }}.AppImage.tar.gz
             release-artifacts/BinVec_1.0.${{ github.run_number }}.AppImage.tar.gz.sig
             release-artifacts/BinVec_1.0.${{ github.run_number }}.msi
-            release-artifacts/BinVec_1.0.${{ github.run_number }}.msi.tar.gz
-            release-artifacts/BinVec_1.0.${{ github.run_number }}.msi.tar.gz.sig
+            release-artifacts/BinVec_1.0.${{ github.run_number }}.msi.zip
+            release-artifacts/BinVec_1.0.${{ github.run_number }}.msi.zip.sig
 
       - name: Deploy update information to gist
         uses: exuanbo/actions-deploy-gist@v1
