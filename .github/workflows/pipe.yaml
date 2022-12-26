@@ -226,10 +226,14 @@ jobs:
 
       - name: Patch updater json
         run: |
-          sudo apt update && sudo apt install -y jq
           export VERSION=1.0.${{ github.run_number }}
+          echo "VERSION: ${VERSION}"
+          
           export NOW=$(date +"%Y-%m-%d %k:%M")
+          echo "NOW: ${NOW}"
+          
           export NOTES=${{ github.event.head_commit.message }}
+          echo "NOTES: ${NOTES}"
           
           export MACOS_URL=https://github.com/RouHim/binvec/releases/download/v$VERSION/BinVec_$VERSION.app.tar.gz
           export MACOS_SIG=$(cat release-artifacts/BinVec_$VERSION.app.tar.gz.sig)
