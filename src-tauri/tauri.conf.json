@@ -60,7 +60,7 @@
       "active": true,
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEVGQTVCM0Q2RUNFNDFBNjMKUldSakd1VHMxck9sNzB0eGN1R3huOHBBUlFhS3hjZmRVSkNIZndqb20zaXhnZldPVEFET0pQNWsK",
       "endpoints": [
-        "https://gist.githubusercontent.com/RouHim/6dd4931683170f25859dc88cb1788b10/raw/d0c9a07040e4f902dc3e05c9bda1cc4af103aee5/binvec_update.json"
+        "https://gist.github.com/RouHim/6dd4931683170f25859dc88cb1788b10/raw/"
       ]
     },
     "windows": [
