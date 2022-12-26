@@ -58,6 +58,7 @@
     },
     "updater": {
       "active": true,
+      "dialog": true,
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEVGQTVCM0Q2RUNFNDFBNjMKUldSakd1VHMxck9sNzB0eGN1R3huOHBBUlFhS3hjZmRVSkNIZndqb20zaXhnZldPVEFET0pQNWsK",
       "endpoints": [
         "https://gist.github.com/RouHim/6dd4931683170f25859dc88cb1788b10/raw/"
