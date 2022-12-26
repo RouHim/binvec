@@ -256,6 +256,8 @@ jobs:
           
           cat <<< $(jq --arg MSI_URL "$MSI_URL" '.platforms."darwin-x86_64".url = "\($MSI_URL)"' binvec_update.json) > binvec_update.json
           cat <<< $(jq --arg MSI_SIG "$MSI_SIG" '.platforms."darwin-x86_64".signature = "\($MSI_SIG)"' binvec_update.json) > binvec_update.json
+          
+          cat binvec_update.json
 
       - name: Release
         uses: softprops/action-gh-release@v1
