@@ -227,13 +227,8 @@ jobs:
       - name: Patch updater json
         run: |
           export VERSION=1.0.${{ github.run_number }}
-          echo "VERSION: ${VERSION}"
-          
           export NOW=$(date +"%Y-%m-%d %k:%M")
-          echo "NOW: ${NOW}"
-          
           export NOTES=$(jq -r '.head_commit.message' "$GITHUB_EVENT_PATH")
-          echo "NOTES: ${NOTES}"
           
           export MACOS_URL=https://github.com/RouHim/binvec/releases/download/v$VERSION/BinVec_$VERSION.app.tar.gz
           export MACOS_SIG=$(cat release-artifacts/BinVec_$VERSION.app.tar.gz.sig)
@@ -245,19 +240,17 @@ jobs:
           export MSI_SIG=$(cat release-artifacts/BinVec_$VERSION.msi.zip.sig)
           
           cat <<< $(jq --arg VERSION "$VERSION" '.version = "\($VERSION)"' binvec_update.json) > binvec_update.json
-          cat <<< $(jq --arg NOTES "$NOTES" '.notes = "]\($NOTES)"' binvec_update.json) > binvec_update.json
+          cat <<< $(jq --arg NOTES "$NOTES" '.notes = "\($NOTES)"' binvec_update.json) > binvec_update.json
           cat <<< $(jq --arg NOW "$NOW" '.pub_date = "\($NOW)"' binvec_update.json) > binvec_update.json
           
           cat <<< $(jq --arg MACOS_URL "$MACOS_URL" '.platforms."darwin-x86_64".url = "\($MACOS_URL)"' binvec_update.json) > binvec_update.json
           cat <<< $(jq --arg MACOS_SIG "$MACOS_SIG" '.platforms."darwin-x86_64".signature = "\($MACOS_SIG)"' binvec_update.json) > binvec_update.json
           
-          cat <<< $(jq --arg APPIMAGE_URL "$APPIMAGE_URL" '.platforms."darwin-x86_64".url = "\($APPIMAGE_URL)"' binvec_update.json) > binvec_update.json
-          cat <<< $(jq --arg APPIMAGE_SIG "$APPIMAGE_SIG" '.platforms."darwin-x86_64".signature = "\($APPIMAGE_SIG)"' binvec_update.json) > binvec_update.json
+          cat <<< $(jq --arg APPIMAGE_URL "$APPIMAGE_URL" '.platforms."linux-x86_64".url = "\($APPIMAGE_URL)"' binvec_update.json) > binvec_update.json
+          cat <<< $(jq --arg APPIMAGE_SIG "$APPIMAGE_SIG" '.platforms."linux-x86_64".signature = "\($APPIMAGE_SIG)"' binvec_update.json) > binvec_update.json
           
-          cat <<< $(jq --arg MSI_URL "$MSI_URL" '.platforms."darwin-x86_64".url = "\($MSI_URL)"' binvec_update.json) > binvec_update.json
-          cat <<< $(jq --arg MSI_SIG "$MSI_SIG" '.platforms."darwin-x86_64".signature = "\($MSI_SIG)"' binvec_update.json) > binvec_update.json
-          
-          cat binvec_update.json
+          cat <<< $(jq --arg MSI_URL "$MSI_URL" '.platforms."windows-x86_64".url = "\($MSI_URL)"' binvec_update.json) > binvec_update.json
+          cat <<< $(jq --arg MSI_SIG "$MSI_SIG" '.platforms."windows-x86_64".signature = "\($MSI_SIG)"' binvec_update.json) > binvec_update.json
 
       - name: Release
         uses: softprops/action-gh-release@v1
