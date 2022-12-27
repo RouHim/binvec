@@ -227,7 +227,7 @@ jobs:
       - name: Patch updater json
         run: |
           export VERSION=1.0.${{ github.run_number }}
-          export NOW=$(date --iso-8601=seconds -u)
+          export NOW=$(date -u +%Y-%m-%dT%H:%M:%SZ)
           export NOTES=$(jq -r '.head_commit.message' "$GITHUB_EVENT_PATH")
           
           export MACOS_URL=https://github.com/RouHim/binvec/releases/download/$VERSION/BinVec_$VERSION.app.tar.gz
