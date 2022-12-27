@@ -274,3 +274,11 @@ jobs:
           token: ${{ secrets.GIST_TOKEN }}
           gist_id: 6dd4931683170f25859dc88cb1788b10
           file_path: binvec_update.json
+
+      - name: Delete old releases
+        uses: dev-drprasad/delete-older-releases@v0.2.1
+        with:
+          keep_latest: 10
+          delete_tags: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
