@@ -62,7 +62,7 @@ dependencies = [
  "serde_json",
  "tauri",
  "tauri-build",
- "visioncortex",
+ "visioncortex 0.8.0",
  "vtracer",
 ]
 
@@ -3267,13 +3267,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "visioncortex"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "82b8e20a69c3b2d389184e0096c56db45675de6998a7eff4bc7f1b7064381211"
+dependencies = [
+ "bit-vec",
+ "flo_curves",
+ "log",
+ "num-traits",
+]
+
+[[package]]
 name = "vtracer"
 version = "0.4.1"
 source = "git+https://github.com/RouHim/vtracer#3b87c40f58b888820f3791eee6787e5f67b15c45"
 dependencies = [
  "clap",
  "image",
- "visioncortex",
+ "visioncortex 0.6.1",
 ]
 
 [[package]]
