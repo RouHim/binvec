@@ -28,20 +28,9 @@ chmod +x binvec.appimage
 * Extract the downloaded file.
 * Run the BinVec.msi installer.
 
-## Usage
-
-To use BinVec, double-click on the BinVec executable file or execute it from the terminal-
-
-
 ## Features
 
 * Convert raster graphics to vector graphics using various parameters such as threshold, smoothing, and simplification.
-* Support for multiple input and output formats, including PNG, JPEG, GIF, and SVG.
+* Support binary and color vector graphics.
+* Support for multiple input formats including PNG, JPEG, GIF.
 * Intuitive graphical user interface with preview window and real-time updates.
-
-## Example
-
-* Open BinVec and select the input file by clicking on the "Open" button.
-* Adjust the conversion parameters using the sliders or input fields.
-* Preview the result in the preview window.
-* Select the output file and format using the "Save SVG" button.
