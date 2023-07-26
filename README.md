@@ -12,6 +12,17 @@
     <i>BinVec is a graphical program that converts raster graphics into vector graphics using various parameters. BinVec is available for Linux, macOS, and Windows.</i>
 </p>
 
+<p align="center">
+    <img src="https://raw.githubusercontent.com/RouHim/binvec/main/screenshot.jpg" width="250"/>
+</p>
+
+## Features
+
+* Convert raster graphics to vector graphics using various parameters such as threshold, smoothing, and simplification.
+* Support binary and color vector graphics.
+* Support for multiple input formats including PNG, JPEG, GIF.
+* Intuitive graphical user interface with preview window and real-time updates.
+
 ## Installation
 
 To install BinVec, follow these steps:
@@ -38,9 +49,3 @@ chmod +x binvec.appimage
 * Extract the downloaded file.
 * Run the BinVec.msi installer.
 
-## Features
-
-* Convert raster graphics to vector graphics using various parameters such as threshold, smoothing, and simplification.
-* Support binary and color vector graphics.
-* Support for multiple input formats including PNG, JPEG, GIF.
-* Intuitive graphical user interface with preview window and real-time updates.
