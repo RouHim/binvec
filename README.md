@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://raw.githubusercontent.com/RouHim/binvec/main/banner.png" width="500"/>
+    <img src="https://raw.githubusercontent.com/RouHim/binvec/main/banner.png" width="250"/>
 </p>
 
 <p align="center">
