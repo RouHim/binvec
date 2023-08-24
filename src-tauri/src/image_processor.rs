@@ -51,8 +51,8 @@ pub fn create_binary_vector(
         let x = pixel.0 as usize;
         let y = pixel.1 as usize;
         let pixel_value = pixel.2;
-        let grayscale_value = pixel_value.to_luma_alpha().0[0] as u8;
-        let alpha_value = pixel_value.to_luma_alpha().0[1] as u8;
+        let grayscale_value = pixel_value.to_luma_alpha().0[0];
+        let alpha_value = pixel_value.to_luma_alpha().0[1];
 
         // if alpha channel is available use it for binarization otherwise:
         // if grayscale_value > threshold then white else black

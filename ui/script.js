@@ -20,8 +20,8 @@ async function openImage() {
     });
     if (imagePath !== null) {
         enableControls();
-        await loadImage(imagePath);
-        await generateSvg();
+        loadImage(imagePath)
+            .then(() => generateSvg());
     }
 }
 
@@ -38,36 +38,35 @@ async function generateSvg() {
         invertBinary: invertBinary,
         colorCount: colorCount,
         gradientStep: gradientStep,
-    }).then(svgData =>
-        document.getElementById("imgSvgPreview").src = "data:image/svg+xml;utf8," + encodeURIComponent(svgData)
+    }).then(svgData => {
+            document.getElementById("imgSvgPreview").src = "data:image/svg+xml;utf8," + encodeURIComponent(svgData);
+        }
+    ).catch(
+        // Ignore
     );
 }
 
 async function changeState() {
-    const withColor = document.getElementById("chkColor").checked;
+    document.getElementById("labelColorCount").style.display = document.getElementById("chkColor").checked ? "block" : "none";
+    document.getElementById("sliderColorCount").style.display = document.getElementById("chkColor").checked ? "block" : "none";
 
-    document.getElementById("labelColorCount").style.display = withColor ? "block" : "none";
-    document.getElementById("sliderColorCount").style.display = withColor ? "block" : "none";
+    document.getElementById("labelGradientStep").style.display = document.getElementById("chkColor").checked ? "block" : "none";
+    document.getElementById("sliderGradientStep").style.display = document.getElementById("chkColor").checked ? "block" : "none";
 
-    document.getElementById("labelGradientStep").style.display = withColor ? "block" : "none";
-    document.getElementById("sliderGradientStep").style.display = withColor ? "block" : "none";
+    document.getElementById("labelBinarizeThreshold").style.display = document.getElementById("chkColor").checked ? "none" : "block";
+    document.getElementById("sliderBinarizeThreshold").style.display = document.getElementById("chkColor").checked ? "none" : "block";
 
-    document.getElementById("labelBinarizeThreshold").style.display = withColor ? "none" : "block";
-    document.getElementById("sliderBinarizeThreshold").style.display = withColor ? "none" : "block";
+    document.getElementById("labelInvertBinary").style.display = document.getElementById("chkColor").checked ? "none" : "block";
+    document.getElementById("chkInvertBinary").style.display = document.getElementById("chkColor").checked ? "none" : "block";
 
-    document.getElementById("labelInvertBinary").style.display = withColor ? "none" : "block";
-    document.getElementById("chkInvertBinary").style.display = withColor ? "none" : "block";
-
-    document.getElementById("alphaChannelLayout").style.display = withColor ? "none" : "flex";
+    document.getElementById("alphaChannelLayout").style.display = document.getElementById("chkColor").checked ? "none" : "flex";
 
     invoke('color_state_changed', {
-        withColor: withColor,
+        withColor: document.getElementById("chkColor").checked,
     });
 
-    const ignoreAlphaChannel = document.getElementById("chkAlphaChannel").checked;
-
     invoke('alpha_channel_state_changed', {
-        ignoreAlphaChannel: ignoreAlphaChannel,
+        ignoreAlphaChannel: document.getElementById("chkAlphaChannel").checked,
     });
 
     await generateSvg();
