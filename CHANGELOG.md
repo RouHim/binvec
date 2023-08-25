@@ -1,3 +1,10 @@
+## [1.1.7](https://github.com/RouHim/binvec/compare/v1.1.6...v1.1.7) (2023-08-25)
+
+
+### Bug Fixes
+
+* **pipeline:** install latest bash on macos ([26aabfa](https://github.com/RouHim/binvec/commit/26aabfaa63143a4aeac465b220ffbc8a5ba5e373))
+
 ## [1.1.6](https://github.com/RouHim/binvec/compare/v1.1.5...v1.1.6) (2023-08-25)
 
 ## [1.1.5](https://github.com/RouHim/binvec/compare/v1.1.4...v1.1.5) (2023-08-25)
