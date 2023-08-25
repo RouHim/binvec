@@ -303,7 +303,7 @@ jobs:
           asset_name: binvec_${{ env.VERSION }}_x64_en-US.msi.zip.sig
           asset_content_type: application/octet-stream
 
-      - name: Upload macos app
+      - name: Upload macos installer
         if: matrix.platform == 'macos-latest'
         uses: actions/upload-release-asset@v1
         env:
@@ -320,8 +320,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ env.UPLOAD_URL }}
-          asset_path: src-tauri/target/release/bundle/macos/BinVec.app.tar.gz
-          asset_name: binvec_${{ env.VERSION }}.app.tar.gz
+          asset_path: src-tauri/target/release/bundle/macos/BinVec.app.zip
+          asset_name: binvec_${{ env.VERSION }}.app.zip
           asset_content_type: application/octet-stream
       - name: Upload macos updater signature
         if: matrix.platform == 'macos-latest'
@@ -330,8 +330,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ env.UPLOAD_URL }}
-          asset_path: src-tauri/target/release/bundle/macos/BinVec.app.tar.gz.sig
-          asset_name: binvec_${{ env.VERSION }}.app.tar.gz.sig
+          asset_path: src-tauri/target/release/bundle/macos/BinVec.app.zip.sig
+          asset_name: binvec_${{ env.VERSION }}.app.zip.sig
           asset_content_type: application/octet-stream
 
   update-updater:
