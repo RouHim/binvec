@@ -248,6 +248,7 @@ jobs:
         run: |
           pwd
           ls -lsha src-tauri/target/release/bundle/macos/
+          ls -lsha src-tauri/target/release/bundle/macos/BinVec.app
           file src-tauri/target/release/bundle/macos/BinVec.app
           file src-tauri/target/release/bundle/macos/BinVec.app.tar.gz
           file src-tauri/target/release/bundle/macos/BinVec.app.tar.gz.sig
