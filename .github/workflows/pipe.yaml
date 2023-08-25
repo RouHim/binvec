@@ -176,20 +176,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [ ubuntu-20.04, windows-latest, macos-latest ]
+        platform: [ ubuntu-20.04, windows-latest ]
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v3
-
-      - name: Update bash on macos
-        if: matrix.platform == 'macos-latest'
-        shell: bash
-        run: |
-          brew install bash
-          brew install gnu-sed
-          echo "/usr/local/bin" >> $GITHUB_PATH
-          echo "$(brew --prefix)/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
-          bash --version
 
       - name: Install Rust stable
         uses: actions-rs/toolchain@v1
@@ -241,17 +231,6 @@ jobs:
           TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
           TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
         run: cargo tauri build
-
-      - name: Verify assets on macos
-        shell: bash
-        if: matrix.platform == 'macos-latest'
-        run: |
-          pwd
-          ls -lsha src-tauri/target/release/bundle/macos/
-          ls -lsha src-tauri/target/release/bundle/macos/BinVec.app
-          file src-tauri/target/release/bundle/macos/BinVec.app
-          file src-tauri/target/release/bundle/macos/BinVec.app.tar.gz
-          file src-tauri/target/release/bundle/macos/BinVec.app.tar.gz.sig
 
       - name: Upload linux AppImage
         if: matrix.platform == 'ubuntu-20.04'
@@ -315,37 +294,6 @@ jobs:
           asset_name: binvec_${{ env.VERSION }}_x64_en-US.msi.zip.sig
           asset_content_type: application/octet-stream
 
-      - name: Upload macos installer
-        if: matrix.platform == 'macos-latest'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ env.UPLOAD_URL }}
-          asset_path: src-tauri/target/release/bundle/macos/BinVec.app
-          asset_name: binvec_${{ env.VERSION }}.app
-          asset_content_type: application/octet-stream
-      - name: Upload macos updater
-        if: matrix.platform == 'macos-latest'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ env.UPLOAD_URL }}
-          asset_path: src-tauri/target/release/bundle/macos/BinVec.app.tar.gz
-          asset_name: binvec_${{ env.VERSION }}.app.tar.gz
-          asset_content_type: application/octet-stream
-      - name: Upload macos updater signature
-        if: matrix.platform == 'macos-latest'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ env.UPLOAD_URL }}
-          asset_path: src-tauri/target/release/bundle/macos/BinVec.app.tar.gz.sig
-          asset_name: binvec_${{ env.VERSION }}.app.tar.gz.sig
-          asset_content_type: application/octet-stream
-
   update-updater:
     name: Update updater
     needs: [ bundle-and-upload ]
@@ -354,16 +302,6 @@ jobs:
       UPDATER_FILE: ".github/updater/binvec_update.json"
     steps:
       - uses: actions/checkout@v3
-
-      - name: Update bash on macos
-        if: matrix.platform == 'macos-latest'
-        shell: bash
-        run: |
-          brew install bash
-          brew install gnu-sed
-          echo "/usr/local/bin" >> $GITHUB_PATH
-          echo "$(brew --prefix)/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
-          bash --version
 
       - name: Detect and set latest github release VERSION
         shell: bash

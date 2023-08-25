@@ -32,10 +32,6 @@ APPIMAGE_SIG=$(curl -L --silent "${REPO_BASE_URL}/releases/download/v${VERSION}/
 MSI_URL=${REPO_BASE_URL}/releases/download/v${VERSION}/binvec_${VERSION}_x64_en-US.msi.zip
 MSI_SIG=$(curl -L --silent "${REPO_BASE_URL}/releases/download/v${VERSION}/binvec_${VERSION}_x64_en-US.msi.zip.sig")
 
-# Collect macos APP data
-APP_URL=${REPO_BASE_URL}/releases/download/v${VERSION}/binvec_${VERSION}.app.tar.gz
-APP_SIG=$(curl -L --silent "${REPO_BASE_URL}/releases/download/v${VERSION}/binvec_${VERSION}.app.tar.gz.sig")
-
 # Set the generic version, notes and pub_date
 cat <<<$(jq --arg VERSION "$VERSION" '.version = "\($VERSION)"' ${UPDATER_JSON_FILE}) >${UPDATER_JSON_FILE}
 cat <<<$(jq --arg NOTES "$NOTES" '.notes = "\($NOTES)"' ${UPDATER_JSON_FILE}) >${UPDATER_JSON_FILE}
@@ -48,10 +44,6 @@ cat <<<$(jq --arg APPIMAGE_SIG "$APPIMAGE_SIG" '.platforms."linux-x86_64".signat
 # Set the windows specific data
 cat <<<$(jq --arg MSI_URL "$MSI_URL" '.platforms."windows-x86_64".url = "\($MSI_URL)"' ${UPDATER_JSON_FILE}) >${UPDATER_JSON_FILE}
 cat <<<$(jq --arg MSI_SIG "$MSI_SIG" '.platforms."windows-x86_64".signature = "\($MSI_SIG)"' ${UPDATER_JSON_FILE}) >${UPDATER_JSON_FILE}
-
-# Set the macos specific data
-cat <<<$(jq --arg APP_URL "$APP_URL" '.platforms."darwin-x86_64".url = "\($APP_URL)"' ${UPDATER_JSON_FILE}) >${UPDATER_JSON_FILE}
-cat <<<$(jq --arg APP_SIG "$APP_SIG" '.platforms."darwin-x86_64".signature = "\($APP_SIG)"' ${UPDATER_JSON_FILE}) >${UPDATER_JSON_FILE}
 
 # Print the final json file
 cat "${UPDATER_JSON_FILE}"
