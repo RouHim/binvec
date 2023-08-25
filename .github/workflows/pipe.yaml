@@ -189,6 +189,7 @@ jobs:
           brew install gnu-sed
           echo "/usr/local/bin" >> $GITHUB_PATH
           echo "$(brew --prefix)/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
+          bash --version
 
       - name: Install Rust stable
         uses: actions-rs/toolchain@v1
@@ -204,6 +205,7 @@ jobs:
         shell: bash
         run: |
           REPO="RouHim/binvec"
+          curl --silent "https://api.github.com/repos/$REPO/releases/latest" | jq -r ".tag_name"
           LATEST_RELEASE=$(curl --silent "https://api.github.com/repos/$REPO/releases/latest" | jq -r ".tag_name")
           LATEST_RELEASE=${LATEST_RELEASE#v}
           echo "Latest release is $LATEST_RELEASE"
