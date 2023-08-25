@@ -1,3 +1,10 @@
+## [1.1.8](https://github.com/RouHim/binvec/compare/v1.1.7...v1.1.8) (2023-08-25)
+
+
+### Bug Fixes
+
+* **pipeline:** artifacts names ([9033f87](https://github.com/RouHim/binvec/commit/9033f87787160b12f68aa47e8c6864d0215799d7))
+
 ## [1.1.7](https://github.com/RouHim/binvec/compare/v1.1.6...v1.1.7) (2023-08-25)
 
 
