@@ -131,13 +131,52 @@ jobs:
       - name: Analyze dependencies
         run: cd src-tauri && cargo +nightly udeps
 
-  build:
-    needs: [ check-repo, check-code-style, check-code, test ]
+  create-release:
+    name: Create new release
+    needs: [ check-repo, check-code-style, check-code, test, compile ]
+    runs-on: ubuntu-22.04
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+
+      - name: Install Dependencies
+        run: |
+          npm install -g \
+             semantic-release  \
+            @semantic-release/git  \
+            @semantic-release/gitlab  \
+            @semantic-release/changelog  \
+            @semantic-release/exec \
+            @semantic-release/commit-analyzer \
+            conventional-changelog-conventionalcommits
+
+      - name: Generate Semantic Release Notes and Create Release
+        id: semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        run: npx semantic-release
+
+      - name: Delete old releases
+        uses: dev-drprasad/delete-older-releases@v0.2.1
+        with:
+          keep_latest: 5
+          delete_tags: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  bundle-and-upload:
+    needs: [ create-release ]
+    name: Bundle and upload application artifacts
     strategy:
       fail-fast: false
       matrix:
-        platform: [ macos-latest, ubuntu-latest, windows-latest ]
-
+        platform: [ ubuntu-20.04, windows-latest, macos-latest ]
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v3
@@ -152,23 +191,38 @@ jobs:
           workspaces: "src-tauri -> target"
           cache-on-failure: true # upload cache even if there are errors in this step
 
-      - name: Set release version
+      - name: Detect and set latest github release VERSION
+        shell: bash
         run: |
-          cargo install sd
+          REPO="RouHim/binvec"
+          LATEST_RELEASE=$(curl --silent "https://api.github.com/repos/$REPO/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+          LATEST_RELEASE=${LATEST_RELEASE#v}
+          echo "Latest release is $LATEST_RELEASE"
+          echo "VERSION=$LATEST_RELEASE" >> $GITHUB_ENV
+
+      - name: Set UPLOAD_URL variable
+        shell: bash
+        run: |
+          UPLOAD_URL=$(curl --silent https://api.github.com/repos/rouhim/binvec/releases/latest | jq -r '.upload_url')
+          echo "UPLOAD_URL=${UPLOAD_URL}" >> $GITHUB_ENV
+
+      - name: Set version
+        shell: bash
+        run: |
           cd src-tauri
-          sd --preview '0.0.0' '1.0.${{ github.run_number }}' tauri.conf.json
-          sd '0.0.0' '1.0.${{ github.run_number }}' tauri.conf.json
+          jq --arg new_version "${{ env.VERSION }}" '.package.version = $new_version' tauri.conf.json > tmp.json && mv tmp.json tauri.conf.json
+          echo "Tauri version is now: $(cat tauri.conf.json | jq ".package.version")"
+          sed -i "s/version = \"0.0.0\"/version = \"${{ env.VERSION }}\"/g" Cargo.toml
+          echo "Cargo version is now" $(cargo metadata --no-deps --format-version 1 | jq -r ".packages[0].version")
           cd ..
-          echo "Version is now: 1.0.${{ github.run_number }}"
 
       - name: Install Tauri dependencies (ubuntu only)
-        if: matrix.platform == 'ubuntu-latest'
-        run: |
-          sudo apt update
-          sudo apt install -y libgtk-3-dev libwebkit2gtk-4.0-dev librsvg2-dev
+        if: matrix.platform == 'ubuntu-20.04'
+        run: sudo apt update && sudo apt install -y libwebkit2gtk-4.0-dev build-essential curl wget file libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev
 
+      - uses: cargo-bins/cargo-binstall@main
       - name: Install Tauri-CLI
-        run: cargo install tauri-cli
+        run: cargo binstall tauri-cli
 
       - name: Build the app
         env:
@@ -176,109 +230,123 @@ jobs:
           TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
         run: cargo tauri build
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+      - name: Upload linux AppImage
+        if: matrix.platform == 'ubuntu-20.04'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: artifacts
-          path: |
-            src-tauri/target/release/bundle/macos/BinVec.app
-            src-tauri/target/release/bundle/macos/BinVec.app.tar.gz
-            src-tauri/target/release/bundle/macos/BinVec.app.tar.gz.sig
-            src-tauri/target/release/bundle/appimage/bin-vec_1.0.${{ github.run_number }}_amd64.AppImage
-            src-tauri/target/release/bundle/appimage/bin-vec_1.0.${{ github.run_number }}_amd64.AppImage.tar.gz
-            src-tauri/target/release/bundle/appimage/bin-vec_1.0.${{ github.run_number }}_amd64.AppImage.tar.gz.sig
-            src-tauri/target/release/bundle/msi/BinVec_1.0.${{ github.run_number }}_x64_en-US.msi
-            src-tauri/target/release/bundle/msi/BinVec_1.0.${{ github.run_number }}_x64_en-US.msi.zip
-            src-tauri/target/release/bundle/msi/BinVec_1.0.${{ github.run_number }}_x64_en-US.msi.zip.sig
+          upload_url: ${{ env.UPLOAD_URL }}
+          asset_path: src-tauri/target/release/bundle/appimage/binvec_${{ env.VERSION }}_amd64.AppImage
+          asset_name: binvec_${{ env.VERSION }}_amd64.AppImage
+          asset_content_type: application/octet-stream
+      - name: Upload linux AppImage updater
+        if: matrix.platform == 'ubuntu-20.04'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ env.UPLOAD_URL }}
+          asset_path: src-tauri/target/release/bundle/appimage/binvec_${{ env.VERSION }}_amd64.AppImage.tar.gz
+          asset_name: binvec_${{ env.VERSION }}_amd64.AppImage.tar.gz
+          asset_content_type: application/octet-stream
+      - name: Upload linux AppImage updater signature
+        if: matrix.platform == 'ubuntu-20.04'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ env.UPLOAD_URL }}
+          asset_path: src-tauri/target/release/bundle/appimage/binvec_${{ env.VERSION }}_amd64.AppImage.tar.gz.sig
+          asset_name: binvec_${{ env.VERSION }}_amd64.AppImage.tar.gz.sig
+          asset_content_type: application/octet-stream
 
-  github-release:
-    name: Create GitHub release
-    runs-on: ubuntu-latest
-    needs: [ build ]
-    if: github.ref_name == 'main' # only publish if the branch is main
-    permissions:
-      contents: write
+      - name: Upload windows installer
+        if: matrix.platform == 'windows-latest'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ env.UPLOAD_URL }}
+          asset_path: src-tauri/target/release/bundle/msi/binvec_${{ env.VERSION }}_x64_en-US.msi
+          asset_name: binvec_${{ env.VERSION }}_x64_en-US.msi
+          asset_content_type: application/octet-stream
+      - name: Upload windows updater
+        if: matrix.platform == 'windows-latest'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ env.UPLOAD_URL }}
+          asset_path: src-tauri/target/release/bundle/msi/binvec_${{ env.VERSION }}_x64_en-US.msi.zip
+          asset_name: binvec_${{ env.VERSION }}_x64_en-US.msi.zip
+          asset_content_type: application/octet-stream
+      - name: Upload windows updater signature
+        if: matrix.platform == 'windows-latest'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ env.UPLOAD_URL }}
+          asset_path: src-tauri/target/release/bundle/msi/binvec_${{ env.VERSION }}_x64_en-US.msi.zip.sig
+          asset_name: binvec_${{ env.VERSION }}_x64_en-US.msi.zip.sig
+          asset_content_type: application/octet-stream
+
+      - name: Upload macos app
+        if: matrix.platform == 'macos-latest'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ env.UPLOAD_URL }}
+          asset_path: src-tauri/target/release/bundle/macos/BinVec.app
+          asset_name: binvec_${{ env.VERSION }}.app
+          asset_content_type: application/octet-stream
+      - name: Upload macos updater
+        if: matrix.platform == 'macos-latest'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ env.UPLOAD_URL }}
+          asset_path: src-tauri/target/release/bundle/macos/BinVec.app.tar.gz
+          asset_name: binvec_${{ env.VERSION }}.app.tar.gz
+          asset_content_type: application/octet-stream
+      - name: Upload macos updater signature
+        if: matrix.platform == 'macos-latest'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ env.UPLOAD_URL }}
+          asset_path: src-tauri/target/release/bundle/macos/BinVec.app.tar.gz.sig
+          asset_name: binvec_${{ env.VERSION }}.app.tar.gz.sig
+          asset_content_type: application/octet-stream
+
+  update-updater:
+    name: Update updater
+    needs: [ bundle-and-upload ]
+    runs-on: ubuntu-22.04
+    env:
+      UPDATER_FILE: ".github/updater/binvec_update.json"
     steps:
       - uses: actions/checkout@v3
 
-      - name: Download previous built application
-        uses: actions/download-artifact@v3
-        with:
-          name: artifacts
-          path: .
-
-      - name: Prepare release artifacts
+      - name: Detect and set latest github release VERSION
+        shell: bash
         run: |
-          mkdir release-artifacts
-          export VERSION=1.0.${{ github.run_number }}
-          
-          mv "./macos/BinVec.app" "release-artifacts/BinVec_${VERSION}.app"
-          mv "./macos/BinVec.app.tar.gz" "release-artifacts/BinVec_${VERSION}.app.tar.gz"
-          mv "./macos/BinVec.app.tar.gz.sig" "release-artifacts/BinVec_${VERSION}.app.tar.gz.sig"
-          
-          mv "./appimage/bin-vec_${VERSION}_amd64.AppImage" "release-artifacts/BinVec_${VERSION}.AppImage"
-          mv "./appimage/bin-vec_${VERSION}_amd64.AppImage.tar.gz" "release-artifacts/BinVec_${VERSION}.AppImage.tar.gz"
-          mv "./appimage/bin-vec_${VERSION}_amd64.AppImage.tar.gz.sig" "release-artifacts/BinVec_${VERSION}.AppImage.tar.gz.sig"
-          
-          mv "./msi/BinVec_${VERSION}_x64_en-US.msi" "release-artifacts/BinVec_${VERSION}.msi"
-          mv "./msi/BinVec_${VERSION}_x64_en-US.msi.zip" "release-artifacts/BinVec_${VERSION}.msi.zip"
-          mv "./msi/BinVec_${VERSION}_x64_en-US.msi.zip.sig" "release-artifacts/BinVec_${VERSION}.msi.zip.sig"
+          REPO="RouHim/binvec"
+          LATEST_RELEASE=$(curl --silent "https://api.github.com/repos/$REPO/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+          LATEST_RELEASE=${LATEST_RELEASE#v}
+          echo "Latest release is $LATEST_RELEASE"
+          echo "VERSION=$LATEST_RELEASE" >> $GITHUB_ENV
 
-      - name: Patch updater json
-        run: |
-          export VERSION=1.0.${{ github.run_number }}
-          export NOW=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-          export NOTES=$(jq -r '.head_commit.message' "$GITHUB_EVENT_PATH")
-          
-          export MACOS_URL=https://github.com/RouHim/binvec/releases/download/$VERSION/BinVec_$VERSION.app.tar.gz
-          export MACOS_SIG=$(cat release-artifacts/BinVec_$VERSION.app.tar.gz.sig)
-          
-          export APPIMAGE_URL=https://github.com/RouHim/binvec/releases/download/$VERSION/BinVec_$VERSION.AppImage.tar.gz
-          export APPIMAGE_SIG=$(cat release-artifacts/BinVec_$VERSION.AppImage.tar.gz.sig)
-          
-          export MSI_URL=https://github.com/RouHim/binvec/releases/download/$VERSION/BinVec_$VERSION.msi.zip
-          export MSI_SIG=$(cat release-artifacts/BinVec_$VERSION.msi.zip.sig)
-          
-          cat <<< $(jq --arg VERSION "$VERSION" '.version = "\($VERSION)"' binvec_update.json) > binvec_update.json
-          cat <<< $(jq --arg NOTES "$NOTES" '.notes = "\($NOTES)"' binvec_update.json) > binvec_update.json
-          cat <<< $(jq --arg NOW "$NOW" '.pub_date = "\($NOW)"' binvec_update.json) > binvec_update.json
-          
-          cat <<< $(jq --arg MACOS_URL "$MACOS_URL" '.platforms."darwin-x86_64".url = "\($MACOS_URL)"' binvec_update.json) > binvec_update.json
-          cat <<< $(jq --arg MACOS_SIG "$MACOS_SIG" '.platforms."darwin-x86_64".signature = "\($MACOS_SIG)"' binvec_update.json) > binvec_update.json
-          
-          cat <<< $(jq --arg APPIMAGE_URL "$APPIMAGE_URL" '.platforms."linux-x86_64".url = "\($APPIMAGE_URL)"' binvec_update.json) > binvec_update.json
-          cat <<< $(jq --arg APPIMAGE_SIG "$APPIMAGE_SIG" '.platforms."linux-x86_64".signature = "\($APPIMAGE_SIG)"' binvec_update.json) > binvec_update.json
-          
-          cat <<< $(jq --arg MSI_URL "$MSI_URL" '.platforms."windows-x86_64".url = "\($MSI_URL)"' binvec_update.json) > binvec_update.json
-          cat <<< $(jq --arg MSI_SIG "$MSI_SIG" '.platforms."windows-x86_64".signature = "\($MSI_SIG)"' binvec_update.json) > binvec_update.json
-
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          name: Release 1.0.${{ github.run_number }}
-          tag_name: 1.0.${{ github.run_number }}
-          files: |
-            release-artifacts/BinVec_1.0.${{ github.run_number }}.app
-            release-artifacts/BinVec_1.0.${{ github.run_number }}.app.tar.gz
-            release-artifacts/BinVec_1.0.${{ github.run_number }}.app.tar.gz.sig
-            release-artifacts/BinVec_1.0.${{ github.run_number }}.AppImage
-            release-artifacts/BinVec_1.0.${{ github.run_number }}.AppImage.tar.gz
-            release-artifacts/BinVec_1.0.${{ github.run_number }}.AppImage.tar.gz.sig
-            release-artifacts/BinVec_1.0.${{ github.run_number }}.msi
-            release-artifacts/BinVec_1.0.${{ github.run_number }}.msi.zip
-            release-artifacts/BinVec_1.0.${{ github.run_number }}.msi.zip.sig
+      - name: Build updater json
+        run: bash .github/updater/build_update_json.sh "${{ env.VERSION }}" "${{ env.UPDATER_FILE }}"
 
       - name: Deploy update information to gist
         uses: exuanbo/actions-deploy-gist@v1
         with:
-          token: ${{ secrets.GIST_TOKEN }}
+          token: ${{ secrets.RELEASE_TOKEN }}
           gist_id: 6dd4931683170f25859dc88cb1788b10
-          file_path: binvec_update.json
-
-      - name: Delete old releases
-        uses: dev-drprasad/delete-older-releases@v0.2.1
-        with:
-          keep_latest: 5
-          delete_tags: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          file_path: ${{ env.UPDATER_FILE }}
