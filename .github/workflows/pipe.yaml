@@ -222,7 +222,7 @@ jobs:
 
       - uses: cargo-bins/cargo-binstall@main
       - name: Install Tauri-CLI
-        run: cargo binstall tauri-cli
+        run: cargo binstall --no-confirm --force tauri-cli
 
       - name: Build the app
         env:
