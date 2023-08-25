@@ -1,3 +1,10 @@
+## [1.1.9](https://github.com/RouHim/binvec/compare/v1.1.8...v1.1.9) (2023-08-25)
+
+
+### Bug Fixes
+
+* **pipeline:** release version detection on macos ([0983574](https://github.com/RouHim/binvec/commit/098357498dd2fd3bb9b234ef7d946eeba4b5ff5b))
+
 ## [1.1.8](https://github.com/RouHim/binvec/compare/v1.1.7...v1.1.8) (2023-08-25)
 
 
