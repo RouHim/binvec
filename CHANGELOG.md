@@ -1,3 +1,10 @@
+## [1.1.14](https://github.com/RouHim/binvec/compare/v1.1.13...v1.1.14) (2023-08-25)
+
+
+### Bug Fixes
+
+* **pipeline:** debug macos upload ([2658a1a](https://github.com/RouHim/binvec/commit/2658a1a2b03097c60b0b388d3a3aee80b973abf0))
+
 ## [1.1.13](https://github.com/RouHim/binvec/compare/v1.1.12...v1.1.13) (2023-08-25)
 
 
