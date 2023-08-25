@@ -24,7 +24,7 @@ jobs:
       - name: debug
         shell: bash
         run: |
-          CMD=$(ps -p $$ -oargs=) && $CMD --version
+          echo $BASH_VERSION  
   
 
   check-repo:
