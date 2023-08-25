@@ -10,7 +10,7 @@ use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 
 use image::DynamicImage;
-use tauri::State;
+use tauri::{Manager, State};
 
 mod image_processor;
 
@@ -31,6 +31,11 @@ fn main() {
             with_color: Arc::new(Mutex::new(false)),
             ignore_alpha_channel: Arc::new(Mutex::new(false)),
             is_rendering: Arc::new(Mutex::new(false)),
+        })
+        .setup(|app| {
+            let title = format!("BinVec {}", env!("CARGO_PKG_VERSION"));
+            app.get_window("main").unwrap().set_title(&title).unwrap();
+            Ok(())
         })
         .invoke_handler(tauri::generate_handler![
             load_image,
