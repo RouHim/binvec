@@ -8,6 +8,21 @@ on:
 
 jobs:
 
+  debug:
+    name: Debug
+    runs-on: macos-latest
+    steps:
+      - name: Detect and set latest github release VERSION
+        shell: bash
+        run: |
+          bash --version
+          REPO="RouHim/binvec"
+          curl --silent "https://api.github.com/repos/$REPO/releases/latest"
+          curl --silent "https://api.github.com/repos/$REPO/releases/latest" | jq
+          LATEST_RELEASE=$(curl --silent "https://api.github.com/repos/$REPO/releases/latest" | jq -r ".tag_name")
+          LATEST_RELEASE=${LATEST_RELEASE#v}
+          echo "Latest release is $LATEST_RELEASE"
+
   check-repo:
     name: Check git repository
     runs-on: ubuntu-latest
@@ -194,9 +209,10 @@ jobs:
       - name: Detect and set latest github release VERSION
         shell: bash
         run: |
+          bash --version
           REPO="RouHim/binvec"
-          curl --version
-          jq --version
+          curl --silent "https://api.github.com/repos/$REPO/releases/latest"
+          curl --silent "https://api.github.com/repos/$REPO/releases/latest" | jq
           LATEST_RELEASE=$(curl --silent "https://api.github.com/repos/$REPO/releases/latest" | jq -r ".tag_name")
           LATEST_RELEASE=${LATEST_RELEASE#v}
           echo "Latest release is $LATEST_RELEASE"
