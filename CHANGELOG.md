@@ -1,3 +1,12 @@
+## [1.1.12](https://github.com/RouHim/binvec/compare/v1.1.11...v1.1.12) (2023-08-25)
+
+
+### Bug Fixes
+
+* **pipeline:** debug macos ([ea00541](https://github.com/RouHim/binvec/commit/ea00541d58b97748f6fc5f991fb8faab45c1f28a))
+* **pipeline:** debug macos ([8b068cd](https://github.com/RouHim/binvec/commit/8b068cda64b343dd72a810e43ebd49b9e411d585))
+* **pipeline:** debug macos ([992f225](https://github.com/RouHim/binvec/commit/992f22520148f6eb936d35be4d99606037dcbcec))
+
 ## [1.1.11](https://github.com/RouHim/binvec/compare/v1.1.10...v1.1.11) (2023-08-25)
 
 
