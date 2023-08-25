@@ -204,9 +204,11 @@ jobs:
       - name: Detect and set latest github release VERSION
         shell: bash
         run: |
+          $0 --version
           REPO="RouHim/binvec"
-          curl --silent "https://api.github.com/repos/$REPO/releases/latest" | jq -r ".tag_name"
-          LATEST_RELEASE=$(curl --silent "https://api.github.com/repos/$REPO/releases/latest" | jq -r ".tag_name")
+          curl --silent "https://api.github.com/repos/${REPO}/releases/latest"
+          curl --silent "https://api.github.com/repos/${REPO}/releases/latest" | jq -r ".tag_name"
+          LATEST_RELEASE=$(curl --silent "https://api.github.com/repos/${REPO}/releases/latest" | jq -r ".tag_name")
           LATEST_RELEASE=${LATEST_RELEASE#v}
           echo "Latest release is $LATEST_RELEASE"
           echo "VERSION=$LATEST_RELEASE" >> $GITHUB_ENV
@@ -342,6 +344,16 @@ jobs:
       UPDATER_FILE: ".github/updater/binvec_update.json"
     steps:
       - uses: actions/checkout@v3
+
+      - name: Update bash on macos
+        if: matrix.platform == 'macos-latest'
+        shell: bash
+        run: |
+          brew install bash
+          brew install gnu-sed
+          echo "/usr/local/bin" >> $GITHUB_PATH
+          echo "$(brew --prefix)/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
+          bash --version
 
       - name: Detect and set latest github release VERSION
         shell: bash
