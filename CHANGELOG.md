@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/RouHim/binvec/compare/v1.1.1...v1.1.2) (2023-08-25)
+
+
+### Bug Fixes
+
+* **pipeline:** use jq instead of sec ([60f4723](https://github.com/RouHim/binvec/commit/60f47239f4d6371f37c92ed7584916da5010e6f3))
+
 ## [1.1.1](https://github.com/RouHim/binvec/compare/v1.1.0...v1.1.1) (2023-08-25)
 
 
