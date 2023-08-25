@@ -133,7 +133,7 @@ jobs:
 
   create-release:
     name: Create new release
-    needs: [ check-repo, check-code-style, check-code, test, compile ]
+    needs: [ check-repo, check-code-style, check-code, test ]
     runs-on: ubuntu-22.04
     if: github.ref == 'refs/heads/main'
     steps:
