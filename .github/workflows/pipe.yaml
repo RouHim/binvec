@@ -13,7 +13,6 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Update bash on macos
-        if: matrix.platform == 'macos-latest'
         shell: bash
         run: |
           brew install bash
