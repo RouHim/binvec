@@ -1,3 +1,10 @@
+## [1.1.10](https://github.com/RouHim/binvec/compare/v1.1.9...v1.1.10) (2023-08-25)
+
+
+### Bug Fixes
+
+* **pipeline:** macos bundling ([61264f9](https://github.com/RouHim/binvec/commit/61264f93b6318f7ec5bcae1f4a7946e833e35573))
+
 ## [1.1.9](https://github.com/RouHim/binvec/compare/v1.1.8...v1.1.9) (2023-08-25)
 
 
