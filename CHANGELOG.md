@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/RouHim/binvec/compare/v1.1.0...v1.1.1) (2023-08-25)
+
+
+### Bug Fixes
+
+* **pipeline:** awk instead of sed ([19eadfc](https://github.com/RouHim/binvec/commit/19eadfc46686ed634242da657052cd7bad91e05d))
+
 # [1.1.0](https://github.com/RouHim/binvec/compare/v1.0.156...v1.1.0) (2023-08-25)
 
 
