@@ -1,3 +1,10 @@
+## [1.1.13](https://github.com/RouHim/binvec/compare/v1.1.12...v1.1.13) (2023-08-25)
+
+
+### Bug Fixes
+
+* **pipeline:** wrong macos ending ([5ec5571](https://github.com/RouHim/binvec/commit/5ec5571fe89b02f518bae6b6c3b8d2282bfe00da))
+
 ## [1.1.12](https://github.com/RouHim/binvec/compare/v1.1.11...v1.1.12) (2023-08-25)
 
 
