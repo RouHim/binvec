@@ -246,7 +246,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ env.UPLOAD_URL }}
-          asset_path: src-tauri/target/release/bundle/appimage/binvec_${{ env.VERSION }}_amd64.AppImage
+          asset_path: src-tauri/target/release/bundle/appimage/bin-vec_${{ env.VERSION }}_amd64.AppImage
           asset_name: binvec_${{ env.VERSION }}_amd64.AppImage
           asset_content_type: application/octet-stream
       - name: Upload linux AppImage updater
@@ -256,7 +256,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ env.UPLOAD_URL }}
-          asset_path: src-tauri/target/release/bundle/appimage/binvec_${{ env.VERSION }}_amd64.AppImage.tar.gz
+          asset_path: src-tauri/target/release/bundle/appimage/bin-vec_${{ env.VERSION }}_amd64.AppImage.tar.gz
           asset_name: binvec_${{ env.VERSION }}_amd64.AppImage.tar.gz
           asset_content_type: application/octet-stream
       - name: Upload linux AppImage updater signature
@@ -266,7 +266,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ env.UPLOAD_URL }}
-          asset_path: src-tauri/target/release/bundle/appimage/binvec_${{ env.VERSION }}_amd64.AppImage.tar.gz.sig
+          asset_path: src-tauri/target/release/bundle/appimage/bin-vec_${{ env.VERSION }}_amd64.AppImage.tar.gz.sig
           asset_name: binvec_${{ env.VERSION }}_amd64.AppImage.tar.gz.sig
           asset_content_type: application/octet-stream
 
@@ -277,7 +277,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ env.UPLOAD_URL }}
-          asset_path: src-tauri/target/release/bundle/msi/binvec_${{ env.VERSION }}_x64_en-US.msi
+          asset_path: src-tauri/target/release/bundle/msi/BinVec_${{ env.VERSION }}_x64_en-US.msi
           asset_name: binvec_${{ env.VERSION }}_x64_en-US.msi
           asset_content_type: application/octet-stream
       - name: Upload windows updater
@@ -287,7 +287,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ env.UPLOAD_URL }}
-          asset_path: src-tauri/target/release/bundle/msi/binvec_${{ env.VERSION }}_x64_en-US.msi.zip
+          asset_path: src-tauri/target/release/bundle/msi/BinVec_${{ env.VERSION }}_x64_en-US.msi.zip
           asset_name: binvec_${{ env.VERSION }}_x64_en-US.msi.zip
           asset_content_type: application/octet-stream
       - name: Upload windows updater signature
@@ -297,7 +297,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ env.UPLOAD_URL }}
-          asset_path: src-tauri/target/release/bundle/msi/binvec_${{ env.VERSION }}_x64_en-US.msi.zip.sig
+          asset_path: src-tauri/target/release/bundle/msi/BinVec_${{ env.VERSION }}_x64_en-US.msi.zip.sig
           asset_name: binvec_${{ env.VERSION }}_x64_en-US.msi.zip.sig
           asset_content_type: application/octet-stream
 
