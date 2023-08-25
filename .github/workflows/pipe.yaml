@@ -212,7 +212,7 @@ jobs:
           cd src-tauri
           jq --arg new_version "${{ env.VERSION }}" '.package.version = $new_version' tauri.conf.json > tmp.json && mv tmp.json tauri.conf.json
           echo "Tauri version is now: $(cat tauri.conf.json | jq ".package.version")"
-          sed -i "s/version = \"0.0.0\"/version = \"${{ env.VERSION }}\"/g" Cargo.toml
+          awk -v var="${{ env.VERSION }}" '{gsub(/version = "0.0.0"/, "version = \""var"\""); print}' Cargo.toml > temp && mv temp Cargo.toml
           echo "Cargo version is now" $(cargo metadata --no-deps --format-version 1 | jq -r ".packages[0].version")
           cd ..
 
