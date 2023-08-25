@@ -15,6 +15,7 @@ jobs:
       - name: Detect and set latest github release VERSION
         shell: bash
         run: |
+          brew --version
           bash --version
           REPO="RouHim/binvec"
           curl --silent "https://api.github.com/repos/$REPO/releases/latest"
