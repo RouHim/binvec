@@ -1,3 +1,10 @@
+## [1.1.16](https://github.com/RouHim/binvec/compare/v1.1.15...v1.1.16) (2023-08-25)
+
+
+### Bug Fixes
+
+* **pipeline:** remove macos build for now ([b9030f1](https://github.com/RouHim/binvec/commit/b9030f12559e0bddd55d184633a4134a616d3b3e))
+
 ## [1.1.15](https://github.com/RouHim/binvec/compare/v1.1.14...v1.1.15) (2023-08-25)
 
 
