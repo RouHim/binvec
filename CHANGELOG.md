@@ -1,3 +1,10 @@
+## [1.1.11](https://github.com/RouHim/binvec/compare/v1.1.10...v1.1.11) (2023-08-25)
+
+
+### Bug Fixes
+
+* **pipeline:** macos version detection ([c6b39f2](https://github.com/RouHim/binvec/commit/c6b39f25effa96542b8ab9df35bd1e5c7a41c6b4))
+
 ## [1.1.10](https://github.com/RouHim/binvec/compare/v1.1.9...v1.1.10) (2023-08-25)
 
 
