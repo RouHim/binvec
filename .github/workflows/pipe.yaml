@@ -8,6 +8,26 @@ on:
 
 jobs:
 
+  debug:
+    name: debug
+    runs-on: macos-latest
+    steps:
+      - name: Update bash on macos
+        if: matrix.platform == 'macos-latest'
+        shell: bash
+        run: |
+          brew install bash
+          brew install gnu-sed
+          echo "/usr/local/bin" >> $GITHUB_PATH
+          echo "$(brew --prefix)/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
+          bash --version
+
+      - name: debug
+        shell: bash
+        run: |
+          CMD=$(ps -p $$ -oargs=) && $CMD --version
+  
+
   check-repo:
     name: Check git repository
     runs-on: ubuntu-latest
@@ -204,7 +224,6 @@ jobs:
       - name: Detect and set latest github release VERSION
         shell: bash
         run: |
-          $0 --version
           REPO="RouHim/binvec"
           curl --silent "https://api.github.com/repos/${REPO}/releases/latest"
           curl --silent "https://api.github.com/repos/${REPO}/releases/latest" | jq -r ".tag_name"
