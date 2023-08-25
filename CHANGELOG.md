@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/RouHim/binvec/compare/v1.1.16...v1.2.0) (2023-08-25)
+
+
+### Features
+
+* **ui:** add app version to title ([847e16a](https://github.com/RouHim/binvec/commit/847e16a8aa20a41360402a9a5833d98f6ea4b0fe))
+
 ## [1.1.16](https://github.com/RouHim/binvec/compare/v1.1.15...v1.1.16) (2023-08-25)
 
 
