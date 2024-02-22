@@ -1,3 +1,10 @@
+## [1.2.17](https://github.com/RouHim/binvec/compare/v1.2.16...v1.2.17) (2024-02-22)
+
+
+### Bug Fixes
+
+* **pipeline:** use correct node version for sem release ([9facfec](https://github.com/RouHim/binvec/commit/9facfec342d7f21b30695011c206bc2e75bd26ff))
+
 ## [1.2.16](https://github.com/RouHim/binvec/compare/v1.2.15...v1.2.16) (2023-12-20)
 
 ## [1.2.15](https://github.com/RouHim/binvec/compare/v1.2.14...v1.2.15) (2023-10-23)
