@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/RouHim/binvec/compare/v1.2.17...v1.3.0) (2024-03-13)
+
+
+### Features
+
+* update 3rd party libs ([37c6cd1](https://github.com/RouHim/binvec/commit/37c6cd17d1a6011b1f20a2ccf73160cb1405eee4))
+
 ## [1.2.17](https://github.com/RouHim/binvec/compare/v1.2.16...v1.2.17) (2024-02-22)
 
 
