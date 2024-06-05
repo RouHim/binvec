@@ -1,3 +1,10 @@
+## [1.3.2](https://github.com/RouHim/binvec/compare/v1.3.1...v1.3.2) (2024-06-05)
+
+
+### Bug Fixes
+
+* **pipeline:** remove unsed dep check ([ca0dd50](https://github.com/RouHim/binvec/commit/ca0dd50a048d6db75b734ad5e5a4ea3f38c82aa7))
+
 ## [1.3.1](https://github.com/RouHim/binvec/compare/v1.3.0...v1.3.1) (2024-03-14)
 
 # [1.3.0](https://github.com/RouHim/binvec/compare/v1.2.17...v1.3.0) (2024-03-13)
