@@ -1,4 +1,4 @@
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 use image::{DynamicImage, GenericImageView, Pixel};
 use visioncortex::{BinaryImage, PathSimplifyMode};
@@ -18,8 +18,6 @@ pub fn create_color_vector(
     vtracer::color_image_to_svg(
         image_data.into_rgba8(),
         vtracer::Config {
-            input_path: PathBuf::default(),
-            output_path: PathBuf::default(),
             color_mode: ColorMode::Color,
             hierarchical: Hierarchical::Stacked,
             mode: PathSimplifyMode::Spline,
@@ -72,8 +70,6 @@ pub fn create_binary_vector(
     vtracer::binary_image_to_svg(
         &binary_image,
         vtracer::Config {
-            input_path: PathBuf::default(),
-            output_path: PathBuf::default(),
             color_mode: ColorMode::Binary,
             hierarchical: Hierarchical::Cutout,
             mode: PathSimplifyMode::Spline,
@@ -91,7 +87,7 @@ pub fn create_binary_vector(
 
 /// Reads the image in memory
 pub fn load_image(image_path: &Path) -> DynamicImage {
-    image::io::Reader::open(image_path)
+    image::ImageReader::open(image_path)
         .unwrap()
         .with_guessed_format()
         .unwrap()
