@@ -105,7 +105,7 @@ jobs:
   create-release:
     name: Create new release
     needs: [ check-repo, check-code-style, check-code, test ]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout code
@@ -268,7 +268,7 @@ jobs:
   update-updater:
     name: Update updater
     needs: [ bundle-and-upload ]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     env:
       UPDATER_FILE: ".github/updater/binvec_update.json"
     steps:
