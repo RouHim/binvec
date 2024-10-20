@@ -2,68 +2,57 @@
   "build": {
     "beforeBuildCommand": "",
     "beforeDevCommand": "",
-    "devPath": "../ui",
-    "distDir": "../ui",
-    "withGlobalTauri": true
+    "frontendDist": "../ui"
   },
-  "package": {
-    "productName": "BinVec",
-    "version": "0.0.0"
-  },
-  "tauri": {
-    "allowlist": {
-      "dialog": {
-        "open": true
-      },
-      "fs": {
-        "readFile": true,
-        "writeFile": true
-      }
+  "bundle": {
+    "active": true,
+    "category": "DeveloperTool",
+    "copyright": "",
+    "targets": "all",
+    "externalBin": [],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": ""
     },
-    "bundle": {
-      "active": true,
-      "category": "DeveloperTool",
-      "copyright": "",
+    "longDescription": "Convert any image to a svg file.",
+    "macOS": {
+      "entitlements": null,
+      "exceptionDomain": "",
+      "frameworks": [],
+      "providerShortName": null,
+      "signingIdentity": null
+    },
+    "resources": [],
+    "shortDescription": "Convert any image to a svg file.",
+    "linux": {
       "deb": {
         "depends": []
-      },
-      "externalBin": [],
-      "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/128x128@2x.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
-      ],
-      "identifier": "com.rouhim.binvec",
-      "longDescription": "Convert any image to a svg file.",
-      "macOS": {
-        "entitlements": null,
-        "exceptionDomain": "",
-        "frameworks": [],
-        "providerShortName": null,
-        "signingIdentity": null
-      },
-      "resources": [],
-      "shortDescription": "Convert any image to a svg file.",
-      "targets": "all",
-      "windows": {
-        "certificateThumbprint": null,
-        "digestAlgorithm": "sha256",
-        "timestampUrl": ""
       }
     },
-    "security": {
-      "csp": null
-    },
+    "createUpdaterArtifacts": "v1Compatible"
+  },
+  "productName": "BinVec",
+  "mainBinaryName": "BinVec",
+  "version": "0.0.0",
+  "identifier": "com.rouhim.binvec",
+  "plugins": {
     "updater": {
-      "active": true,
-      "dialog": true,
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEVGQTVCM0Q2RUNFNDFBNjMKUldSakd1VHMxck9sNzB0eGN1R3huOHBBUlFhS3hjZmRVSkNIZndqb20zaXhnZldPVEFET0pQNWsK",
       "endpoints": [
         "https://gist.github.com/RouHim/6dd4931683170f25859dc88cb1788b10/raw/"
       ]
-    },
+    }
+  },
+  "app": {
+    "withGlobalTauri": true,
     "windows": [
       {
         "title": "BinVec",
@@ -72,6 +61,9 @@
         "fullscreen": false,
         "resizable": true
       }
-    ]
+    ],
+    "security": {
+      "csp": null
+    }
   }
 }

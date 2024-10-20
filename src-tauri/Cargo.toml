@@ -9,12 +9,17 @@ default-run = "app"
 edition = "2021"
 
 [build-dependencies]
-tauri-build = { version = "1.5", features = [] }
+tauri-build = { version = "2", features = [] }
 
 [dependencies]
+# Tauri
+tauri-plugin-dialog = "2"
+tauri-plugin-fs = "2"
+tauri = { version = "2", features = [] } # As UI framework
 serde = { version = "1.0", features = ["derive"] } # For serialization
 serde_json = "1.0" # For json serialization
-tauri = { version = "1.7", features = ["dialog-open", "fs-read-file", "fs-write-file", "updater"] } # As UI framework
+
+# 3rd Party
 image = "0.25" # Image lib, here used for binarizing and scaling images
 vtracer = { git = "https://github.com/RouHim/vtracer" } # Generates vector images from raster images
 visioncortex = "0.8" # Helper library for vtracer
@@ -23,7 +28,7 @@ visioncortex = "0.8" # Helper library for vtracer
 # by default Tauri runs in production mode
 # when `tauri dev` runs it is executed with `cargo run --no-default-features` if `devPath` is an URL
 default = ["custom-protocol"]
-# this feature is used used for production builds where `devPath` points to the filesystem
+# this feature is used for production builds where `devPath` points to the filesystem
 # DO NOT remove this
 custom-protocol = ["tauri/custom-protocol"]
 
@@ -32,3 +37,6 @@ panic = "abort" # Strip expensive panic clean-up logic
 codegen-units = 1 # Compile crates one after another so the compiler can optimize better
 lto = true # Enables link to optimizations
 strip = true # Strip debug symbols
+
+[target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
+tauri-plugin-updater = "2"

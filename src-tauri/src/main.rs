@@ -25,6 +25,9 @@ struct AppState {
 
 fn main() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .manage(AppState {
             image_path: Arc::new(Mutex::new(None)),
             image_data: Arc::new(Mutex::new(None)),
@@ -34,7 +37,10 @@ fn main() {
         })
         .setup(|app| {
             let title = format!("BinVec {}", env!("CARGO_PKG_VERSION"));
-            app.get_window("main").unwrap().set_title(&title).unwrap();
+            app.get_webview_window("main")
+                .unwrap()
+                .set_title(&title)
+                .unwrap();
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![

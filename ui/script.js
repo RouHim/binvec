@@ -1,4 +1,4 @@
-const invoke = window.__TAURI__.invoke;
+const invoke = window.__TAURI__.core.invoke;
 const {open} = window.__TAURI__.dialog;
 
 function enableControls() {
