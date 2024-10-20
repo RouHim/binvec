@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/RouHim/binvec/compare/v1.4.0...v1.5.0) (2024-10-20)
+
+
+### Features
+
+* update to tauri 2 ([6a9d364](https://github.com/RouHim/binvec/commit/6a9d364ce900e029c3af796339645059db0f2633))
+
 # [1.4.0](https://github.com/RouHim/binvec/compare/v1.3.32...v1.4.0) (2024-10-20)
 
 
