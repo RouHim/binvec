@@ -1,3 +1,10 @@
+## [1.6.1](https://github.com/RouHim/binvec/compare/v1.6.0...v1.6.1) (2024-10-20)
+
+
+### Bug Fixes
+
+* ci build for tauri 2 ([96eb90a](https://github.com/RouHim/binvec/commit/96eb90ab519f7316ce733ac2c435130da8f788b5))
+
 # [1.6.0](https://github.com/RouHim/binvec/compare/v1.5.0...v1.6.0) (2024-10-20)
 
 
