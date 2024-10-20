@@ -201,7 +201,9 @@ jobs:
         env:
           TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
           TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
-        run: cargo tauri build --verbose
+        run: |
+          cat src-tauri/tauri.conf.json
+          cargo tauri build
 
       - name: Upload linux AppImage
         if: matrix.platform == 'ubuntu-20.04'
