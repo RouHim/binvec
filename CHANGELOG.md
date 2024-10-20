@@ -1,3 +1,10 @@
+## [1.6.8](https://github.com/RouHim/binvec/compare/v1.6.7...v1.6.8) (2024-10-20)
+
+
+### Bug Fixes
+
+* updater ([f9f73a8](https://github.com/RouHim/binvec/commit/f9f73a81af9dce2db18fc58295131367e651360d))
+
 ## [1.6.7](https://github.com/RouHim/binvec/compare/v1.6.6...v1.6.7) (2024-10-20)
 
 
