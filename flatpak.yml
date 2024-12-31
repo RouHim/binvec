@@ -1,0 +1,30 @@
+id: com.rouhim.binvec
+
+runtime: org.gnome.Platform
+runtime-version: '46'
+sdk: org.gnome.Sdk
+
+command: BinVec
+finish-args:
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --device=dri
+  - --share=ipc
+
+modules:
+  - name: binary
+    buildsystem: simple
+    sources:
+      - type: file
+        url: file:///home/rouven/projects/binvec/src-tauri/target/release/bundle/deb/BinVec_0.0.0_amd64.deb
+        sha256: 8e771ecd42c39f047dc6f05c9300dfe99add054afed657b249a81b1022097251
+        only-arches: [x86_64]
+    build-commands:
+      - ar -x *.deb
+      - tar -xf data.tar.gz
+      - install -Dm755 usr/bin/BinVec /app/bin/BinVec
+      - install -Dm644 usr/share/applications/BinVec.desktop /app/share/applications/com.rouhim.BinVec.desktop
+      - install -Dm644 usr/share/icons/hicolor/128x128/apps/BinVec.png /app/share/icons/hicolor/128x128/apps/com.rouhim.BinVec.png
+      - install -Dm644 usr/share/icons/hicolor/32x32/apps/BinVec.png /app/share/icons/hicolor/32x32/apps/com.rouhim.BinVec.png
+      - install -Dm644 usr/share/icons/hicolor/256x256@2/apps/BinVec.png /app/share/icons/hicolor/256x256@2/apps/com.rouhim.BinVec.png
+      - install -Dm644 com.rouhim.binvec.metainfo.xml /app/share/metainfo/com.rouhim.binvec.metainfo.xml
