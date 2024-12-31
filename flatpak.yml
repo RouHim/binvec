@@ -27,4 +27,5 @@ modules:
       - install -Dm644 usr/share/icons/hicolor/128x128/apps/BinVec.png /app/share/icons/hicolor/128x128/apps/com.rouhim.BinVec.png
       - install -Dm644 usr/share/icons/hicolor/32x32/apps/BinVec.png /app/share/icons/hicolor/32x32/apps/com.rouhim.BinVec.png
       - install -Dm644 usr/share/icons/hicolor/256x256@2/apps/BinVec.png /app/share/icons/hicolor/256x256@2/apps/com.rouhim.BinVec.png
+#      FIXME: this does not exist
       - install -Dm644 com.rouhim.binvec.metainfo.xml /app/share/metainfo/com.rouhim.binvec.metainfo.xml
