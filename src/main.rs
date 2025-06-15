@@ -12,16 +12,25 @@ pub fn main() -> iced::Result {
 struct UiState {
     image_path: Option<PathBuf>,
     vector_image: Option<String>,
+    is_rendering: bool,
+}
+
+#[derive(Default, Clone, Copy)]
+struct VectorImageConfig {
     with_color: bool,
     ignore_alpha_channel: bool,
-    is_rendering: bool,
+    filter_speckle: usize,
+    binarize_threshold: u8,
+    invert_binary: bool,
+    color_precision: i32,
+    gradient_step: i32,
 }
 
 #[derive(Debug, Clone)]
 enum UiMessage {
     OpenImageButtonPressed,
     RasterGraphicSelected(Option<PathBuf>),
-    SvgImageRendered(String),
+    SvgImageRendered(Option<String>),
 }
 
 impl UiState {
@@ -35,8 +44,18 @@ impl UiState {
                 if let Some(path) = path {
                     self.image_path = Some(path.clone());
                     self.is_rendering = true;
+                    // TODO: fill with config values from the ui widets
+                    let vector_image_config = VectorImageConfig {
+                        with_color: true, // Example config, can be customized
+                        ignore_alpha_channel: false,
+                        filter_speckle: 10,
+                        binarize_threshold: 128,
+                        invert_binary: false,
+                        color_precision: 4,
+                        gradient_step: 2,
+                    };
                     Task::perform(
-                        UiState::render_svg_image(path.clone()),
+                        UiState::render_svg_image(path.clone(), self.vector_image_config.clone()),
                         UiMessage::SvgImageRendered,
                     )
                 } else {
@@ -46,7 +65,7 @@ impl UiState {
             }
             UiMessage::SvgImageRendered(vector_image) => {
                 self.is_rendering = false;
-                self.vector_image = Some(vector_image);
+                self.vector_image = vector_image;
                 Task::none()
             }
         }
@@ -75,9 +94,9 @@ impl UiState {
 }
 
 impl UiState {
-    async fn render_svg_image(image_path: PathBuf) -> String {
+    async fn render_svg_image(image_path: PathBuf, config: VectorImageConfig) -> Option<String> {
         let image_data = image_processor::load_image(&image_path);
-        image_processor::generate_svg(image_data, false, false, 0, 128, false, 0, 0).unwrap()
+        image_processor::generate_svg(image_data, config).ok()
     }
 
     async fn open_image_select_dialog() -> Option<PathBuf> {
