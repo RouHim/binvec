@@ -4,6 +4,39 @@ use image::{DynamicImage, GenericImageView, Pixel};
 use visioncortex::{BinaryImage, PathSimplifyMode};
 use vtracer::{ColorMode, Hierarchical};
 
+/// Generates an XML SVG String from the given image data
+pub fn generate_svg(
+    image_data: DynamicImage,
+    with_color: bool,
+    ignore_alpha_channel: bool,
+    filter_speckle: usize,
+    binarize_threshold: u8,
+    invert_binary: bool,
+    color_precision: i32,
+    gradient_step: i32,
+) -> Result<String, ()> {
+    let svg_data_request = || {
+        if with_color {
+            create_color_vector(image_data, filter_speckle, color_precision, gradient_step)
+        } else {
+            create_binary_vector(
+                image_data,
+                binarize_threshold,
+                invert_binary,
+                filter_speckle,
+                ignore_alpha_channel,
+            )
+        }
+    };
+
+    let svg_data = std::panic::catch_unwind(svg_data_request);
+
+    match svg_data {
+        Ok(svg_data) => Ok(svg_data),
+        Err(_) => Err(()),
+    }
+}
+
 /// Creates a colored svg from an image
 /// `Parameters:
 ///     -  filter_speckle:  cleaner         0-128
