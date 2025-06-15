@@ -247,3 +247,45 @@ jobs:
           fail_on_unmatched_files: true
           draft: false
           prerelease: false
+
+  publish-aur:
+    name: Publish to AUR
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get version
+        run: |
+          echo "VERSION=${{ needs.create-release.outputs.version }}" >> $GITHUB_ENV
+
+      - name: Fallback to fetch version if needed
+        if: env.VERSION == ''
+        run: |
+          REPO="RouHim/binvec"
+          LATEST_RELEASE=$(curl --silent --retry 3 "https://api.github.com/repos/$REPO/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+          
+          if [[ -z "$LATEST_RELEASE" ]]; then
+            echo "Failed to fetch release information"
+            exit 1
+          fi
+          
+          echo "Latest release is $LATEST_RELEASE"
+          echo "VERSION=$LATEST_RELEASE" >> $GITHUB_ENV
+
+      - name: Publish AUR package
+        uses: KSXGitHub/github-actions-deploy-aur@v4.1.1
+        with:
+          pkgname: binvec
+          pkgbuild: ./PKGBUILD
+          updpkgsums: true
+          test: true
+          test_flags: "--clean --cleanbuild --nodeps"
+          commit_username: ${{ secrets.AUR_USERNAME }}
+          commit_email: ${{ secrets.AUR_EMAIL }}
+          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+          commit_message: "Update to v${{ env.VERSION }}"
+          force_push: "true"
+          ssh_keyscan_types: "rsa,ecdsa,ed25519"

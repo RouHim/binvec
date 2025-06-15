@@ -39,8 +39,19 @@ Download the latest release from the [GitHub releases page](https://github.com/R
 
 ### Linux Package Managers
 
-BinVec is not yet available in major Linux package managers. Contributions to package it for different distributions are
-welcome!
+#### Arch Linux (AUR)
+
+BinVec is available in the Arch User Repository (AUR):
+
+```bash
+# Using yay
+yay -S binvec
+
+# Using paru
+paru -S binvec
+```
+
+For other distributions, contributions to package BinVec are welcome!
 
 ## Building from Source
 
