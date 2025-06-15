@@ -311,7 +311,13 @@ impl UiState {
 
     async fn open_image_select_dialog() -> Option<PathBuf> {
         rfd::FileDialog::new()
-            .add_filter("Images", &["png", "jpg", "jpeg"])
+            .add_filter(
+                "Images",
+                &[
+                    "jpg", "jpeg", "png", "gif", "bmp", "webp", "ico", "tiff", "avif", "pnm",
+                    "dds", "tga",
+                ],
+            )
             .pick_file()
     }
 
