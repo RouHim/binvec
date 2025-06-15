@@ -1,3 +1,21 @@
+# [1.7.0](https://github.com/RouHim/binvec/compare/v1.6.21...v1.7.0) (2025-06-15)
+
+
+### Features
+
+* add AUR publishing workflow and update README with installation instructions ([efdc6b7](https://github.com/RouHim/binvec/commit/efdc6b70e1b01882221a216d45d6f973b3db764b))
+* add build feature branch workflow for AUR package publishing ([66c75b1](https://github.com/RouHim/binvec/commit/66c75b1e595d0ea0beb9fd8e2f06467812a4233b))
+* add initial implementation of Iced GUI for image processing and SVG generation ([4a57ed0](https://github.com/RouHim/binvec/commit/4a57ed0c057f42eb8f42be5fe8859562c96102cd))
+* enhance AUR publishing workflow with binary package support and update README ([38d74e4](https://github.com/RouHim/binvec/commit/38d74e4d611db25276d91f56e5c1fd79b7ca9176))
+* enhance Iced GUI with async image loading and SVG rendering ([3a6cd4a](https://github.com/RouHim/binvec/commit/3a6cd4a66e125a19945eb3850bccbf59a2a4b980))
+* enhance Iced GUI with vector image configuration and save functionality ([9fed7d9](https://github.com/RouHim/binvec/commit/9fed7d9eb14283c296026b46b32dc7b301b502d3))
+* expand image format support in file dialog and update installation instructions ([dbe5f54](https://github.com/RouHim/binvec/commit/dbe5f54d186627b6885c85f54fa6eefc9e1c3d50))
+* implement self-update functionality and improve CI workflow ([ef281be](https://github.com/RouHim/binvec/commit/ef281be8888128e8c4d6699b3d002a1f89e28ac9))
+* refactor SVG generation to use VectorImageConfig for improved configuration management ([c8868a8](https://github.com/RouHim/binvec/commit/c8868a863ab1b410f013af34f4d6982983e0bfb4))
+* refactor SVG rendering logic and update self-update messages ([3f73d41](https://github.com/RouHim/binvec/commit/3f73d4183b9e28833698b20f85caa1b4e6c566a6))
+* remove npm cache configuration from setup-node action in pipeline ([fd0be9a](https://github.com/RouHim/binvec/commit/fd0be9a1e4b145454d457c5410f70d297ff56544))
+* update Iced GUI to improve vector image configuration and UI layout ([fdfd824](https://github.com/RouHim/binvec/commit/fdfd824a87f33200bb624510e165a557e050bd6f))
+
 ## [1.6.21](https://github.com/RouHim/binvec/compare/v1.6.20...v1.6.21) (2024-12-02)
 
 ## [1.6.20](https://github.com/RouHim/binvec/compare/v1.6.19...v1.6.20) (2024-12-02)
