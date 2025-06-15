@@ -1,1 +1,39 @@
+# Maintainer: RouHim
 
+pkgname=binvec-bin
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="A simple application to convert raster graphics to vector graphics (pre-compiled)"
+arch=('x86_64' 'aarch64' 'armv7h' 'armv6h')
+url="https://github.com/RouHim/binvec"
+license=('MIT')
+provides=('binvec')
+conflicts=('binvec')
+depends=()
+options=('!strip')
+
+source_x86_64=("binvec-${pkgver}-x86_64::https://github.com/RouHim/binvec/releases/download/v${pkgver}/binvec")
+source_aarch64=("binvec-${pkgver}-aarch64::https://github.com/RouHim/binvec/releases/download/v${pkgver}/binvec")
+source_armv7h=("binvec-${pkgver}-armv7h::https://github.com/RouHim/binvec/releases/download/v${pkgver}/binvec")
+source_armv6h=("binvec-${pkgver}-armv6h::https://github.com/RouHim/binvec/releases/download/v${pkgver}/binvec")
+
+sha256sums_x86_64=('SKIP')
+sha256sums_aarch64=('SKIP')
+sha256sums_armv7h=('SKIP')
+sha256sums_armv6h=('SKIP')
+
+package() {
+  # Install binary
+  install -Dm755 "binvec-${pkgver}-${CARCH}" "${pkgdir}/usr/bin/binvec"
+
+  # Create documentation directory
+  mkdir -p "${pkgdir}/usr/share/doc/${pkgname}"
+
+  # Download the documentation files
+  curl -s "https://raw.githubusercontent.com/RouHim/binvec/v${pkgver}/README.md" -o "${pkgdir}/usr/share/doc/${pkgname}/README.md"
+  curl -s "https://raw.githubusercontent.com/RouHim/binvec/v${pkgver}/CHANGELOG.md" -o "${pkgdir}/usr/share/doc/${pkgname}/CHANGELOG.md"
+
+  # Download the license file
+  mkdir -p "${pkgdir}/usr/share/licenses/${pkgname}"
+  curl -s "https://raw.githubusercontent.com/RouHim/binvec/v${pkgver}/LICENSE" -o "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}
