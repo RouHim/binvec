@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/RouHim/binvec/compare/v1.8.0...v1.9.0) (2025-06-15)
+
+
+### Features
+
+* add AUR binary package publishing workflow ([855b9f3](https://github.com/RouHim/binvec/commit/855b9f3f40a39a6dd0bf40be83c7b177e40275cf))
+
 # [1.8.0](https://github.com/RouHim/binvec/compare/v1.7.0...v1.8.0) (2025-06-15)
 
 
