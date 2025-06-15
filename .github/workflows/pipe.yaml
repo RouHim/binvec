@@ -124,6 +124,42 @@ jobs:
       - name: Run unit tests
         run: cargo test
 
+  build-feature:
+    name: Build feature branch
+    needs: [ check-repo, check-code-style, check-code, test ]
+    runs-on: ubuntu-latest
+    if: github.ref != 'refs/heads/main'
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [ 'x86_64-musl' ]  # Limit to one target for feature branches for speed
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          cache-on-failure: true
+          shared-key: "feature-build-${{ matrix.target }}"
+
+      - name: Build binary
+        run: |
+          # Build the binary
+          docker run --rm \
+            -v "$(pwd)":/home/rust/src \
+            messense/rust-musl-cross:${{ matrix.target }} \
+            bash -c "cargo build --release && echo CARGO_BUILD_TARGET=\$CARGO_BUILD_TARGET" > build_output.txt
+          
+          # Extract the build target from the output
+          CARGO_BUILD_TARGET=$(grep 'CARGO_BUILD_TARGET=' build_output.txt | cut -d'=' -f2 | tr -d '\r')
+          echo "CARGO_BUILD_TARGET=${CARGO_BUILD_TARGET}" >> $GITHUB_ENV
+
   create-release:
     name: Create new release
     needs: [ check-repo, check-code-style, check-code, test ]
@@ -275,30 +311,11 @@ jobs:
           echo "Latest release is $LATEST_RELEASE"
           echo "VERSION=$LATEST_RELEASE" >> $GITHUB_ENV
 
-      - name: Publish AUR source package
+      - name: Publish AUR package
         uses: KSXGitHub/github-actions-deploy-aur@v4.1.1
         with:
           pkgname: binvec
           pkgbuild: ./PKGBUILD
-          updpkgsums: true
-          test: true
-          test_flags: "--clean --cleanbuild --nodeps"
-          commit_username: ${{ secrets.AUR_USERNAME }}
-          commit_email: ${{ secrets.AUR_EMAIL }}
-          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
-          commit_message: "Update to v${{ env.VERSION }}"
-          force_push: "true"
-          ssh_keyscan_types: "rsa,ecdsa,ed25519"
-
-      - name: Update binary PKGBUILD version
-        run: |
-          sed -i "s/pkgver=.*/pkgver=${{ env.VERSION }}/g" PKGBUILD.bin
-
-      - name: Publish AUR binary package
-        uses: KSXGitHub/github-actions-deploy-aur@v4.1.1
-        with:
-          pkgname: binvec-bin
-          pkgbuild: ./PKGBUILD.bin
           updpkgsums: true
           test: true
           test_flags: "--clean --cleanbuild --nodeps"
