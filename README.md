@@ -41,14 +41,14 @@ Download the latest release from the [GitHub releases page](https://github.com/R
 
 #### Arch Linux (AUR)
 
-BinVec is available in the Arch User Repository (AUR):
+BinVec is available in the Arch User Repository (AUR) in two versions:
 
 ```bash
-# Using yay
+# Source version (builds from source)
 yay -S binvec
 
-# Using paru
-paru -S binvec
+# Binary version (pre-compiled, faster installation)
+yay -S binvec-bin
 ```
 
 For other distributions, contributions to package BinVec are welcome!

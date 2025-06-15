@@ -275,11 +275,30 @@ jobs:
           echo "Latest release is $LATEST_RELEASE"
           echo "VERSION=$LATEST_RELEASE" >> $GITHUB_ENV
 
-      - name: Publish AUR package
+      - name: Publish AUR source package
         uses: KSXGitHub/github-actions-deploy-aur@v4.1.1
         with:
           pkgname: binvec
           pkgbuild: ./PKGBUILD
+          updpkgsums: true
+          test: true
+          test_flags: "--clean --cleanbuild --nodeps"
+          commit_username: ${{ secrets.AUR_USERNAME }}
+          commit_email: ${{ secrets.AUR_EMAIL }}
+          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+          commit_message: "Update to v${{ env.VERSION }}"
+          force_push: "true"
+          ssh_keyscan_types: "rsa,ecdsa,ed25519"
+
+      - name: Update binary PKGBUILD version
+        run: |
+          sed -i "s/pkgver=.*/pkgver=${{ env.VERSION }}/g" PKGBUILD.bin
+
+      - name: Publish AUR binary package
+        uses: KSXGitHub/github-actions-deploy-aur@v4.1.1
+        with:
+          pkgname: binvec-bin
+          pkgbuild: ./PKGBUILD.bin
           updpkgsums: true
           test: true
           test_flags: "--clean --cleanbuild --nodeps"
