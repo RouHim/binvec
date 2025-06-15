@@ -9,6 +9,7 @@ rfd = "0.15.3" # For file dialogs
 image = "0.25" # Image lib, here used for binarizing and scaling images
 vtracer = { git = "https://github.com/RouHim/vtracer" } # Generates vector images from raster images
 visioncortex = "0.8" # Helper library for vtracer
+self_update = { version = "0.42.0", features = ["rustls"], default-features = false } # For updating the app
 
 [profile.release]
 panic = "abort" # Strip expensive panic clean-up logic

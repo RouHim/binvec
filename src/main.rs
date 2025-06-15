@@ -1,4 +1,5 @@
 mod image_processor;
+mod updater;
 
 use iced::widget::{Column, Row, Rule, button, checkbox, column, svg};
 use iced::{Alignment, Center, Task, Theme};
@@ -9,6 +10,8 @@ use std::path::PathBuf;
 const APP_NAME: &str = "BinVec";
 
 pub fn main() -> iced::Result {
+    updater::update();
+
     iced::application(APP_NAME, UiState::update, UiState::view)
         .theme(|_| Theme::TokyoNight)
         .run()

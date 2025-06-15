@@ -6,6 +6,10 @@ on:
       - opened
   workflow_dispatch: # allow manual execution
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
 
   check-repo:
@@ -38,13 +42,14 @@ jobs:
           toolchain: stable
           components: rustfmt
 
-      - uses: Swatinem/rust-cache@v2 # use /rust/cargo caching
+      - uses: Swatinem/rust-cache@v2
         with:
-          workspaces: "src-tauri -> target"
-          cache-on-failure: true # upload cache even if there are errors in this step
+          cache-on-failure: true
+          shared-key: "fmt-check"
+          save-if: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Check the code style
-        run: cd src-tauri && cargo fmt --all -- --check
+        run: cargo fmt --all -- --check
 
   check-code:
     name: Check rust code
@@ -53,11 +58,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: install dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev
-
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
         with:
@@ -65,28 +65,49 @@ jobs:
           toolchain: stable
           components: clippy
 
-      - uses: Swatinem/rust-cache@v2 # use /rust/cargo caching
+      - uses: Swatinem/rust-cache@v2
         with:
-          workspaces: "src-tauri -> target"
-          cache-on-failure: true # upload cache even if there are errors in this step
+          cache-on-failure: true
+          shared-key: "clippy-check"
+          save-if: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Verify code
-        run: cd src-tauri && cargo clippy
+        run: cargo clippy
 
-  test:
-    name: Run application tests
+  check-unused-dependencies:
+    name: Check for unused deps
     runs-on: ubuntu-latest
-    env:
-      BIGDATA_CLOUD_API_KEY: ${{ secrets.BIGDATA_CLOUD_API_KEY }}
-      OPEN_WEATHER_MAP_API_KEY: ${{ secrets.OPEN_WEATHER_MAP_API_KEY }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: install dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev libsoup-3.0-dev libjavascriptcoregtk-4.1-dev libwebkit2gtk-4.1-dev
+      - name: Install rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          cache-on-failure: true
+          shared-key: "udeps-check"
+          save-if: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Install cargo-udeps
+        uses: cargo-bins/cargo-binstall@main
+        with:
+          package: cargo-udeps
+
+      - name: Analyze dependencies
+        run: cargo update && cargo +nightly udeps
+        continue-on-error: true
+
+  test:
+    name: Run application tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
@@ -94,35 +115,44 @@ jobs:
           profile: minimal
           toolchain: stable
 
-      - uses: Swatinem/rust-cache@v2 # use /rust/cargo caching
+      - uses: Swatinem/rust-cache@v2
         with:
-          workspaces: "src-tauri -> target"
-          cache-on-failure: true # upload cache even if there are errors in this step
+          cache-on-failure: true
+          shared-key: "test"
+          save-if: ${{ github.ref == 'refs/heads/main' }}
 
-      - name: Test code
-        run: cd src-tauri && cargo test
+      - name: Run unit tests
+        run: cargo test
+
+  # Removing the duplicate compile job since the build job covers this already
 
   create-release:
     name: Create new release
     needs: [ check-repo, check-code-style, check-code, test ]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
+    outputs:
+      version: ${{ steps.semantic-release.outputs.new_release_version }}
+      upload_url: ${{ steps.semantic-release.outputs.upload_url }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required for semantic-release to access commit history
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
 
       - name: Install Dependencies
         run: |
-          npm install -g \
-             semantic-release  \
-            @semantic-release/git  \
-            @semantic-release/gitlab  \
-            @semantic-release/changelog  \
+          npm init -y
+          npm install \
+            semantic-release \
+            @semantic-release/git \
+            @semantic-release/changelog \
             @semantic-release/exec \
             @semantic-release/commit-analyzer \
             conventional-changelog-conventionalcommits
@@ -130,6 +160,7 @@ jobs:
       - name: Generate Semantic Release Notes and Create Release
         id: semantic-release
         env:
+          # Use a more limited scoped token for releases only
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         run: npx semantic-release
 
@@ -141,156 +172,80 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  bundle-and-upload:
+  build:
+    name: Build artifacts
     needs: [ create-release ]
-    name: Bundle and upload application artifacts
     strategy:
       fail-fast: false
       matrix:
-        platform: [ ubuntu-22.04, windows-latest ]
-    runs-on: ${{ matrix.platform }}
+        target: [ 'x86_64-musl', 'aarch64-musl', 'armv7-musleabihf', 'arm-musleabihf', 'riscv64gc-musl' ]
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Install Rust stable
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
+      - name: Set version and upload URL from semantic-release
+        run: |
+          echo "VERSION=${{ needs.create-release.outputs.version }}" >> $GITHUB_ENV
+          echo "UPLOAD_URL=${{ needs.create-release.outputs.upload_url }}" >> $GITHUB_ENV
 
-      - uses: Swatinem/rust-cache@v2 # use /rust/cargo caching
-        with:
-          workspaces: "src-tauri -> target"
-          cache-on-failure: true # upload cache even if there are errors in this step
-
-      - name: Detect and set latest github release VERSION
-        shell: bash
+      - name: Fallback to fetch release info if needed
+        if: env.VERSION == '' || env.UPLOAD_URL == ''
         run: |
           REPO="RouHim/binvec"
-          curl --silent "https://api.github.com/repos/${REPO}/releases/latest"
-          curl --silent "https://api.github.com/repos/${REPO}/releases/latest" | jq -r ".tag_name"
-          LATEST_RELEASE=$(curl --silent "https://api.github.com/repos/${REPO}/releases/latest" | jq -r ".tag_name")
-          LATEST_RELEASE=${LATEST_RELEASE#v}
+          LATEST_RELEASE_INFO=$(curl --silent --retry 3 "https://api.github.com/repos/$REPO/releases/latest")
+          LATEST_RELEASE=$(echo "$LATEST_RELEASE_INFO" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+          UPLOAD_URL=$(echo "$LATEST_RELEASE_INFO" | jq -r '.upload_url')
+          
+          if [[ -z "$LATEST_RELEASE" || -z "$UPLOAD_URL" ]]; then
+            echo "Failed to fetch release information"
+            exit 1
+          fi
+          
           echo "Latest release is $LATEST_RELEASE"
           echo "VERSION=$LATEST_RELEASE" >> $GITHUB_ENV
-
-      - name: Set UPLOAD_URL variable
-        shell: bash
-        run: |
-          UPLOAD_URL=$(curl --silent https://api.github.com/repos/rouhim/binvec/releases/latest | jq -r '.upload_url')
           echo "UPLOAD_URL=${UPLOAD_URL}" >> $GITHUB_ENV
 
-      - name: Set version
-        shell: bash
+      - name: Update version in Cargo.toml
         run: |
-          cd src-tauri
-          jq --arg new_version "${{ env.VERSION }}" '.version = $new_version' tauri.conf.json > tmp.json && mv tmp.json tauri.conf.json
-          echo "Tauri version is now: $(cat tauri.conf.json | jq ".version")"
-          awk -v var="${{ env.VERSION }}" '{gsub(/version = "0.0.0"/, "version = \""var"\""); print}' Cargo.toml > temp && mv temp Cargo.toml
-          echo "Cargo version is now" $(cargo metadata --no-deps --format-version 1 | jq -r ".version")
-          cd ..
+          if [ -z "${{ env.VERSION }}" ]; then
+            echo "Error: VERSION environment variable is not set"
+            exit 1
+          fi
+          sed -i "s/version = \"0.0.0\"/version = \"${{ env.VERSION }}\"/g" Cargo.toml
+          echo "Cargo version is now" $(cargo metadata --no-deps --format-version 1 | jq -r ".packages[0].version")
 
-      - name: Install Tauri dependencies (ubuntu only)
-        if: matrix.platform == 'ubuntu-22.04'
-        run: sudo apt update && sudo apt install -y libwebkit2gtk-4.0-dev build-essential curl wget file libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev libsoup-3.0-dev libjavascriptcoregtk-4.1-dev libwebkit2gtk-4.1-dev
+      - name: Install rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
 
-      - uses: cargo-bins/cargo-binstall@main
-      - name: Install Tauri-CLI
-        run: cargo binstall --no-confirm --force tauri-cli
+      - uses: Swatinem/rust-cache@v2
+        with:
+          cache-on-failure: true
+          shared-key: "build-${{ matrix.target }}"
+          save-if: ${{ github.ref == 'refs/heads/main' }}
 
-      - name: Build the app
-        env:
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
-          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+      - name: Build binary
         run: |
-          cat src-tauri/tauri.conf.json
-          cargo tauri build
+          # Build the binary
+          docker run --rm \
+            -v "$(pwd)":/home/rust/src \
+            messense/rust-musl-cross:${{ matrix.target }} \
+            bash -c "cargo build --release && echo CARGO_BUILD_TARGET=\$CARGO_BUILD_TARGET"  > build_output.txt
+          
+          # Extract the build target from the output
+          CARGO_BUILD_TARGET=$(grep 'CARGO_BUILD_TARGET=' build_output.txt | cut -d'=' -f2 | tr -d '\r')
+          echo "CARGO_BUILD_TARGET=${CARGO_BUILD_TARGET}" >> $GITHUB_ENV
 
-      - name: Upload linux AppImage
-        if: matrix.platform == 'ubuntu-22.04'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload artifact
+        uses: softprops/action-gh-release@v1
         with:
-          upload_url: ${{ env.UPLOAD_URL }}
-          asset_path: src-tauri/target/release/bundle/appimage/BinVec_${{ env.VERSION }}_amd64.AppImage
-          asset_name: binvec_${{ env.VERSION }}_amd64.AppImage
-          asset_content_type: application/octet-stream
-      - name: Upload linux AppImage updater
-        if: matrix.platform == 'ubuntu-22.04'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ env.UPLOAD_URL }}
-          asset_path: src-tauri/target/release/bundle/appimage/BinVec_${{ env.VERSION }}_amd64.AppImage.tar.gz
-          asset_name: binvec_${{ env.VERSION }}_amd64.AppImage.tar.gz
-          asset_content_type: application/octet-stream
-      - name: Upload linux AppImage updater signature
-        if: matrix.platform == 'ubuntu-22.04'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ env.UPLOAD_URL }}
-          asset_path: src-tauri/target/release/bundle/appimage/BinVec_${{ env.VERSION }}_amd64.AppImage.tar.gz.sig
-          asset_name: binvec_${{ env.VERSION }}_amd64.AppImage.tar.gz.sig
-          asset_content_type: application/octet-stream
-
-      - name: Upload windows installer
-        if: matrix.platform == 'windows-latest'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ env.UPLOAD_URL }}
-          asset_path: src-tauri/target/release/bundle/msi/BinVec_${{ env.VERSION }}_x64_en-US.msi
-          asset_name: binvec_${{ env.VERSION }}_x64_en-US.msi
-          asset_content_type: application/octet-stream
-      - name: Upload windows updater
-        if: matrix.platform == 'windows-latest'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ env.UPLOAD_URL }}
-          asset_path: src-tauri/target/release/bundle/msi/BinVec_${{ env.VERSION }}_x64_en-US.msi.zip
-          asset_name: binvec_${{ env.VERSION }}_x64_en-US.msi.zip
-          asset_content_type: application/octet-stream
-      - name: Upload windows updater signature
-        if: matrix.platform == 'windows-latest'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ env.UPLOAD_URL }}
-          asset_path: src-tauri/target/release/bundle/msi/BinVec_${{ env.VERSION }}_x64_en-US.msi.zip.sig
-          asset_name: binvec_${{ env.VERSION }}_x64_en-US.msi.zip.sig
-          asset_content_type: application/octet-stream
-
-  update-updater:
-    name: Update updater
-    needs: [ bundle-and-upload ]
-    runs-on: ubuntu-24.04
-    env:
-      UPDATER_FILE: ".github/updater/binvec_update.json"
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Detect and set latest github release VERSION
-        shell: bash
-        run: |
-          REPO="RouHim/binvec"
-          LATEST_RELEASE=$(curl --silent "https://api.github.com/repos/$REPO/releases/latest" | jq -r ".tag_name")
-          LATEST_RELEASE=${LATEST_RELEASE#v}
-          echo "Latest release is $LATEST_RELEASE"
-          echo "VERSION=$LATEST_RELEASE" >> $GITHUB_ENV
-
-      - name: Build updater json
-        run: bash .github/updater/build_update_json.sh "${{ env.VERSION }}" "${{ env.UPDATER_FILE }}"
-
-      - name: Deploy update information to gist
-        uses: exuanbo/actions-deploy-gist@v1
-        with:
-          token: ${{ secrets.RELEASE_TOKEN }}
-          gist_id: 6dd4931683170f25859dc88cb1788b10
-          file_path: ${{ env.UPDATER_FILE }}
+          tag_name: ${{ env.VERSION }}
+          files: target/${{ env.CARGO_BUILD_TARGET }}/release/binvec
+          name: Release ${{ env.VERSION }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fail_on_unmatched_files: true
+          draft: false
+          prerelease: false
