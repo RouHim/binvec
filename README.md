@@ -25,27 +25,56 @@
 
 ## Installation
 
-To install BinVec, follow these steps:
+### Pre-built Binaries
 
-### Linux
+Pre-built binaries are available for the following architectures:
 
-* Download the latest release from the releases page.
-* Extract the downloaded file.
-* Make the BinVec appimage executable:
+- x86_64 (64-bit Intel/AMD)
+- aarch64 (64-bit ARM)
+- armv7 (32-bit ARM)
+- arm (32-bit ARM)
+- riscv64gc (64-bit RISC-V)
+
+Download the latest release from the [GitHub releases page](https://github.com/RouHim/binvec/releases/latest).
+
+### Linux Package Managers
+
+#### Arch Linux (AUR)
+
+BinVec is available in the Arch User Repository (AUR) in two versions:
 
 ```bash
-chmod +x binvec.appimage
+# Source version (builds from source)
+yay -S binvec
+
+# Binary version (pre-compiled, faster installation)
+yay -S binvec-bin
 ```
 
-### macOS
+For other distributions, contributions to package BinVec are welcome!
 
-* Download the latest release from the releases page.
-* Extract the downloaded file.
-* Move the BinVec.app file to your Applications folder.
+## Building from Source
 
-### Windows
+BinVec is written in Rust. To build from source:
 
-* Download the latest release from the releases page.
-* Extract the downloaded file.
-* Run the BinVec.msi installer.
+1. **Install Rust**: Follow the instructions at [rust-lang.org](https://www.rust-lang.org/tools/install).
 
+2. **Clone the repository**:
+   ```bash
+   git clone https://github.com/RouHim/binvec.git
+   cd binvec
+   ```
+
+3. **Build the project**:
+   ```bash
+   cargo build --release
+   ```
+
+4. **Run the application**:
+   ```bash
+   ./target/release/binvec
+   ```
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.

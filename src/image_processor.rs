@@ -1,8 +1,38 @@
 use std::path::Path;
 
+use crate::VectorImageConfig;
 use image::{DynamicImage, GenericImageView, Pixel};
 use visioncortex::{BinaryImage, PathSimplifyMode};
 use vtracer::{ColorMode, Hierarchical};
+
+/// Generates an XML SVG String from the given image data
+pub fn generate_svg(image_data: DynamicImage, config: VectorImageConfig) -> Result<String, ()> {
+    let svg_data_request = || {
+        if config.with_color {
+            create_color_vector(
+                image_data,
+                config.filter_speckle,
+                config.color_precision as i32,
+                config.gradient_step as i32,
+            )
+        } else {
+            create_binary_vector(
+                image_data,
+                config.binarize_threshold,
+                config.invert_binary,
+                config.filter_speckle,
+                config.ignore_alpha_channel,
+            )
+        }
+    };
+
+    let svg_data = std::panic::catch_unwind(svg_data_request);
+
+    match svg_data {
+        Ok(svg_data) => Ok(svg_data),
+        Err(_) => Err(()),
+    }
+}
 
 /// Creates a colored svg from an image
 /// `Parameters:

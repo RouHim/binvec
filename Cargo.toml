@@ -1,0 +1,18 @@
+[package]
+name = "binvec"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+iced = { version = "0.13.1", features = ["svg", "image", "tokio"] } # Iced for GUI
+rfd = "0.15.3" # For file dialogs
+image = "0.25" # Image lib, here used for binarizing and scaling images
+vtracer = { git = "https://github.com/RouHim/vtracer" } # Generates vector images from raster images
+visioncortex = "0.8" # Helper library for vtracer
+self_update = { version = "0.42.0", features = ["rustls"], default-features = false } # For updating the app
+
+[profile.release]
+panic = "abort" # Strip expensive panic clean-up logic
+codegen-units = 1 # Compile crates one after another so the compiler can optimize better
+lto = true # Enables link to optimizations
+strip = true # Strip debug symbols
