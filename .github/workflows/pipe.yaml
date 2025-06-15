@@ -124,8 +124,6 @@ jobs:
       - name: Run unit tests
         run: cargo test
 
-  # Removing the duplicate compile job since the build job covers this already
-
   create-release:
     name: Create new release
     needs: [ check-repo, check-code-style, check-code, test ]

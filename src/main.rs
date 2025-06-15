@@ -94,12 +94,7 @@ impl UiState {
                 self.save_result = None; // Reset save status
                 if let Some(path) = path {
                     self.image_path = Some(path.clone());
-                    self.is_rendering = true;
-
-                    Task::perform(
-                        UiState::render_svg_image(path.clone(), self.vector_image_config),
-                        UiMessage::SvgImageRendered,
-                    )
+                    self.perform_svg_rendering_task()
                 } else {
                     self.is_rendering = false;
                     // If selection was cancelled, clear relevant fields
@@ -117,96 +112,43 @@ impl UiState {
                 self.vector_image_config.with_color = checked;
 
                 // Automatically re-render when the checkbox is toggled
-                if let Some(path) = &self.image_path {
-                    self.is_rendering = true;
-                    return self.perform_svg_rendering_task(path.clone());
-                }
-
-                Task::none()
+                self.perform_svg_rendering_task()
             }
             UiMessage::IgnoreAlphaChannelToggled(checked) => {
                 self.vector_image_config.ignore_alpha_channel = checked;
 
                 // Automatically re-render when the checkbox is toggled
-                if let Some(path) = &self.image_path {
-                    self.is_rendering = true;
-                    return Task::perform(
-                        UiState::render_svg_image(path.clone(), self.vector_image_config),
-                        UiMessage::SvgImageRendered,
-                    );
-                }
-
-                Task::none()
+                self.perform_svg_rendering_task()
             }
             UiMessage::FilterSpeckleChanged(value) => {
                 self.vector_image_config.filter_speckle = value as usize;
 
                 // Automatically re-render when the value is changed
-                if let Some(path) = &self.image_path {
-                    self.is_rendering = true;
-                    return Task::perform(
-                        UiState::render_svg_image(path.clone(), self.vector_image_config),
-                        UiMessage::SvgImageRendered,
-                    );
-                }
-
-                Task::none()
+                self.perform_svg_rendering_task()
             }
             UiMessage::BinarizeThresholdChanged(value) => {
                 self.vector_image_config.binarize_threshold = value as u8;
 
                 // Automatically re-render when the value is changed
-                if let Some(path) = &self.image_path {
-                    self.is_rendering = true;
-                    return Task::perform(
-                        UiState::render_svg_image(path.clone(), self.vector_image_config),
-                        UiMessage::SvgImageRendered,
-                    );
-                }
-
-                Task::none()
+                self.perform_svg_rendering_task()
             }
             UiMessage::InvertBinaryToggled(checked) => {
                 self.vector_image_config.invert_binary = checked;
 
                 // Automatically re-render when the checkbox is toggled
-                if let Some(path) = &self.image_path {
-                    self.is_rendering = true;
-                    return Task::perform(
-                        UiState::render_svg_image(path.clone(), self.vector_image_config),
-                        UiMessage::SvgImageRendered,
-                    );
-                }
-
-                Task::none()
+                self.perform_svg_rendering_task()
             }
             UiMessage::ColorPrecisionChanged(value) => {
                 self.vector_image_config.color_precision = value as u8;
 
                 // Automatically re-render when the value is changed
-                if let Some(path) = &self.image_path {
-                    self.is_rendering = true;
-                    return Task::perform(
-                        UiState::render_svg_image(path.clone(), self.vector_image_config),
-                        UiMessage::SvgImageRendered,
-                    );
-                }
-
-                Task::none()
+                self.perform_svg_rendering_task()
             }
             UiMessage::GradientStepChanged(value) => {
                 self.vector_image_config.gradient_step = value as u8;
 
                 // Automatically re-render when the value is changed
-                if let Some(path) = &self.image_path {
-                    self.is_rendering = true;
-                    return Task::perform(
-                        UiState::render_svg_image(path.clone(), self.vector_image_config),
-                        UiMessage::SvgImageRendered,
-                    );
-                }
-
-                Task::none()
+                self.perform_svg_rendering_task()
             }
             UiMessage::SaveToSvgPressed => {
                 if let Some(svg_data) = &self.vector_image {
@@ -379,5 +321,16 @@ impl UiState {
             Ok(mut file) => file.write_all(svg_data.as_bytes()).is_ok(),
             Err(_) => false,
         }
+    }
+
+    fn perform_svg_rendering_task(&mut self) -> Task<UiMessage> {
+        if let Some(path) = &self.image_path {
+            self.is_rendering = true;
+            return Task::perform(
+                UiState::render_svg_image(path.clone(), self.vector_image_config),
+                UiMessage::SvgImageRendered,
+            );
+        }
+        Task::none()
     }
 }

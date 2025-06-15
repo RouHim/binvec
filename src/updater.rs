@@ -16,8 +16,8 @@ pub fn update() {
 
     let status = self_update::backends::github::Update::configure()
         .repo_owner("rouhim")
-        .repo_name("beammp-server-beiwagen")
-        .bin_name("beiwagen")
+        .repo_name("binvec")
+        .bin_name("binvec")
         .show_download_progress(true)
         .no_confirm(no_confirm)
         .current_version(cargo_crate_version!())
@@ -28,10 +28,10 @@ pub fn update() {
     match status {
         Err(err) => println!("Failed to update: {}", err),
         Ok(self_update::Status::UpToDate(version)) => {
-            println!("beammp-server-beiwagen {} is up to date", version);
+            println!("binvec {} is up to date", version);
         }
         Ok(self_update::Status::Updated(version)) => {
-            println!("beammp-server-beiwagen updated to {}", version);
+            println!("binvec updated to {}", version);
             restart_process(current_executable);
         }
     }
@@ -41,8 +41,11 @@ pub fn update() {
 fn restart_process(current_executable: PathBuf) {
     println!("Waiting 3s before restarting {:?} ...", current_executable);
     thread::sleep(Duration::from_secs(3));
-    let err = exec(process::Command::new(current_executable).args(env::args().skip(1)));
-    eprintln!("Error: Failed to restart process {:?}: {}", current_executable, err);
+    let err = exec(process::Command::new(current_executable.clone()).args(env::args().skip(1)));
+    eprintln!(
+        "Error: Failed to restart process {:?}: {}",
+        current_executable, err
+    );
     std::process::exit(1);
 }
 
