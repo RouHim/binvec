@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/RouHim/binvec/compare/v1.7.0...v1.8.0) (2025-06-15)
+
+
+### Features
+
+* remove riscv64gc target from build matrix in pipeline configuration ([a0b85cd](https://github.com/RouHim/binvec/commit/a0b85cdf480c4422ca62c0c3d4252fb5ad0885d8))
+
 # [1.7.0](https://github.com/RouHim/binvec/compare/v1.6.21...v1.7.0) (2025-06-15)
 
 
