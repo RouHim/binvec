@@ -211,7 +211,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [ 'x86_64-musl', 'aarch64-musl', 'armv7-musleabihf', 'arm-musleabihf', 'riscv64gc-musl' ]
+        target: [ 'x86_64-musl', 'aarch64-musl', 'armv7-musleabihf', 'arm-musleabihf' ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
