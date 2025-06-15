@@ -119,10 +119,7 @@ impl UiState {
                 // Automatically re-render when the checkbox is toggled
                 if let Some(path) = &self.image_path {
                     self.is_rendering = true;
-                    return Task::perform(
-                        UiState::render_svg_image(path.clone(), self.vector_image_config),
-                        UiMessage::SvgImageRendered,
-                    );
+                    return self.perform_svg_rendering_task(path.clone());
                 }
 
                 Task::none()
