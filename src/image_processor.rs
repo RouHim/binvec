@@ -12,8 +12,8 @@ pub fn generate_svg(image_data: DynamicImage, config: VectorImageConfig) -> Resu
             create_color_vector(
                 image_data,
                 config.filter_speckle,
-                config.color_precision,
-                config.gradient_step,
+                config.color_precision as i32,
+                config.gradient_step as i32,
             )
         } else {
             create_binary_vector(
