@@ -1,3 +1,10 @@
+## [1.9.3](https://github.com/RouHim/binvec/compare/v1.9.2...v1.9.3) (2025-06-16)
+
+
+### Bug Fixes
+
+* update binary renaming logic and improve error handling in CI pipeline ([7923b85](https://github.com/RouHim/binvec/commit/7923b85db4a63a3821875c000895019c34815635))
+
 ## [1.9.2](https://github.com/RouHim/binvec/compare/v1.9.1...v1.9.2) (2025-06-16)
 
 
