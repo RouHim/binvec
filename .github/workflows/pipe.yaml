@@ -316,6 +316,8 @@ jobs:
     name: Publish to AUR
     needs: [ build ]
     runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout code
@@ -340,13 +342,7 @@ jobs:
           echo "VERSION=$LATEST_RELEASE" >> $GITHUB_ENV
 
       - name: Install necessary packages for AUR
-        run: sudo apt-get update && sudo apt-get install -y build-essential
-
-      - name: Install rust toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
+        run: sudo pacman --sync --refresh --noconfirm base-devel cargo
 
       - name: Publish AUR package
         uses: KSXGitHub/github-actions-deploy-aur@v4.1.1
@@ -390,6 +386,9 @@ jobs:
           fi
           echo "VERSION=$LATEST_RELEASE" >> $GITHUB_ENV
 
+      - name: Install necessary packages for AUR
+        run: sudo package --sync --refresh --noconfirm base-devel cargo
+
       - name: Update version in PKGBUILD.bin
         run: |
           sed -i "s/pkgver=.*/pkgver=$VERSION/g" PKGBUILD.bin
@@ -408,5 +407,4 @@ jobs:
           commit_message: "Update to v${{ env.VERSION }}"
           force_push: "true"
           ssh_keyscan_types: "rsa,ecdsa,ed25519"
-
 
