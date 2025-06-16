@@ -1,3 +1,10 @@
+## [1.9.13](https://github.com/RouHim/binvec/compare/1.9.12...1.9.13) (2025-06-16)
+
+
+### Bug Fixes
+
+* update AUR pipeline to use Arch Linux container and install necessary packages with pacman ([3a5fa5d](https://github.com/RouHim/binvec/commit/3a5fa5d31ccd79254e62a667580516538c633f95))
+
 ## [1.9.12](https://github.com/RouHim/binvec/compare/1.9.11...1.9.12) (2025-06-16)
 
 
