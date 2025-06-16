@@ -1,3 +1,10 @@
+## [1.9.5](https://github.com/RouHim/binvec/compare/v1.9.4...1.9.5) (2025-06-16)
+
+
+### Bug Fixes
+
+* add tagFormat configuration to .releaserc ([287b24b](https://github.com/RouHim/binvec/commit/287b24bbd56ace39569d76b305f4146fb3ac8d78))
+
 ## [1.9.4](https://github.com/RouHim/binvec/compare/v1.9.3...v1.9.4) (2025-06-16)
 
 
