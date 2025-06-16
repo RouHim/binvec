@@ -12,10 +12,11 @@ conflicts=('binvec')
 depends=()
 options=('!strip')
 
-source_x86_64=("binvec-${pkgver}-x86_64::https://github.com/RouHim/binvec/releases/download/v${pkgver}/binvec")
-source_aarch64=("binvec-${pkgver}-aarch64::https://github.com/RouHim/binvec/releases/download/v${pkgver}/binvec")
-source_armv7h=("binvec-${pkgver}-armv7h::https://github.com/RouHim/binvec/releases/download/v${pkgver}/binvec")
-source_armv6h=("binvec-${pkgver}-armv6h::https://github.com/RouHim/binvec/releases/download/v${pkgver}/binvec")
+# Map Arch Linux architectures to Rust build targets
+source_x86_64=("binvec-${pkgver}-x86_64-musl::https://github.com/RouHim/binvec/releases/download/v${pkgver}/binvec-x86_64-musl")
+source_aarch64=("binvec-${pkgver}-aarch64-musl::https://github.com/RouHim/binvec/releases/download/v${pkgver}/binvec-aarch64-musl")
+source_armv7h=("binvec-${pkgver}-armv7-musleabihf::https://github.com/RouHim/binvec/releases/download/v${pkgver}/binvec-armv7-musleabihf")
+source_armv6h=("binvec-${pkgver}-arm-musleabihf::https://github.com/RouHim/binvec/releases/download/v${pkgver}/binvec-arm-musleabihf")
 
 sha256sums_x86_64=('SKIP')
 sha256sums_aarch64=('SKIP')
@@ -24,7 +25,14 @@ sha256sums_armv6h=('SKIP')
 
 package() {
   # Install binary
-  install -Dm755 "binvec-${pkgver}-${CARCH}" "${pkgdir}/usr/bin/binvec"
+  install -Dm755 "binvec-${pkgver}-${CARCH}-musl" "${pkgdir}/usr/bin/binvec"
+
+  # Special case for armv7h and armv6h which use different naming
+  if [ "${CARCH}" = "armv7h" ]; then
+    install -Dm755 "binvec-${pkgver}-armv7-musleabihf" "${pkgdir}/usr/bin/binvec"
+  elif [ "${CARCH}" = "armv6h" ]; then
+    install -Dm755 "binvec-${pkgver}-arm-musleabihf" "${pkgdir}/usr/bin/binvec"
+  fi
 
   # Create documentation directory
   mkdir -p "${pkgdir}/usr/share/doc/${pkgname}"
@@ -37,4 +45,3 @@ package() {
   mkdir -p "${pkgdir}/usr/share/licenses/${pkgname}"
   curl -s "https://raw.githubusercontent.com/RouHim/binvec/v${pkgver}/LICENSE" -o "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
 }
-
