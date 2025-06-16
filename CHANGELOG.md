@@ -1,3 +1,10 @@
+## [1.9.4](https://github.com/RouHim/binvec/compare/v1.9.3...v1.9.4) (2025-06-16)
+
+
+### Bug Fixes
+
+* improve error handling for fetching latest release information in CI pipeline ([3004ac1](https://github.com/RouHim/binvec/commit/3004ac176dc493ce911d120113c8fa5bf94d9cbc))
+
 ## [1.9.3](https://github.com/RouHim/binvec/compare/v1.9.2...v1.9.3) (2025-06-16)
 
 
