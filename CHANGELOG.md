@@ -1,3 +1,10 @@
+## [1.9.10](https://github.com/RouHim/binvec/compare/1.9.9...1.9.10) (2025-06-16)
+
+
+### Bug Fixes
+
+* update window settings and dependencies in main application ([7fcda4d](https://github.com/RouHim/binvec/commit/7fcda4dba6fcff7aa4e3d3224d9f7d51cc85adf0))
+
 ## [1.9.9](https://github.com/RouHim/binvec/compare/1.9.8...1.9.9) (2025-06-16)
 
 
