@@ -1,3 +1,10 @@
+## [1.9.6](https://github.com/RouHim/binvec/compare/1.9.5...1.9.6) (2025-06-16)
+
+
+### Bug Fixes
+
+* update version substitution syntax in Cargo.toml ([4329407](https://github.com/RouHim/binvec/commit/43294071f6ab0147135e8ab73a763d7455a76e0f))
+
 ## [1.9.5](https://github.com/RouHim/binvec/compare/v1.9.4...1.9.5) (2025-06-16)
 
 
