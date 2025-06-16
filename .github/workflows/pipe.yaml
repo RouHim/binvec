@@ -264,13 +264,13 @@ jobs:
       - name: Build and prepare binary for upload
         run: |
           # Build the binary
-          docker run --rm \\
-            -v "$(pwd)":/home/rust/src \\
-            messense/rust-musl-cross:${{ matrix.target }} \\
-            bash -c "cargo build --release && echo CARGO_BUILD_TARGET=\\$CARGO_BUILD_TARGET"  > build_output.txt
+          docker run --rm \
+            -v "$(pwd)":/home/rust/src \
+            messense/rust-musl-cross:${{ matrix.target }} \
+            bash -c "cargo build --release && echo CARGO_BUILD_TARGET=\$CARGO_BUILD_TARGET" > build_output.txt
           
           # Extract the build target from the output
-          CARGO_BUILD_TARGET=$(grep 'CARGO_BUILD_TARGET=' build_output.txt | cut -d'=' -f2 | tr -d '\\r')
+          CARGO_BUILD_TARGET=$(grep 'CARGO_BUILD_TARGET=' build_output.txt | cut -d'=' -f2 | tr -d '\r')
           echo "Extracted CARGO_BUILD_TARGET: ${CARGO_BUILD_TARGET}"
           echo "CARGO_BUILD_TARGET=${CARGO_BUILD_TARGET}" >> $GITHUB_ENV
           
