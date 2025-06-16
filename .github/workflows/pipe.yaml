@@ -339,6 +339,9 @@ jobs:
           fi
           echo "VERSION=$LATEST_RELEASE" >> $GITHUB_ENV
 
+      - name: Install necessary packages for AUR
+        run: sudo apt-get update && sudo apt-get install -y base-devel cargo
+
       - name: Publish AUR package
         uses: KSXGitHub/github-actions-deploy-aur@v4.1.1
         with:
@@ -380,6 +383,9 @@ jobs:
             exit 1
           fi
           echo "VERSION=$LATEST_RELEASE" >> $GITHUB_ENV
+
+      - name: Install necessary packages for AUR
+        run: sudo apt-get update && sudo apt-get install -y base-devel cargo
 
       - name: Update version in PKGBUILD.bin
         run: |
