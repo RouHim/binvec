@@ -246,7 +246,7 @@ jobs:
             echo "Error: VERSION environment variable is not set"
             exit 1
           fi
-          sed -i "s/version = \\"0.0.0\\"/version = \\"${{ env.VERSION }}\\"/g" Cargo.toml
+          sed -i 's/version = "0.0.0"/version = "${{ env.VERSION }}"/g' Cargo.toml
           echo "Cargo version is now" $(cargo metadata --no-deps --format-version 1 | jq -r ".packages[0].version")
 
       - name: Install rust toolchain
