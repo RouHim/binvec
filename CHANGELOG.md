@@ -1,3 +1,10 @@
+## [1.9.7](https://github.com/RouHim/binvec/compare/1.9.6...1.9.7) (2025-06-16)
+
+
+### Bug Fixes
+
+* correct escape sequence in build script for CARGO_BUILD_TARGET extraction ([b627922](https://github.com/RouHim/binvec/commit/b62792282d9e1e87884f46ce2321192b527ac97d))
+
 ## [1.9.6](https://github.com/RouHim/binvec/compare/1.9.5...1.9.6) (2025-06-16)
 
 
