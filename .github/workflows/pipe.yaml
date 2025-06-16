@@ -226,15 +226,16 @@ jobs:
         if: env.VERSION == '' || env.UPLOAD_URL == ''
         run: |
           REPO="RouHim/binvec"
-          LATEST_RELEASE_INFO=$(curl --silent --retry 3 "https://api.github.com/repos/$REPO/releases/latest")
-          LATEST_RELEASE=$(echo "$LATEST_RELEASE_INFO" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\\1/')
-          UPLOAD_URL=$(echo "$LATEST_RELEASE_INFO" | jq -r '.upload_url')
-          
-          if [[ -z "$LATEST_RELEASE" || -z "$UPLOAD_URL" ]]; then
-            echo "Failed to fetch release information"
+          LATEST_RELEASE_JSON=$(curl --silent --retry 3 "https://api.github.com/repos/$REPO/releases/latest")
+          LATEST_RELEASE=$(echo "$LATEST_RELEASE_JSON" | jq -r '.tag_name')
+          UPLOAD_URL=$(echo "$LATEST_RELEASE_JSON" | jq -r '.upload_url')
+
+          if [[ -z "$LATEST_RELEASE" || "$LATEST_RELEASE" == "null" || -z "$UPLOAD_URL" || "$UPLOAD_URL" == "null" ]]; then
+            echo "Failed to fetch release information. Tag or Upload URL might be null."
+            echo "API Response: $LATEST_RELEASE_JSON"
             exit 1
           fi
-          
+
           echo "Latest release is $LATEST_RELEASE"
           echo "VERSION=$LATEST_RELEASE" >> $GITHUB_ENV
           echo "UPLOAD_URL=${UPLOAD_URL}" >> $GITHUB_ENV
@@ -328,14 +329,14 @@ jobs:
         if: env.VERSION == ''
         run: |
           REPO="RouHim/binvec"
-          LATEST_RELEASE=$(curl --silent --retry 3 "https://api.github.com/repos/$REPO/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
-          
-          if [[ -z "$LATEST_RELEASE" ]]; then
-            echo "Failed to fetch release information"
+          LATEST_RELEASE_JSON=$(curl --silent --retry 3 "https://api.github.com/repos/$REPO/releases/latest")
+          LATEST_RELEASE=$(echo "$LATEST_RELEASE_JSON" | jq -r '.tag_name')
+
+          if [[ -z "$LATEST_RELEASE" || "$LATEST_RELEASE" == "null" ]]; then
+            echo "Failed to fetch release information or tag_name is null."
+            echo "API Response: $LATEST_RELEASE_JSON" # For better debugging
             exit 1
           fi
-          
-          echo "Latest release is $LATEST_RELEASE"
           echo "VERSION=$LATEST_RELEASE" >> $GITHUB_ENV
 
       - name: Publish AUR package
@@ -370,14 +371,14 @@ jobs:
         if: env.VERSION == ''
         run: |
           REPO="RouHim/binvec"
-          LATEST_RELEASE=$(curl --silent --retry 3 "https://api.github.com/repos/$REPO/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
-          
-          if [[ -z "$LATEST_RELEASE" ]]; then
-            echo "Failed to fetch release information"
+          LATEST_RELEASE_JSON=$(curl --silent --retry 3 "https://api.github.com/repos/$REPO/releases/latest")
+          LATEST_RELEASE=$(echo "$LATEST_RELEASE_JSON" | jq -r '.tag_name')
+
+          if [[ -z "$LATEST_RELEASE" || "$LATEST_RELEASE" == "null" ]]; then
+            echo "Failed to fetch release information or tag_name is null."
+            echo "API Response: $LATEST_RELEASE_JSON" # For better debugging
             exit 1
           fi
-          
-          echo "Latest release is $LATEST_RELEASE"
           echo "VERSION=$LATEST_RELEASE" >> $GITHUB_ENV
 
       - name: Update version in PKGBUILD.bin
