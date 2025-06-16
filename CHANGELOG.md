@@ -1,3 +1,10 @@
+## [1.9.12](https://github.com/RouHim/binvec/compare/1.9.11...1.9.12) (2025-06-16)
+
+
+### Bug Fixes
+
+* update AUR installation steps to use build-essential and add rust toolchain ([38504dd](https://github.com/RouHim/binvec/commit/38504ddce4bfb7d5299812ce4329f0f89b41ab7e))
+
 ## [1.9.11](https://github.com/RouHim/binvec/compare/1.9.10...1.9.11) (2025-06-16)
 
 
