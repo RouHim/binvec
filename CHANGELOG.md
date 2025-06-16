@@ -1,3 +1,10 @@
+## [1.9.11](https://github.com/RouHim/binvec/compare/1.9.10...1.9.11) (2025-06-16)
+
+
+### Bug Fixes
+
+* add installation of necessary packages for AUR in pipeline ([10cb2c1](https://github.com/RouHim/binvec/commit/10cb2c1ea6281a876ef807e52f6e9e2370e89628))
+
 ## [1.9.10](https://github.com/RouHim/binvec/compare/1.9.9...1.9.10) (2025-06-16)
 
 
