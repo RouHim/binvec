@@ -2,6 +2,7 @@ mod image_processor;
 mod updater;
 
 use iced::widget::{Column, Row, Rule, button, checkbox, column, svg};
+use iced::window::icon;
 use iced::{Alignment, Center, Task, Theme};
 use std::fs;
 use std::io::Write;
@@ -12,8 +13,15 @@ const APP_NAME: &str = "BinVec";
 pub fn main() -> iced::Result {
     updater::update();
 
+    let window_settings = iced::window::Settings {
+        icon: icon::from_file_data(include_bytes!("../icon.png"), None).ok(),
+        size: iced::Size::new(800.0, 600.0),
+        ..iced::window::Settings::default()
+    };
+
     iced::application(APP_NAME, UiState::update, UiState::view)
         .theme(|_| Theme::TokyoNight)
+        .window(window_settings)
         .run()
 }
 

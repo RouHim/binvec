@@ -285,10 +285,10 @@ jobs:
           if [ -f "$ORIGINAL_BINARY_PATH" ]; then
             echo "Binary found at: $ORIGINAL_BINARY_PATH"
             ls -la "$ORIGINAL_BINARY_PATH"
-            
+          
             # Ensure destination directory exists (it should, but good practice)
             mkdir -p "$DEST_DIR"
-            
+          
             mv "$ORIGINAL_BINARY_PATH" "$RENAMED_BINARY_PATH"
             echo "Renamed binary to: $RENAMED_BINARY_PATH"
             ls -la "$RENAMED_BINARY_PATH"
@@ -346,7 +346,7 @@ jobs:
           pkgbuild: ./PKGBUILD
           updpkgsums: true
           test: true
-          test_flags: "--clean --cleanbuild --nodeps"
+          test_flags: "--clean --cleanbuild"
           commit_username: ${{ secrets.AUR_USERNAME }}
           commit_email: ${{ secrets.AUR_EMAIL }}
           ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
@@ -392,7 +392,7 @@ jobs:
           pkgbuild: ./PKGBUILD.bin
           updpkgsums: true
           test: true
-          test_flags: "--clean --cleanbuild --nodeps"
+          test_flags: "--clean --cleanbuild"
           commit_username: ${{ secrets.AUR_USERNAME }}
           commit_email: ${{ secrets.AUR_EMAIL }}
           ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}

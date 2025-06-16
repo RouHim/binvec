@@ -422,6 +422,7 @@ name = "binvec"
 version = "0.1.0"
 dependencies = [
  "iced",
+ "iced_core",
  "image 0.25.6",
  "rfd",
  "self_update",
