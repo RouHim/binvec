@@ -1,3 +1,10 @@
+## [1.9.2](https://github.com/RouHim/binvec/compare/v1.9.1...v1.9.2) (2025-06-16)
+
+
+### Bug Fixes
+
+* update pkgver to use VERSION variable in PKGBUILD files ([2ecc685](https://github.com/RouHim/binvec/commit/2ecc68598fbf384b989f135827cd72bcd6911ab1))
+
 ## [1.9.1](https://github.com/RouHim/binvec/compare/v1.9.0...v1.9.1) (2025-06-15)
 
 # [1.9.0](https://github.com/RouHim/binvec/compare/v1.8.0...v1.9.0) (2025-06-15)
