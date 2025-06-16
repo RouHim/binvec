@@ -37,3 +37,4 @@ package() {
   mkdir -p "${pkgdir}/usr/share/licenses/${pkgname}"
   curl -s "https://raw.githubusercontent.com/RouHim/binvec/v${pkgver}/LICENSE" -o "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
 }
+

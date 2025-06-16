@@ -227,7 +227,7 @@ jobs:
         run: |
           REPO="RouHim/binvec"
           LATEST_RELEASE_INFO=$(curl --silent --retry 3 "https://api.github.com/repos/$REPO/releases/latest")
-          LATEST_RELEASE=$(echo "$LATEST_RELEASE_INFO" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+          LATEST_RELEASE=$(echo "$LATEST_RELEASE_INFO" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\\1/')
           UPLOAD_URL=$(echo "$LATEST_RELEASE_INFO" | jq -r '.upload_url')
           
           if [[ -z "$LATEST_RELEASE" || -z "$UPLOAD_URL" ]]; then
@@ -245,7 +245,7 @@ jobs:
             echo "Error: VERSION environment variable is not set"
             exit 1
           fi
-          sed -i "s/version = \"0.0.0\"/version = \"${{ env.VERSION }}\"/g" Cargo.toml
+          sed -i "s/version = \\"0.0.0\\"/version = \\"${{ env.VERSION }}\\"/g" Cargo.toml
           echo "Cargo version is now" $(cargo metadata --no-deps --format-version 1 | jq -r ".packages[0].version")
 
       - name: Install rust toolchain
@@ -260,23 +260,51 @@ jobs:
           shared-key: "build-${{ matrix.target }}"
           save-if: ${{ github.ref == 'refs/heads/main' }}
 
-      - name: Build binary
+      - name: Build and prepare binary for upload
         run: |
           # Build the binary
-          docker run --rm \
-            -v "$(pwd)":/home/rust/src \
-            messense/rust-musl-cross:${{ matrix.target }} \
-            bash -c "cargo build --release && echo CARGO_BUILD_TARGET=\$CARGO_BUILD_TARGET"  > build_output.txt
+          docker run --rm \\
+            -v "$(pwd)":/home/rust/src \\
+            messense/rust-musl-cross:${{ matrix.target }} \\
+            bash -c "cargo build --release && echo CARGO_BUILD_TARGET=\\$CARGO_BUILD_TARGET"  > build_output.txt
           
           # Extract the build target from the output
-          CARGO_BUILD_TARGET=$(grep 'CARGO_BUILD_TARGET=' build_output.txt | cut -d'=' -f2 | tr -d '\r')
+          CARGO_BUILD_TARGET=$(grep 'CARGO_BUILD_TARGET=' build_output.txt | cut -d'=' -f2 | tr -d '\\r')
+          echo "Extracted CARGO_BUILD_TARGET: ${CARGO_BUILD_TARGET}"
           echo "CARGO_BUILD_TARGET=${CARGO_BUILD_TARGET}" >> $GITHUB_ENV
+          
+          ORIGINAL_BINARY_PATH="target/${CARGO_BUILD_TARGET}/release/binvec"
+          RENAMED_BINARY_NAME="binvec-${{ matrix.target }}"
+          DEST_DIR="target/${CARGO_BUILD_TARGET}/release"
+          RENAMED_BINARY_PATH="${DEST_DIR}/${RENAMED_BINARY_NAME}"
+
+          echo "Original binary path: $ORIGINAL_BINARY_PATH"
+          echo "Will be renamed to: $RENAMED_BINARY_PATH"
+
+          if [ -f "$ORIGINAL_BINARY_PATH" ]; then
+            echo "Binary found at: $ORIGINAL_BINARY_PATH"
+            ls -la "$ORIGINAL_BINARY_PATH"
+            
+            # Ensure destination directory exists (it should, but good practice)
+            mkdir -p "$DEST_DIR"
+            
+            mv "$ORIGINAL_BINARY_PATH" "$RENAMED_BINARY_PATH"
+            echo "Renamed binary to: $RENAMED_BINARY_PATH"
+            ls -la "$RENAMED_BINARY_PATH"
+          else
+            echo "ERROR: Binary not found at expected path: $ORIGINAL_BINARY_PATH"
+            echo "Listing contents of expected directory: ${DEST_DIR}/"
+            ls -la "${DEST_DIR}/" || echo "Directory ${DEST_DIR}/ not found or empty."
+            echo "Listing full target directory structure (first 50 lines):"
+            ls -R target | head -n 50
+            exit 1
+          fi
 
       - name: Upload artifact
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.VERSION }}
-          files: target/${{ env.CARGO_BUILD_TARGET }}/release/binvec
+          files: target/${{ env.CARGO_BUILD_TARGET }}/release/binvec-${{ matrix.target }}
           name: Release ${{ env.VERSION }}
           token: ${{ secrets.GITHUB_TOKEN }}
           fail_on_unmatched_files: true
