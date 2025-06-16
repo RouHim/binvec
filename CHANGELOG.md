@@ -1,3 +1,10 @@
+## [1.9.8](https://github.com/RouHim/binvec/compare/1.9.7...1.9.8) (2025-06-16)
+
+
+### Bug Fixes
+
+* update binary source URLs and installation logic for Arch Linux architectures ([772ebfa](https://github.com/RouHim/binvec/commit/772ebfaabe03251669a41f86ad2bac42acf05104))
+
 ## [1.9.7](https://github.com/RouHim/binvec/compare/1.9.6...1.9.7) (2025-06-16)
 
 
