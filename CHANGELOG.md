@@ -1,3 +1,10 @@
+## [1.9.9](https://github.com/RouHim/binvec/compare/1.9.8...1.9.9) (2025-06-16)
+
+
+### Bug Fixes
+
+* update version handling and source URLs in PKGBUILD for Arch Linux packages ([af4b4c9](https://github.com/RouHim/binvec/commit/af4b4c9ef5560795e9c532a731a944f19524537b))
+
 ## [1.9.8](https://github.com/RouHim/binvec/compare/1.9.7...1.9.8) (2025-06-16)
 
 
