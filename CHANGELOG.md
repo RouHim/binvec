@@ -1,3 +1,11 @@
+## [1.9.17](https://github.com/RouHim/binvec/compare/1.9.16...1.9.17) (2025-06-17)
+
+
+### Bug Fixes
+
+* update AUR pipeline to install rustup instead of cargo and streamline toolchain setup ([580d7ef](https://github.com/RouHim/binvec/commit/580d7ef304b26854679d12739df0db818ee83dbd))
+* update AUR pipeline to install rustup instead of cargo and streamline toolchain setup ([da97a80](https://github.com/RouHim/binvec/commit/da97a803bbd9ae629b4c159419ef1abeb8e76881))
+
 ## [1.9.16](https://github.com/RouHim/binvec/compare/1.9.15...1.9.16) (2025-06-17)
 
 
