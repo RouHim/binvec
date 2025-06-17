@@ -1,3 +1,10 @@
+## [1.9.20](https://github.com/RouHim/binvec/compare/1.9.19...1.9.20) (2025-06-17)
+
+
+### Bug Fixes
+
+* remove cargo installation and verification from AUR pipeline ([a5b3655](https://github.com/RouHim/binvec/commit/a5b36559590e2cf69203b6f2180b6422dd667a11))
+
 ## [1.9.19](https://github.com/RouHim/binvec/compare/1.9.18...1.9.19) (2025-06-17)
 
 
