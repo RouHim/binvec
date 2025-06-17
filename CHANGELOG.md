@@ -1,3 +1,10 @@
+## [1.9.21](https://github.com/RouHim/binvec/compare/1.9.20...1.9.21) (2025-06-17)
+
+
+### Bug Fixes
+
+* update package version to 0.0.0 in Cargo.toml ([e284c0d](https://github.com/RouHim/binvec/commit/e284c0d1913c8e239d20428efca2279fcc167ef5))
+
 ## [1.9.20](https://github.com/RouHim/binvec/compare/1.9.19...1.9.20) (2025-06-17)
 
 
