@@ -1,3 +1,10 @@
+## [1.9.15](https://github.com/RouHim/binvec/compare/1.9.14...1.9.15) (2025-06-17)
+
+
+### Bug Fixes
+
+* remove sudo from pacman commands in AUR pipeline ([1d031c6](https://github.com/RouHim/binvec/commit/1d031c6a62f3d32f76a881180d208596f7f865da))
+
 ## [1.9.14](https://github.com/RouHim/binvec/compare/1.9.13...1.9.14) (2025-06-17)
 
 
