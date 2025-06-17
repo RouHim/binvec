@@ -1,3 +1,10 @@
+## [1.9.14](https://github.com/RouHim/binvec/compare/1.9.13...1.9.14) (2025-06-17)
+
+
+### Bug Fixes
+
+* streamline AUR pipeline by consolidating package installations and adding jq ([ccfcaef](https://github.com/RouHim/binvec/commit/ccfcaef38621684259291e5c5049391cc93b4b5d))
+
 ## [1.9.13](https://github.com/RouHim/binvec/compare/1.9.12...1.9.13) (2025-06-16)
 
 
