@@ -1,3 +1,10 @@
+## [1.9.18](https://github.com/RouHim/binvec/compare/1.9.17...1.9.18) (2025-06-17)
+
+
+### Bug Fixes
+
+* add cargo version verification and streamline AUR package installation ([dfffe4f](https://github.com/RouHim/binvec/commit/dfffe4ffd6bc5fc0906285f6e8b7a5ef6da29e72))
+
 ## [1.9.17](https://github.com/RouHim/binvec/compare/1.9.16...1.9.17) (2025-06-17)
 
 
