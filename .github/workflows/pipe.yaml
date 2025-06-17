@@ -323,6 +323,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install necessary packages
+        run: sudo pacman --sync --refresh --noconfirm base-devel cargo jq
+
       - name: Get version
         run: |
           echo "VERSION=${{ needs.create-release.outputs.version }}" >> $GITHUB_ENV
@@ -340,9 +343,6 @@ jobs:
             exit 1
           fi
           echo "VERSION=$LATEST_RELEASE" >> $GITHUB_ENV
-
-      - name: Install necessary packages for AUR
-        run: sudo pacman --sync --refresh --noconfirm base-devel cargo
 
       - name: Publish AUR package
         uses: KSXGitHub/github-actions-deploy-aur@v4.1.1
@@ -387,7 +387,7 @@ jobs:
           echo "VERSION=$LATEST_RELEASE" >> $GITHUB_ENV
 
       - name: Install necessary packages for AUR
-        run: sudo package --sync --refresh --noconfirm base-devel cargo
+        run: sudo pacman --sync --refresh --noconfirm base-devel cargo jq
 
       - name: Update version in PKGBUILD.bin
         run: |
