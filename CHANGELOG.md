@@ -1,3 +1,10 @@
+## [1.9.19](https://github.com/RouHim/binvec/compare/1.9.18...1.9.19) (2025-06-17)
+
+
+### Bug Fixes
+
+* replace cargo installation with rustup in AUR pipeline ([bb6ff9f](https://github.com/RouHim/binvec/commit/bb6ff9f879766fc60e52376a559a60578403e0f4))
+
 ## [1.9.18](https://github.com/RouHim/binvec/compare/1.9.17...1.9.18) (2025-06-17)
 
 
