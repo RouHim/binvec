@@ -324,13 +324,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install necessary packages
-        run: pacman --sync --refresh --noconfirm base-devel cargo jq
+        run: pacman --sync --refresh --noconfirm base-devel rustup jq
 
       - name: Install rust toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
+        run: |
+          rustup default stable
+          rustc --version
+          cargo --version
 
       - name: Get version
         run: |
@@ -365,55 +365,55 @@ jobs:
           force_push: "true"
           ssh_keyscan_types: "rsa,ecdsa,ed25519"
 
-  publish-aur-bin:
-    name: Publish to AUR (Binary Package)
-    needs: [ build ]
-    runs-on: ubuntu-latest
-    container:
-      image: archlinux:latest
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    publish-aur-bin:
+      name: Publish to AUR (Binary Package)
+      needs: [ build ]
+      runs-on: ubuntu-latest
+      container:
+        image: archlinux:latest
+      if: github.ref == 'refs/heads/main'
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
 
-      - name: Get version
-        run: |
-          echo "VERSION=${{ needs.create-release.outputs.version }}" >> $GITHUB_ENV
+        - name: Get version
+          run: |
+            echo "VERSION=${{ needs.create-release.outputs.version }}" >> $GITHUB_ENV
 
-      - name: Fallback to fetch version if needed
-        if: env.VERSION == ''
-        run: |
-          REPO="RouHim/binvec"
-          LATEST_RELEASE_JSON=$(curl --silent --retry 3 "https://api.github.com/repos/$REPO/releases/latest")
-          LATEST_RELEASE=$(echo "$LATEST_RELEASE_JSON" | jq -r '.tag_name')
+        - name: Fallback to fetch version if needed
+          if: env.VERSION == ''
+          run: |
+            REPO="RouHim/binvec"
+            LATEST_RELEASE_JSON=$(curl --silent --retry 3 "https://api.github.com/repos/$REPO/releases/latest")
+            LATEST_RELEASE=$(echo "$LATEST_RELEASE_JSON" | jq -r '.tag_name')
+            
+            if [[ -z "$LATEST_RELEASE" || "$LATEST_RELEASE" == "null" ]]; then
+              echo "Failed to fetch release information or tag_name is null."
+              echo "API Response: $LATEST_RELEASE_JSON" # For better debugging
+              exit 1
+            fi
+            echo "VERSION=$LATEST_RELEASE" >> $GITHUB_ENV
 
-          if [[ -z "$LATEST_RELEASE" || "$LATEST_RELEASE" == "null" ]]; then
-            echo "Failed to fetch release information or tag_name is null."
-            echo "API Response: $LATEST_RELEASE_JSON" # For better debugging
-            exit 1
-          fi
-          echo "VERSION=$LATEST_RELEASE" >> $GITHUB_ENV
+        - name: Install necessary packages for AUR
+          run: pacman --sync --refresh --noconfirm base-devel cargo jq
 
-      - name: Install necessary packages for AUR
-        run: pacman --sync --refresh --noconfirm base-devel cargo jq
+        - name: Update version in PKGBUILD.bin
+          run: |
+            sed -i "s/pkgver=.*/pkgver=$VERSION/g" PKGBUILD.bin
 
-      - name: Update version in PKGBUILD.bin
-        run: |
-          sed -i "s/pkgver=.*/pkgver=$VERSION/g" PKGBUILD.bin
-
-      - name: Publish AUR Binary Package
-        uses: KSXGitHub/github-actions-deploy-aur@v4.1.1
-        with:
-          pkgname: binvec-bin
-          pkgbuild: ./PKGBUILD.bin
-          updpkgsums: true
-          test: true
-          test_flags: "--clean --cleanbuild"
-          commit_username: ${{ secrets.AUR_USERNAME }}
-          commit_email: ${{ secrets.AUR_EMAIL }}
-          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
-          commit_message: "Update to v${{ env.VERSION }}"
-          force_push: "true"
-          ssh_keyscan_types: "rsa,ecdsa,ed25519"
+        - name: Publish AUR Binary Package
+          uses: KSXGitHub/github-actions-deploy-aur@v4.1.1
+          with:
+            pkgname: binvec-bin
+            pkgbuild: ./PKGBUILD.bin
+            updpkgsums: true
+            test: true
+            test_flags: "--clean --cleanbuild"
+            commit_username: ${{ secrets.AUR_USERNAME }}
+            commit_email: ${{ secrets.AUR_EMAIL }}
+            ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+            commit_message: "Update to v${{ env.VERSION }}"
+            force_push: "true"
+            ssh_keyscan_types: "rsa,ecdsa,ed25519"
 
 
