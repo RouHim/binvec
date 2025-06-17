@@ -329,6 +329,9 @@ jobs:
       - name: Install rust toolchain
         run: rustup default stable
 
+      - name: Verify cargo
+        run: cargo --version
+
       - name: Get version
         run: |
           echo "VERSION=${{ needs.create-release.outputs.version }}" >> $GITHUB_ENV
@@ -373,6 +376,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install necessary packages for AUR
+        run: pacman --sync --refresh --noconfirm jq
+
       - name: Get version
         run: |
           echo "VERSION=${{ needs.create-release.outputs.version }}" >> $GITHUB_ENV
@@ -390,9 +396,6 @@ jobs:
             exit 1
           fi
           echo "VERSION=$LATEST_RELEASE" >> $GITHUB_ENV
-
-      - name: Install necessary packages for AUR
-        run: pacman --sync --refresh --noconfirm base-devel cargo jq
 
       - name: Update version in PKGBUILD.bin
         run: |
