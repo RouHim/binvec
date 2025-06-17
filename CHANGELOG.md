@@ -1,3 +1,10 @@
+## [1.9.16](https://github.com/RouHim/binvec/compare/1.9.15...1.9.16) (2025-06-17)
+
+
+### Bug Fixes
+
+* add rust toolchain installation and update container image in AUR pipeline ([96a14b5](https://github.com/RouHim/binvec/commit/96a14b54ccdcec6b9b907fee17e44e384603baa7))
+
 ## [1.9.15](https://github.com/RouHim/binvec/compare/1.9.14...1.9.15) (2025-06-17)
 
 
