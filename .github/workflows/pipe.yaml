@@ -324,10 +324,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install necessary packages
-        run: pacman --sync --refresh --noconfirm base-devel rustup jq
-
-      - name: Install rust toolchain
-        run: rustup default stable
+        run: pacman --sync --refresh --noconfirm base-devel cargo jq
 
       - name: Verify cargo
         run: cargo --version
