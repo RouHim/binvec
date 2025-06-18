@@ -1,3 +1,10 @@
+## [1.9.23](https://github.com/RouHim/binvec/compare/1.9.22...1.9.23) (2025-06-18)
+
+
+### Bug Fixes
+
+* update target triples in pipeline configuration for consistency ([03004de](https://github.com/RouHim/binvec/commit/03004debd9a0197109e660d0faf188a1df43b37b))
+
 ## [1.9.22](https://github.com/RouHim/binvec/compare/1.9.21...1.9.22) (2025-06-18)
 
 
