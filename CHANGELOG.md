@@ -1,3 +1,10 @@
+## [1.9.22](https://github.com/RouHim/binvec/compare/1.9.21...1.9.22) (2025-06-18)
+
+
+### Bug Fixes
+
+* streamline binary build process and update cargo dependencies ([7593f3a](https://github.com/RouHim/binvec/commit/7593f3a0b49e4cad3c82322a79330999cb905f4f))
+
 ## [1.9.21](https://github.com/RouHim/binvec/compare/1.9.20...1.9.21) (2025-06-17)
 
 
