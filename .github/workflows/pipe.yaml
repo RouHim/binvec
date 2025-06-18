@@ -150,15 +150,16 @@ jobs:
 
       - name: Build binary
         run: |
-          # Build the binary
-          docker run --rm \
-            -v "$(pwd)":/home/rust/src \
-            messense/rust-musl-cross:${{ matrix.target }} \
-            bash -c "cargo build --release && echo CARGO_BUILD_TARGET=\$CARGO_BUILD_TARGET" > build_output.txt
+          # Build the binary with regular cargo build
+          cargo build --release
           
-          # Extract the build target from the output
-          CARGO_BUILD_TARGET=$(grep 'CARGO_BUILD_TARGET=' build_output.txt | cut -d'=' -f2 | tr -d '\r')
+          # Set the target directory path
+          CARGO_BUILD_TARGET=$(rustc -vV | grep host | cut -d' ' -f2)
+          echo "Using host target: ${CARGO_BUILD_TARGET}"
           echo "CARGO_BUILD_TARGET=${CARGO_BUILD_TARGET}" >> $GITHUB_ENV
+          
+          echo "Binary built at: target/release/binvec"
+          ls -la "target/release/binvec" || echo "Binary not found!"
 
   create-release:
     name: Create new release
@@ -263,20 +264,17 @@ jobs:
 
       - name: Build and prepare binary for upload
         run: |
-          # Build the binary
-          docker run --rm \
-            -v "$(pwd)":/home/rust/src \
-            messense/rust-musl-cross:${{ matrix.target }} \
-            bash -c "cargo build --release && echo CARGO_BUILD_TARGET=\$CARGO_BUILD_TARGET" > build_output.txt
+          # Build the binary with regular cargo build
+          cargo build --release
           
-          # Extract the build target from the output
-          CARGO_BUILD_TARGET=$(grep 'CARGO_BUILD_TARGET=' build_output.txt | cut -d'=' -f2 | tr -d '\r')
-          echo "Extracted CARGO_BUILD_TARGET: ${CARGO_BUILD_TARGET}"
+          # Set the target directory path
+          CARGO_BUILD_TARGET=$(rustc -vV | grep host | cut -d' ' -f2)
+          echo "Using host target: ${CARGO_BUILD_TARGET}"
           echo "CARGO_BUILD_TARGET=${CARGO_BUILD_TARGET}" >> $GITHUB_ENV
           
-          ORIGINAL_BINARY_PATH="target/${CARGO_BUILD_TARGET}/release/binvec"
+          ORIGINAL_BINARY_PATH="target/release/binvec"
           RENAMED_BINARY_NAME="binvec-${{ matrix.target }}"
-          DEST_DIR="target/${CARGO_BUILD_TARGET}/release"
+          DEST_DIR="target/release"
           RENAMED_BINARY_PATH="${DEST_DIR}/${RENAMED_BINARY_NAME}"
 
           echo "Original binary path: $ORIGINAL_BINARY_PATH"
@@ -289,8 +287,8 @@ jobs:
             # Ensure destination directory exists (it should, but good practice)
             mkdir -p "$DEST_DIR"
           
-            mv "$ORIGINAL_BINARY_PATH" "$RENAMED_BINARY_PATH"
-            echo "Renamed binary to: $RENAMED_BINARY_PATH"
+            cp "$ORIGINAL_BINARY_PATH" "$RENAMED_BINARY_PATH"
+            echo "Copied binary to: $RENAMED_BINARY_PATH"
             ls -la "$RENAMED_BINARY_PATH"
           else
             echo "ERROR: Binary not found at expected path: $ORIGINAL_BINARY_PATH"
@@ -405,5 +403,4 @@ jobs:
           commit_message: "Update to v${{ env.VERSION }}"
           force_push: "true"
           ssh_keyscan_types: "rsa,ecdsa,ed25519"
-
 
