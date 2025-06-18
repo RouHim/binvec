@@ -9,15 +9,25 @@
 </p>
 
 <p align="center">
-    <i>BinVec is a graphical program that converts raster graphics into vector graphics using various parameters. BinVec is available for Linux, macOS, and Windows.</i>
+    <i>BinVec is a graphical program that converts raster graphics into vector graphics with real-time previews. BinVec is built with Rust and is available for Linux only.</i>
 </p>
 
 ## Features
 
-* Convert raster graphics to vector graphics using various parameters such as threshold, smoothing, and simplification.
-* Support binary and color vector graphics.
-* Support for multiple input formats including PNG, JPEG, GIF.
-* Intuitive graphical user interface with preview window and real-time updates.
+* Convert raster graphics to vector graphics with live previewing
+* Two conversion modes:
+  * Black and white vectorization with threshold adjustment
+  * Color vectorization with customizable color count and gradient steps
+* Advanced configuration options:
+  * Binarization threshold control
+  * Alpha channel handling
+  * Speckle filtering
+  * Color precision control
+  * Black/white inversion
+* One-click SVG export to the same location as the source image
+* Support for multiple input formats: PNG, JPEG, GIF, BMP, WebP, ICO, TIFF, AVIF, PNM, DDS, TGA
+* Built with Rust using the Iced UI toolkit for a responsive and native feel
+* Automatic updates
 
 ## Screenshot
 
@@ -27,13 +37,12 @@
 
 ### Pre-built Binaries
 
-Pre-built binaries are available for the following architectures:
+Pre-built binaries are available for the following Linux architectures:
 
 - x86_64 (64-bit Intel/AMD)
 - aarch64 (64-bit ARM)
 - armv7 (32-bit ARM)
 - arm (32-bit ARM)
-- riscv64gc (64-bit RISC-V)
 
 Download the latest release from the [GitHub releases page](https://github.com/RouHim/binvec/releases/latest).
 
