@@ -132,7 +132,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [ 'x86_64-musl' ]  # Limit to one target for feature branches for speed
+        target: [ 'x86_64-unknown-linux-gnu' ]  # Standard target triple instead of musl
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -212,7 +212,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [ 'x86_64-musl', 'aarch64-musl', 'armv7-musleabihf', 'arm-musleabihf' ]
+        target: [ 'x86_64-unknown-linux-gnu', 'aarch64-unknown-linux-gnu', 'armv7-unknown-linux-gnueabihf', 'arm-unknown-linux-gnueabihf' ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -303,7 +303,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.VERSION }}
-          files: target/${{ env.CARGO_BUILD_TARGET }}/release/binvec-${{ matrix.target }}
+          files: target/release/binvec-${{ matrix.target }}
           name: Release ${{ env.VERSION }}
           token: ${{ secrets.GITHUB_TOKEN }}
           fail_on_unmatched_files: true
