@@ -1,3 +1,10 @@
+## [1.9.24](https://github.com/RouHim/binvec/compare/1.9.23...1.9.24) (2025-06-18)
+
+
+### Bug Fixes
+
+* update Rust build target names in PKGBUILD for consistency ([74560d7](https://github.com/RouHim/binvec/commit/74560d75bfd2824453354704f209143d7b752580))
+
 ## [1.9.23](https://github.com/RouHim/binvec/compare/1.9.22...1.9.23) (2025-06-18)
 
 
