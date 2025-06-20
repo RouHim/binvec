@@ -1,3 +1,10 @@
+# [1.11.0](https://github.com/RouHim/binvec/compare/1.10.0...1.11.0) (2025-06-20)
+
+
+### Features
+
+* add Windows binary extension and update file handling in pipeline ([3150f97](https://github.com/RouHim/binvec/commit/3150f97d73f8b1e85f8afee865af90c148f94223))
+
 # [1.10.0](https://github.com/RouHim/binvec/compare/1.9.25...1.10.0) (2025-06-20)
 
 
