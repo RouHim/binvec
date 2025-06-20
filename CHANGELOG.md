@@ -1,3 +1,10 @@
+## [1.9.25](https://github.com/RouHim/binvec/compare/1.9.24...1.9.25) (2025-06-20)
+
+
+### Bug Fixes
+
+* update README to reflect new features and Linux-only availability ([cb50e4c](https://github.com/RouHim/binvec/commit/cb50e4c82c7dfba976e06abdaffeb05e0df6aadd))
+
 ## [1.9.24](https://github.com/RouHim/binvec/compare/1.9.23...1.9.24) (2025-06-18)
 
 
