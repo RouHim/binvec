@@ -273,7 +273,14 @@ jobs:
           echo "CARGO_BUILD_TARGET=${CARGO_BUILD_TARGET}" >> $GITHUB_ENV
           
           ORIGINAL_BINARY_PATH="target/release/binvec"
-          RENAMED_BINARY_NAME="binvec-${{ matrix.target }}"
+          
+          # Add .exe extension for Windows targets
+          if [[ "${{ matrix.target }}" == *"windows"* ]]; then
+            RENAMED_BINARY_NAME="binvec-${{ matrix.target }}.exe"
+          else
+            RENAMED_BINARY_NAME="binvec-${{ matrix.target }}"
+          fi
+          
           DEST_DIR="target/release"
           RENAMED_BINARY_PATH="${DEST_DIR}/${RENAMED_BINARY_NAME}"
 
@@ -303,7 +310,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.VERSION }}
-          files: target/release/binvec-${{ matrix.target }}
+          files: target/release/binvec-${{ matrix.target }}*
           name: Release ${{ env.VERSION }}
           token: ${{ secrets.GITHUB_TOKEN }}
           fail_on_unmatched_files: true
