@@ -1,3 +1,16 @@
+# [1.10.0](https://github.com/RouHim/binvec/compare/1.9.25...1.10.0) (2025-06-20)
+
+
+### Bug Fixes
+
+* add missing newline at end of file in updater.rs ([b275a21](https://github.com/RouHim/binvec/commit/b275a21883b9c2318cb2a8f35d6350f29e141c37))
+
+
+### Features
+
+* add Windows support with configuration and desktop entry ([8a23ec2](https://github.com/RouHim/binvec/commit/8a23ec2f2c1f20a41a8589ea5dd8420f70d2f714))
+* add Windows target to pipeline configuration ([a7828f7](https://github.com/RouHim/binvec/commit/a7828f7bf4ee9d074515d0db078e5d5fa8e9feaa))
+
 ## [1.9.25](https://github.com/RouHim/binvec/compare/1.9.24...1.9.25) (2025-06-20)
 
 
