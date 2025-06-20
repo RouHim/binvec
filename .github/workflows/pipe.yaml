@@ -132,7 +132,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [ 'x86_64-unknown-linux-gnu' ]  # Standard target triple instead of musl
+        target: [ 'x86_64-unknown-linux-gnu', 'x86_64-pc-windows-gnu' ]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -212,7 +212,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [ 'x86_64-unknown-linux-gnu', 'aarch64-unknown-linux-gnu', 'armv7-unknown-linux-gnueabihf', 'arm-unknown-linux-gnueabihf' ]
+        target: [ 'x86_64-unknown-linux-gnu', 'aarch64-unknown-linux-gnu', 'armv7-unknown-linux-gnueabihf', 'arm-unknown-linux-gnueabihf', 'x86_64-pc-windows-gnu' ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

@@ -58,3 +58,13 @@ fn exec(command: &mut process::Command) -> io::Error {
     // of the current process stops here.
     command.exec()
 }
+
+#[cfg(windows)]
+fn exec(command: &mut process::Command) -> Result<(), io::Error> {
+    // On Windows, we cannot replace the current process, so we just spawn a new one
+    // and exit the current one.
+    match command.spawn() {
+        Ok(_) => return Ok(()), // Exit successfully, allowing cleanup
+        Err(err) => err,
+    }
+}
