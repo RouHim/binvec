@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=BinVec
+GenericName=Raster to Vector Converter
+Comment=Convert raster graphics to vector graphics with real-time previews
+Exec=binvec
+Icon=binvec
+Terminal=false
+Categories=Graphics;2DGraphics;RasterGraphics;
+Keywords=vectorization;raster;vector;svg;converter;
+StartupNotify=true
+

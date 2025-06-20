@@ -34,14 +34,9 @@ package() {
     install -Dm755 "binvec-${pkgver}-arm-unknown-linux-gnueabihf" "${pkgdir}/usr/bin/binvec"
   fi
 
-  # Create documentation directory
-  mkdir -p "${pkgdir}/usr/share/doc/${pkgname}"
+  # Install desktop file
+  install -Dm644 "${startdir}/.desktop/binvec.desktop" "${pkgdir}/usr/share/applications/binvec.desktop"
 
-  # Download the documentation files
-  curl -s "https://raw.githubusercontent.com/RouHim/binvec/${pkgver}/README.md" -o "${pkgdir}/usr/share/doc/${pkgname}/README.md"
-  curl -s "https://raw.githubusercontent.com/RouHim/binvec/${pkgver}/CHANGELOG.md" -o "${pkgdir}/usr/share/doc/${pkgname}/CHANGELOG.md"
-
-  # Download the license file
-  mkdir -p "${pkgdir}/usr/share/licenses/${pkgname}"
-  curl -s "https://raw.githubusercontent.com/RouHim/binvec/${pkgver}/LICENSE" -o "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+  # Install icon
+  install -Dm644 "${startdir}/icon.png" "${pkgdir}/usr/share/pixmaps/binvec.png"
 }

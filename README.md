@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-    <i>BinVec is a graphical program that converts raster graphics into vector graphics with real-time previews. BinVec is built with Rust and is available for Linux only.</i>
+    <i>BinVec is a graphical program that converts raster graphics into vector graphics with real-time previews. BinVec is built with Rust and is available for Linux and Windows.</i>
 </p>
 
 ## Features
@@ -37,12 +37,16 @@
 
 ### Pre-built Binaries
 
-Pre-built binaries are available for the following Linux architectures:
+Pre-built binaries are available for the following platforms:
 
+#### Linux
 - x86_64 (64-bit Intel/AMD)
 - aarch64 (64-bit ARM)
 - armv7 (32-bit ARM)
 - arm (32-bit ARM)
+
+#### Windows
+- x86_64 (64-bit Intel/AMD)
 
 Download the latest release from the [GitHub releases page](https://github.com/RouHim/binvec/releases/latest).
 
@@ -76,12 +80,20 @@ BinVec is written in Rust. To build from source:
 
 3. **Build the project**:
    ```bash
+   # For Linux
    cargo build --release
+   
+   # For Windows (requires MinGW-w64)
+   cargo build --release --target x86_64-pc-windows-gnu
    ```
 
 4. **Run the application**:
    ```bash
+   # For Linux
    ./target/release/binvec
+   
+   # For Windows
+   ./target/x86_64-pc-windows-gnu/release/binvec.exe
    ```
 
 ## License

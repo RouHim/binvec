@@ -23,10 +23,9 @@ package() {
   # Install binary
   install -Dm755 "target/release/$pkgname" "$pkgdir/usr/bin/$pkgname"
 
-  # Install documentation
-  install -Dm644 "README.md" "$pkgdir/usr/share/doc/$pkgname/README.md"
-  install -Dm644 "CHANGELOG.md" "$pkgdir/usr/share/doc/$pkgname/CHANGELOG.md"
+  # Install desktop file
+  install -Dm644 ".desktop/binvec.desktop" "$pkgdir/usr/share/applications/binvec.desktop"
 
-  # Install license
-  install -Dm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+  # Install icon
+  install -Dm644 "icon.png" "$pkgdir/usr/share/pixmaps/binvec.png"
 }
