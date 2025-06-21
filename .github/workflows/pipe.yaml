@@ -356,6 +356,10 @@ jobs:
             echo "Updated desktop file version to ${{ env.VERSION }}"
           else
             echo "Desktop file not found at .desktop/binvec.desktop"
+
+      - name: Update version in PKGBUILD.bin
+        run: |
+          sed -i "s/pkgver=.*/pkgver=$VERSION/g" PKGBUILD.bin
           fi
 
       - name: Publish AUR package
