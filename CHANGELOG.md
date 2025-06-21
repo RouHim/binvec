@@ -1,3 +1,12 @@
+# [1.13.0](https://github.com/RouHim/binvec/compare/1.12.0...1.13.0) (2025-06-21)
+
+
+### Features
+
+* update desktop entry and PKGBUILD for Binvec application, improve metadata and file paths ([5c68021](https://github.com/RouHim/binvec/commit/5c680216750c2bef00051c45b4dacc38240352f5))
+* update icon path in main.rs for Binvec application ([9278ec2](https://github.com/RouHim/binvec/commit/9278ec2229d197cbaee37633c09ddfed1abe8985))
+* update PKGBUILD to use dynamic versioning for Binvec application ([b3f28af](https://github.com/RouHim/binvec/commit/b3f28af40afc1b7ce801d603ef3eb3fb079c5f1f))
+
 # [1.12.0](https://github.com/RouHim/binvec/compare/1.11.0...1.12.0) (2025-06-21)
 
 
