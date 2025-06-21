@@ -1,3 +1,10 @@
+# [1.12.0](https://github.com/RouHim/binvec/compare/1.11.0...1.12.0) (2025-06-21)
+
+
+### Features
+
+* update desktop entry for Binvec application with improved metadata ([7588ad1](https://github.com/RouHim/binvec/commit/7588ad126fc6f0f81c59738a387d3f539f1566e0))
+
 # [1.11.0](https://github.com/RouHim/binvec/compare/1.10.0...1.11.0) (2025-06-20)
 
 
