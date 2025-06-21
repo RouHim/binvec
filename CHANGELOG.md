@@ -1,3 +1,10 @@
+# [1.16.0](https://github.com/RouHim/binvec/compare/1.15.0...1.16.0) (2025-06-21)
+
+
+### Features
+
+* update PKGBUILD.bin version dynamically in CI pipeline ([ddc152e](https://github.com/RouHim/binvec/commit/ddc152edf34aefcb7101bfd138840bf309d29b34))
+
 # [1.15.0](https://github.com/RouHim/binvec/compare/1.14.0...1.15.0) (2025-06-21)
 
 
