@@ -1,3 +1,10 @@
+# [1.15.0](https://github.com/RouHim/binvec/compare/1.14.0...1.15.0) (2025-06-21)
+
+
+### Features
+
+* update dependencies in Cargo.lock for improved compatibility ([dea8105](https://github.com/RouHim/binvec/commit/dea81055ff917654ebb37156d0e82b1e3d999466))
+
 # [1.14.0](https://github.com/RouHim/binvec/compare/1.13.0...1.14.0) (2025-06-21)
 
 
