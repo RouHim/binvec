@@ -349,9 +349,9 @@ jobs:
           fi
           echo "VERSION=$LATEST_RELEASE" >> $GITHUB_ENV
 
-      - name: Update version in PKGBUILD.bin
+      - name: Update version in PKGBUILD
         run: |
-          sed -i "s/pkgver=.*/pkgver=$VERSION/g" PKGBUILD.bin
+          sed -i "s/pkgver=.*/pkgver=$VERSION/g" PKGBUILD
           fi
 
       - name: Publish AUR package
