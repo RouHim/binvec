@@ -349,14 +349,6 @@ jobs:
           fi
           echo "VERSION=$LATEST_RELEASE" >> $GITHUB_ENV
 
-      - name: Update desktop file version
-        run: |
-          if [ -f .desktop/binvec.desktop ]; then
-            sed -i "s/Version=1.0/Version=${{ env.VERSION }}/" .desktop/binvec.desktop
-            echo "Updated desktop file version to ${{ env.VERSION }}"
-          else
-            echo "Desktop file not found at .desktop/binvec.desktop"
-
       - name: Update version in PKGBUILD.bin
         run: |
           sed -i "s/pkgver=.*/pkgver=$VERSION/g" PKGBUILD.bin
