@@ -14,7 +14,7 @@ pub fn main() -> iced::Result {
     updater::update();
 
     let window_settings = iced::window::Settings {
-        icon: icon::from_file_data(include_bytes!("binvec-1.12.0/icon.png"), None).ok(),
+        icon: icon::from_file_data(include_bytes!("../.desktop/icon.png"), None).ok(),
         size: iced::Size::new(800.0, 600.0),
         ..iced::window::Settings::default()
     };
