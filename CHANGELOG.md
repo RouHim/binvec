@@ -1,3 +1,10 @@
+# [1.18.0](https://github.com/RouHim/binvec/compare/1.17.0...1.18.0) (2025-06-21)
+
+
+### Features
+
+* update versioning step in CI pipeline to use PKGBUILD instead of PKGBUILD.bin ([1f4361d](https://github.com/RouHim/binvec/commit/1f4361da1114e7422680b916a41bd4027e9910de))
+
 # [1.17.0](https://github.com/RouHim/binvec/compare/1.16.0...1.17.0) (2025-06-21)
 
 
