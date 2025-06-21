@@ -11,7 +11,13 @@
     }],
     "@semantic-release/release-notes-generator",
     "@semantic-release/changelog",
-    "@semantic-release/git",
+    ["@semantic-release/exec", {
+      "prepareCmd": "sed -i \"s/Version=1.0/Version=${nextRelease.version}/\" .desktop/binvec.desktop && sed -i 's/version = \"0.0.0\"/version = \"${nextRelease.version}\"/g' Cargo.toml"
+    }],
+    ["@semantic-release/git", {
+      "assets": ["CHANGELOG.md", ".desktop/binvec.desktop", "Cargo.toml"],
+      "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+    }],
     "@semantic-release/github"
   ]
 }
