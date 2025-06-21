@@ -38,5 +38,5 @@ package() {
   install -Dm644 "${startdir}/.desktop/binvec.desktop" "${pkgdir}/usr/share/applications/binvec.desktop"
 
   # Install icon
-  install -Dm644 "${startdir}/icon.png" "${pkgdir}/usr/share/pixmaps/binvec.png"
+  install -Dm644 "${startdir}/.desktop/icon.png" "${pkgdir}/usr/share/pixmaps/binvec.png"
 }

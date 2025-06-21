@@ -1,3 +1,5 @@
 .idea/
 .secrets
 target
+binvec-*.tar.gz
+src/binvec*

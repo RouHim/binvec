@@ -1,11 +1,11 @@
 [Desktop Entry]
+Version=1.0
 Type=Application
 Name=Binvec
-Comment=Convert raster graphics to vector graphics
-Exec=binvec %F
+Comment=A simple application to convert raster graphics to vector graphics
+Exec=binvec
 Icon=binvec
 Terminal=false
-Categories=Graphics;VectorGraphics;
-MimeType=image/png;image/jpeg;image/bmp;image/webp;image/tiff;image/gif;
-Keywords=vector;image;conversion;svg;trace;
+Categories=Graphics;2DGraphics;RasterGraphics;VectorGraphics;
+Keywords=vector;graphics;converter;raster;
 
