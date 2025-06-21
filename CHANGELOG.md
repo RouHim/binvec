@@ -1,3 +1,10 @@
+# [1.17.0](https://github.com/RouHim/binvec/compare/1.16.0...1.17.0) (2025-06-21)
+
+
+### Features
+
+* remove desktop file version update step from CI pipeline ([94821d6](https://github.com/RouHim/binvec/commit/94821d695d028496ad38d43c30a793ed5bc379e6))
+
 # [1.16.0](https://github.com/RouHim/binvec/compare/1.15.0...1.16.0) (2025-06-21)
 
 
