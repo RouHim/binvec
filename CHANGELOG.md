@@ -1,3 +1,10 @@
+## [1.18.1](https://github.com/RouHim/binvec/compare/1.18.0...1.18.1) (2025-06-21)
+
+
+### Bug Fixes
+
+* remove unnecessary conditional in version update step of CI pipeline ([3f0de0c](https://github.com/RouHim/binvec/commit/3f0de0c60083f113aa1075b0fb580bf574957d7c))
+
 # [1.18.0](https://github.com/RouHim/binvec/compare/1.17.0...1.18.0) (2025-06-21)
 
 
