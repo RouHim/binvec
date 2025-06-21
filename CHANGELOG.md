@@ -1,3 +1,11 @@
+# [1.14.0](https://github.com/RouHim/binvec/compare/1.13.0...1.14.0) (2025-06-21)
+
+
+### Features
+
+* simplify file paths in PKGBUILD for Binvec application ([fa66553](https://github.com/RouHim/binvec/commit/fa66553165bef9ae885a61cf6887f09cecf47da9))
+* update desktop file versioning and PKGBUILD for Binvec application ([2f85081](https://github.com/RouHim/binvec/commit/2f850818314e1512af91bead236180e5b23ea69b))
+
 # [1.13.0](https://github.com/RouHim/binvec/compare/1.12.0...1.13.0) (2025-06-21)
 
 
