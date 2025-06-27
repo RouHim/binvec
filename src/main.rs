@@ -268,6 +268,8 @@ impl UiState {
         // Add Save to SVG button
         controls_column = controls_column.push(if self.is_saving {
             button("Saving...")
+        } else if self.vector_image.is_none() {
+            button("Save to SVG") // Disabled button when no image is loaded
         } else {
             button("Save to SVG").on_press(UiMessage::SaveToSvgPressed)
         });
