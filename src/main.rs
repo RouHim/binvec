@@ -1,9 +1,9 @@
 mod image_processor;
 mod updater;
 
-use iced::widget::{Column, Row, Rule, button, checkbox, column, svg};
+use iced::widget::{Column, Row, button, checkbox, column, container, scrollable, svg, text};
 use iced::window::icon;
-use iced::{Alignment, Center, Task, Theme};
+use iced::{Center, Length, Task, Theme};
 use std::fs;
 use std::io::Write;
 use std::path::PathBuf;
@@ -15,7 +15,8 @@ pub fn main() -> iced::Result {
 
     let window_settings = iced::window::Settings {
         icon: icon::from_file_data(include_bytes!("../.desktop/icon.png"), None).ok(),
-        size: iced::Size::new(800.0, 600.0),
+        size: iced::Size::new(950.0, 700.0),
+        min_size: Some(iced::Size::new(800.0, 600.0)),
         ..iced::window::Settings::default()
     };
 
@@ -181,135 +182,246 @@ impl UiState {
     }
 
     fn view(&self) -> Column<UiMessage> {
-        let mut controls_column = column![].padding(20).spacing(10).align_x(Center);
+        // Create a header with title and current filename
+        let header = {
+            let mut row = Row::new().spacing(20).padding(20);
 
-        // Button to open image file dialog
-        controls_column = controls_column.push(if self.is_rendering {
-            button("Rendering...") // No on_press while rendering
-        } else {
-            button("Open Image").on_press(UiMessage::OpenImageButtonPressed)
-        });
+            // App title with larger text
+            row = row.push(text(APP_NAME).size(28));
 
-        // Add With colors checkbox
-        controls_column = controls_column.push(
-            checkbox("With colors", self.vector_image_config.with_color)
-                .on_toggle(UiMessage::WithColorToggled),
-        );
+            // Display current filename if an image is loaded
+            if let Some(path) = &self.image_path {
+                if let Some(name) = path.file_name().and_then(|n| n.to_str()) {
+                    row = row.push(text(format!("File: {name}")).size(16));
+                }
+            }
 
-        // Add controls that are common or specific to black and white mode
-        if !self.vector_image_config.with_color {
-            // Ignore Alpha Channel checkbox (only for B&W mode)
-            controls_column = controls_column.push(
-                checkbox(
-                    "Ignore alpha channel",
-                    self.vector_image_config.ignore_alpha_channel,
-                )
-                .on_toggle(UiMessage::IgnoreAlphaChannelToggled),
-            );
-
-            // Black / White Threshold slider (only for B&W mode)
-            controls_column = controls_column.push(iced::widget::text("Black / White Threshold"));
-            controls_column = controls_column.push(
-                iced::widget::slider(
-                    0..=255,
-                    self.vector_image_config.binarize_threshold as u32,
-                    UiMessage::BinarizeThresholdChanged,
-                )
-                .step(1_u32),
-            );
-
-            // Invert black / white checkbox (only for B&W mode)
-            controls_column = controls_column.push(
-                checkbox(
-                    "Invert black / white",
-                    self.vector_image_config.invert_binary,
-                )
-                .on_toggle(UiMessage::InvertBinaryToggled),
-            );
-        }
-
-        // General filter threshold slider (common to both modes)
-        controls_column = controls_column.push(iced::widget::text("General filter threshold"));
-        controls_column = controls_column.push(
-            iced::widget::slider(
-                0..=128,
-                self.vector_image_config.filter_speckle as u32,
-                UiMessage::FilterSpeckleChanged,
-            )
-            .step(1_u32),
-        );
-
-        // Add controls specific to color mode
-        if self.vector_image_config.with_color {
-            // Color count slider (only for color mode)
-            controls_column = controls_column.push(iced::widget::text("Color count"));
-            controls_column = controls_column.push(
-                iced::widget::slider(
-                    0..=8,
-                    self.vector_image_config.color_precision as u32,
-                    UiMessage::ColorPrecisionChanged,
-                )
-                .step(1_u32),
-            );
-
-            // Gradient Step slider (only for color mode)
-            controls_column =
-                controls_column.push(iced::widget::text("Stepping of the Color gradient"));
-            controls_column = controls_column.push(
-                iced::widget::slider(
-                    0..=128,
-                    self.vector_image_config.gradient_step as u32,
-                    UiMessage::GradientStepChanged,
-                )
-                .step(1_u32),
-            );
-        }
-
-        // Add Save to SVG button
-        controls_column = controls_column.push(if self.is_saving {
-            button("Saving...")
-        } else if self.vector_image.is_none() {
-            button("Save to SVG") // Disabled button when no image is loaded
-        } else {
-            button("Save to SVG").on_press(UiMessage::SaveToSvgPressed)
-        });
-
-        // Display save status message (only error)
-        if let Some(false) = self.save_result {
-            controls_column = controls_column.push(iced::widget::text("Failed to save SVG."));
-        }
-
-        let svg_handle = if let Some(vector_image) = &self.vector_image {
-            svg::Handle::from_memory(vector_image.as_bytes().to_vec())
-        } else {
-            svg::Handle::from_memory("".as_bytes().to_vec())
+            container(row).width(Length::Fill)
         };
 
-        let svg_view = iced::widget::container(
-            svg(svg_handle)
-                .width(iced::Length::Fill)
-                .height(iced::Length::Fill),
-        )
-        .width(iced::Length::FillPortion(7)) // Take 70% of the available width
-        .height(iced::Length::Fill)
-        .padding(20.0);
+        // Controls panel with settings
+        let controls_panel = {
+            let mut controls = column![].spacing(15).width(Length::Fill).padding(20);
 
+            // Section title styling
+            let make_title = |title: &str| -> container::Container<'_, _, _> {
+                container(text(title.to_string()).size(18))
+                    .width(Length::Fill)
+                    .padding(10)
+            };
+
+            // File operations section
+            let file_actions = {
+                let mut col = column![].spacing(10).width(Length::Fill);
+
+                col = col.push(make_title("File Actions"));
+
+                // Open image button
+                let open_button = if self.is_rendering {
+                    button(text("Rendering...").size(16))
+                        .width(Length::Fill)
+                        .padding(8)
+                } else {
+                    button(text("Open Image").size(16))
+                        .on_press(UiMessage::OpenImageButtonPressed)
+                        .width(Length::Fill)
+                        .padding(8)
+                };
+
+                col = col.push(open_button);
+
+                // Save SVG button
+                let save_button = if self.is_saving {
+                    button(text("Saving...").size(16))
+                        .width(Length::Fill)
+                        .padding(8)
+                } else if self.vector_image.is_none() {
+                    button(text("Save to SVG").size(16))
+                        .width(Length::Fill)
+                        .padding(8)
+                } else {
+                    button(text("Save to SVG").size(16))
+                        .on_press(UiMessage::SaveToSvgPressed)
+                        .width(Length::Fill)
+                        .padding(8)
+                };
+
+                col = col.push(save_button);
+
+                // Show status message when saving
+                if let Some(success) = self.save_result {
+                    let status_message = if success {
+                        text("✓ SVG saved successfully!").size(14)
+                    } else {
+                        text("❌ Failed to save SVG").size(14)
+                    };
+                    col = col.push(status_message);
+                }
+
+                container(col).width(Length::Fill).padding(10)
+            };
+
+            // Settings section
+            let settings = {
+                let mut col = column![].spacing(10).width(Length::Fill);
+
+                col = col.push(make_title("Settings"));
+
+                // With colors checkbox
+                let color_checkbox =
+                    checkbox("Generate with colors", self.vector_image_config.with_color)
+                        .on_toggle(UiMessage::WithColorToggled);
+
+                col = col.push(color_checkbox);
+
+                // Mode-specific settings
+                if !self.vector_image_config.with_color {
+                    // Black & white mode settings
+                    col = col.push(text("Black & White Options").size(16));
+
+                    // Ignore alpha channel checkbox
+                    let alpha_checkbox = checkbox(
+                        "Ignore alpha channel",
+                        self.vector_image_config.ignore_alpha_channel,
+                    )
+                    .on_toggle(UiMessage::IgnoreAlphaChannelToggled);
+
+                    col = col.push(alpha_checkbox);
+
+                    // Threshold slider
+                    col = col.push(text("Black / White Threshold").size(14));
+                    col = col.push(
+                        iced::widget::slider(
+                            0..=255,
+                            self.vector_image_config.binarize_threshold as u32,
+                            UiMessage::BinarizeThresholdChanged,
+                        )
+                        .step(1u32),
+                    );
+                    col = col.push(
+                        text(format!(
+                            "Value: {}",
+                            self.vector_image_config.binarize_threshold
+                        ))
+                        .size(12),
+                    );
+
+                    // Invert black/white checkbox
+                    let invert_checkbox = checkbox(
+                        "Invert black / white",
+                        self.vector_image_config.invert_binary,
+                    )
+                    .on_toggle(UiMessage::InvertBinaryToggled);
+
+                    col = col.push(invert_checkbox);
+                } else {
+                    // Color mode settings
+                    col = col.push(text("Color Options").size(16));
+
+                    // Color precision slider
+                    col = col.push(text("Color Precision").size(14));
+                    col = col.push(
+                        iced::widget::slider(
+                            0..=8,
+                            self.vector_image_config.color_precision as u32,
+                            UiMessage::ColorPrecisionChanged,
+                        )
+                        .step(1u32),
+                    );
+                    col = col.push(
+                        text(format!(
+                            "Value: {}",
+                            self.vector_image_config.color_precision
+                        ))
+                        .size(12),
+                    );
+
+                    // Gradient step slider
+                    col = col.push(text("Color Gradient Step").size(14));
+                    col = col.push(
+                        iced::widget::slider(
+                            0..=128,
+                            self.vector_image_config.gradient_step as u32,
+                            UiMessage::GradientStepChanged,
+                        )
+                        .step(1u32),
+                    );
+                    col = col.push(
+                        text(format!("Value: {}", self.vector_image_config.gradient_step)).size(12),
+                    );
+                }
+
+                // Common filter settings
+                col = col.push(text("Filter Options").size(16));
+                col = col.push(text("Detail Filter Threshold").size(14));
+                col = col.push(
+                    iced::widget::slider(
+                        0..=128,
+                        self.vector_image_config.filter_speckle as u32,
+                        UiMessage::FilterSpeckleChanged,
+                    )
+                    .step(1u32),
+                );
+                col = col.push(
+                    text(format!(
+                        "Value: {}",
+                        self.vector_image_config.filter_speckle
+                    ))
+                    .size(12),
+                );
+
+                container(col).width(Length::Fill).padding(10)
+            };
+
+            // Combine sections
+            controls = controls.push(file_actions);
+            controls = controls.push(settings);
+
+            // Make scrollable for smaller screens
+            scrollable(controls).height(Length::Fill)
+        };
+
+        // SVG preview area
+        let svg_view = {
+            let svg_handle = if let Some(vector_image) = &self.vector_image {
+                svg::Handle::from_memory(vector_image.as_bytes().to_vec())
+            } else {
+                svg::Handle::from_memory("".as_bytes().to_vec())
+            };
+
+            // Use a direct approach - wrap everything in containers from the start
+            let content = if self.vector_image.is_some() {
+                container(svg(svg_handle).width(Length::Fill).height(Length::Fill))
+                    .width(Length::Fill)
+                    .height(Length::Fill)
+            } else {
+                container(text("No image loaded. Open an image to start.").size(18))
+                    .width(Length::Fill)
+                    .height(Length::Fill)
+            };
+
+            // Wrapper container for consistent styling
+            container(content)
+                .width(Length::FillPortion(7))
+                .height(Length::Fill)
+                .padding(20)
+        };
+
+        // Main layout
         let main_row = Row::new()
             .push(
-                iced::widget::container(controls_column)
-                    .width(iced::Length::FillPortion(3)) // Take 30% of the available width
-                    .height(iced::Length::Fill)
-                    .padding(10.0)
-                    .align_y(iced::alignment::Vertical::Center), // Center content vertically
+                container(controls_panel)
+                    .width(Length::FillPortion(3))
+                    .height(Length::Fill),
             )
-            .push(Rule::vertical(1))
             .push(svg_view)
-            .align_y(Alignment::Center)
-            .spacing(20);
+            .spacing(15);
 
-        // The main view is a column that contains the row
-        // This allows for potential future elements above or below the main row if needed
-        column![main_row].padding(20).align_x(Center)
+        // Combine everything
+        column![header, main_row]
+            .padding(10)
+            .spacing(10)
+            .align_x(Center)
     }
 }
 

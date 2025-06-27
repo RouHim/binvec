@@ -26,12 +26,12 @@ pub fn update() {
         .update();
 
     match status {
-        Err(err) => println!("Failed to update: {}", err),
+        Err(err) => println!("Failed to update: {err}"),
         Ok(self_update::Status::UpToDate(version)) => {
-            println!("binvec {} is up to date", version);
+            println!("binvec {version} is up to date");
         }
         Ok(self_update::Status::Updated(version)) => {
-            println!("binvec updated to {}", version);
+            println!("binvec updated to {version}");
             restart_process(current_executable);
         }
     }
@@ -39,13 +39,10 @@ pub fn update() {
 
 /// Restarts the current process
 fn restart_process(current_executable: PathBuf) {
-    println!("Waiting 3s before restarting {:?} ...", current_executable);
+    println!("Waiting 3s before restarting {current_executable:?} ...");
     thread::sleep(Duration::from_secs(3));
     let err = exec(process::Command::new(current_executable.clone()).args(env::args().skip(1)));
-    eprintln!(
-        "Error: Failed to restart process {:?}: {}",
-        current_executable, err
-    );
+    eprintln!("Error: Failed to restart process {current_executable:?}: {err}");
     std::process::exit(1);
 }
 
