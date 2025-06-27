@@ -1,3 +1,10 @@
+## [1.18.2](https://github.com/RouHim/binvec/compare/1.18.1...1.18.2) (2025-06-27)
+
+
+### Bug Fixes
+
+* disable "Save to SVG" button when no image is loaded ([fec9ed7](https://github.com/RouHim/binvec/commit/fec9ed7f1f915f7f41820b594d38e52869340771))
+
 ## [1.18.1](https://github.com/RouHim/binvec/compare/1.18.0...1.18.1) (2025-06-21)
 
 
