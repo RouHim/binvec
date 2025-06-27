@@ -1,3 +1,10 @@
+# [1.19.0](https://github.com/RouHim/binvec/compare/1.18.2...1.19.0) (2025-06-27)
+
+
+### Features
+
+* enhance UI layout with header and improved controls for image processing ([a70740d](https://github.com/RouHim/binvec/commit/a70740daf317ad76c10665fe6da418b23a71ae8f))
+
 ## [1.18.2](https://github.com/RouHim/binvec/compare/1.18.1...1.18.2) (2025-06-27)
 
 
