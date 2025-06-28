@@ -1,3 +1,10 @@
+# [1.20.0](https://github.com/RouHim/binvec/compare/1.19.0...1.20.0) (2025-06-28)
+
+
+### Features
+
+* conditionally display header in UI based on loaded image filename ([ff1b575](https://github.com/RouHim/binvec/commit/ff1b57564078414edbbc6f8b57cc5de860e5c3f2))
+
 # [1.19.0](https://github.com/RouHim/binvec/compare/1.18.2...1.19.0) (2025-06-27)
 
 
