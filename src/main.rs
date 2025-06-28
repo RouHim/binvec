@@ -1,7 +1,7 @@
 mod image_processor;
 mod updater;
 
-use iced::widget::{Column, Row, button, checkbox, column, container, scrollable, svg, text};
+use iced::widget::{Column, Row, button, checkbox, column, container, svg, text};
 use iced::window::icon;
 use iced::{Center, Length, Task, Theme};
 use std::fs;
@@ -182,21 +182,20 @@ impl UiState {
     }
 
     fn view(&self) -> Column<UiMessage> {
-        // Create a header with title and current filename
-        let header = {
-            let mut row = Row::new().spacing(20).padding(20);
+        // Create a header only if we have a file name to display
+        let header = if let Some(path) = &self.image_path {
+            if let Some(name) = path.file_name().and_then(|n| n.to_str()) {
+                let row = Row::new()
+                    .spacing(20)
+                    .padding(20)
+                    .push(text(format!("File: {name}")).size(16));
 
-            // App title with larger text
-            row = row.push(text(APP_NAME).size(28));
-
-            // Display current filename if an image is loaded
-            if let Some(path) = &self.image_path {
-                if let Some(name) = path.file_name().and_then(|n| n.to_str()) {
-                    row = row.push(text(format!("File: {name}")).size(16));
-                }
+                Some(container(row).width(Length::Fill))
+            } else {
+                None
             }
-
-            container(row).width(Length::Fill)
+        } else {
+            None
         };
 
         // Controls panel with settings
@@ -377,8 +376,8 @@ impl UiState {
             controls = controls.push(file_actions);
             controls = controls.push(settings);
 
-            // Make scrollable for smaller screens
-            scrollable(controls).height(Length::Fill)
+            // Return controls directly without making it scrollable
+            controls
         };
 
         // SVG preview area
@@ -417,11 +416,15 @@ impl UiState {
             .push(svg_view)
             .spacing(15);
 
-        // Combine everything
-        column![header, main_row]
-            .padding(10)
-            .spacing(10)
-            .align_x(Center)
+        // Combine everything - conditionally include the header only if it exists
+        let mut content = Column::new().padding(10).spacing(10).align_x(Center);
+
+        // Only add header if it exists
+        if let Some(header_content) = header {
+            content = content.push(header_content);
+        }
+
+        content.push(main_row)
     }
 }
 
@@ -452,6 +455,11 @@ impl UiState {
     }
 
     fn perform_svg_rendering_task(&mut self) -> Task<UiMessage> {
+        // Don't start a new render if one is already in progress
+        if self.is_rendering {
+            return Task::none();
+        }
+
         if let Some(path) = &self.image_path {
             self.is_rendering = true;
             return Task::perform(
