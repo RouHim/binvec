@@ -182,22 +182,6 @@ impl UiState {
     }
 
     fn view(&self) -> Column<UiMessage> {
-        // Create a header only if we have a file name to display
-        let header = if let Some(path) = &self.image_path {
-            if let Some(name) = path.file_name().and_then(|n| n.to_str()) {
-                let row = Row::new()
-                    .spacing(20)
-                    .padding(20)
-                    .push(text(format!("File: {name}")).size(16));
-
-                Some(container(row).width(Length::Fill))
-            } else {
-                None
-            }
-        } else {
-            None
-        };
-
         // Controls panel with settings
         let controls_panel = {
             let mut controls = column![].spacing(15).width(Length::Fill).padding(20);
@@ -399,11 +383,10 @@ impl UiState {
                     .height(Length::Fill)
             };
 
-            // Wrapper container for consistent styling
+            // Wrapper container for image preview - removed padding for edge-to-edge display
             container(content)
-                .width(Length::FillPortion(7))
+                .width(Length::FillPortion(8))
                 .height(Length::Fill)
-                .padding(20)
         };
 
         // Main layout
@@ -416,15 +399,12 @@ impl UiState {
             .push(svg_view)
             .spacing(15);
 
-        // Combine everything - conditionally include the header only if it exists
-        let mut content = Column::new().padding(10).spacing(10).align_x(Center);
-
-        // Only add header if it exists
-        if let Some(header_content) = header {
-            content = content.push(header_content);
-        }
-
-        content.push(main_row)
+        // Main layout with no header, just the main row
+        Column::new()
+            .padding(0)
+            .spacing(0)
+            .push(main_row)
+            .align_x(Center)
     }
 }
 
