@@ -4998,13 +4998,12 @@ checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
 
 [[package]]
 name = "visioncortex"
-version = "0.8.9"
+version = "0.8.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c03ba59afbaefbf8907f0b5a540b2c622b2ffa500c6064b00e33dddf15d683ed"
+checksum = "7c9a7e6cc136c7c79b4adbd311c46c323a19db7baf446822b5f90f84375934e3"
 dependencies = [
  "bit-vec",
  "flo_curves",
- "log",
  "num-traits",
 ]
 
