@@ -5,7 +5,7 @@ edition = "2024"
 
 [dependencies]
 iced = { version = "0.13.1", features = ["svg", "image", "tokio"] } # Iced for GUI
-rfd = "0.16.0" # For file dialogs
+rfd = "0.17.0" # For file dialogs
 image = "0.25" # Image lib, here used for binarizing and scaling images
 vtracer = { git = "https://github.com/RouHim/vtracer" } # Generates vector images from raster images
 visioncortex = "0.8" # Helper library for vtracer
