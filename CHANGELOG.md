@@ -1,3 +1,10 @@
+## [1.20.20](https://github.com/RouHim/binvec/compare/1.20.19...1.20.20) (2026-02-21)
+
+
+### Bug Fixes
+
+* **ci:** stabilize pipeline release handoff and apply rustfmt ([e36915c](https://github.com/RouHim/binvec/commit/e36915c9414cd39faaf4cae90da55f9aa1fffbd5))
+
 ## [1.20.19](https://github.com/RouHim/binvec/compare/1.20.18...1.20.19) (2026-01-13)
 
 ## [1.20.18](https://github.com/RouHim/binvec/compare/1.20.17...1.20.18) (2026-01-05)
