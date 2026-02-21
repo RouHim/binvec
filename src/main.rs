@@ -252,10 +252,9 @@ impl UiState {
                 col = col.push(make_title("Settings"));
 
                 // With colors checkbox
-                let color_checkbox =
-                    checkbox(self.vector_image_config.with_color)
-                        .label("Generate with colors")
-                        .on_toggle(UiMessage::WithColorToggled);
+                let color_checkbox = checkbox(self.vector_image_config.with_color)
+                    .label("Generate with colors")
+                    .on_toggle(UiMessage::WithColorToggled);
 
                 col = col.push(color_checkbox);
 
@@ -265,11 +264,9 @@ impl UiState {
                     col = col.push(text("Black & White Options").size(16));
 
                     // Ignore alpha channel checkbox
-                    let alpha_checkbox = checkbox(
-                        self.vector_image_config.ignore_alpha_channel,
-                    )
-                    .label("Ignore alpha channel")
-                    .on_toggle(UiMessage::IgnoreAlphaChannelToggled);
+                    let alpha_checkbox = checkbox(self.vector_image_config.ignore_alpha_channel)
+                        .label("Ignore alpha channel")
+                        .on_toggle(UiMessage::IgnoreAlphaChannelToggled);
 
                     col = col.push(alpha_checkbox);
 
@@ -292,11 +289,9 @@ impl UiState {
                     );
 
                     // Invert black/white checkbox
-                    let invert_checkbox = checkbox(
-                        self.vector_image_config.invert_binary,
-                    )
-                    .label("Invert black / white")
-                    .on_toggle(UiMessage::InvertBinaryToggled);
+                    let invert_checkbox = checkbox(self.vector_image_config.invert_binary)
+                        .label("Invert black / white")
+                        .on_toggle(UiMessage::InvertBinaryToggled);
 
                     col = col.push(invert_checkbox);
                 } else {

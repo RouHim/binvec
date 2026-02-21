@@ -167,8 +167,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     outputs:
-      version: ${{ steps.semantic-release.outputs.new_release_version }}
-      upload_url: ${{ steps.semantic-release.outputs.upload_url }}
+      version: ${{ steps.release-meta.outputs.version }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -198,6 +197,22 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         run: npx semantic-release
 
+      - name: Resolve released version
+        id: release-meta
+        run: |
+          REPO="RouHim/binvec"
+          LATEST_RELEASE_JSON=$(curl --silent --retry 5 --retry-delay 2 "https://api.github.com/repos/$REPO/releases/latest")
+          LATEST_RELEASE=$(echo "$LATEST_RELEASE_JSON" | jq -r '.tag_name')
+
+          if [[ -z "$LATEST_RELEASE" || "$LATEST_RELEASE" == "null" ]]; then
+            echo "Failed to resolve release version from GitHub API."
+            echo "API Response: $LATEST_RELEASE_JSON"
+            exit 1
+          fi
+
+          echo "Resolved release version: $LATEST_RELEASE"
+          echo "version=$LATEST_RELEASE" >> "$GITHUB_OUTPUT"
+
       - name: Delete old releases
         uses: dev-drprasad/delete-older-releases@v0.3.4
         with:
@@ -221,25 +236,22 @@ jobs:
       - name: Set version and upload URL from semantic-release
         run: |
           echo "VERSION=${{ needs.create-release.outputs.version }}" >> $GITHUB_ENV
-          echo "UPLOAD_URL=${{ needs.create-release.outputs.upload_url }}" >> $GITHUB_ENV
 
-      - name: Fallback to fetch release info if needed
-        if: env.VERSION == '' || env.UPLOAD_URL == ''
+      - name: Fallback to fetch release version if needed
+        if: env.VERSION == ''
         run: |
           REPO="RouHim/binvec"
           LATEST_RELEASE_JSON=$(curl --silent --retry 3 "https://api.github.com/repos/$REPO/releases/latest")
           LATEST_RELEASE=$(echo "$LATEST_RELEASE_JSON" | jq -r '.tag_name')
-          UPLOAD_URL=$(echo "$LATEST_RELEASE_JSON" | jq -r '.upload_url')
 
-          if [[ -z "$LATEST_RELEASE" || "$LATEST_RELEASE" == "null" || -z "$UPLOAD_URL" || "$UPLOAD_URL" == "null" ]]; then
-            echo "Failed to fetch release information. Tag or Upload URL might be null."
+          if [[ -z "$LATEST_RELEASE" || "$LATEST_RELEASE" == "null" ]]; then
+            echo "Failed to fetch release version."
             echo "API Response: $LATEST_RELEASE_JSON"
             exit 1
           fi
 
           echo "Latest release is $LATEST_RELEASE"
           echo "VERSION=$LATEST_RELEASE" >> $GITHUB_ENV
-          echo "UPLOAD_URL=${UPLOAD_URL}" >> $GITHUB_ENV
 
       - name: Update version in Cargo.toml
         run: |
@@ -414,4 +426,3 @@ jobs:
           commit_message: "Update to v${{ env.VERSION }}"
           force_push: "true"
           ssh_keyscan_types: "rsa,ecdsa,ed25519"
-
