@@ -20,8 +20,9 @@ pub fn main() -> iced::Result {
         ..iced::window::Settings::default()
     };
 
-    iced::application(APP_NAME, UiState::update, UiState::view)
-        .theme(|_| Theme::TokyoNight)
+    iced::application(UiState::default, UiState::update, UiState::view)
+        .title(APP_NAME)
+        .theme(Theme::TokyoNight)
         .window(window_settings)
         .run()
 }
@@ -181,7 +182,7 @@ impl UiState {
         }
     }
 
-    fn view(&self) -> Column<UiMessage> {
+    fn view(&self) -> Column<'_, UiMessage> {
         // Controls panel with settings
         let controls_panel = {
             let mut controls = column![].spacing(15).width(Length::Fill).padding(20);
@@ -252,7 +253,8 @@ impl UiState {
 
                 // With colors checkbox
                 let color_checkbox =
-                    checkbox("Generate with colors", self.vector_image_config.with_color)
+                    checkbox(self.vector_image_config.with_color)
+                        .label("Generate with colors")
                         .on_toggle(UiMessage::WithColorToggled);
 
                 col = col.push(color_checkbox);
@@ -264,9 +266,9 @@ impl UiState {
 
                     // Ignore alpha channel checkbox
                     let alpha_checkbox = checkbox(
-                        "Ignore alpha channel",
                         self.vector_image_config.ignore_alpha_channel,
                     )
+                    .label("Ignore alpha channel")
                     .on_toggle(UiMessage::IgnoreAlphaChannelToggled);
 
                     col = col.push(alpha_checkbox);
@@ -291,9 +293,9 @@ impl UiState {
 
                     // Invert black/white checkbox
                     let invert_checkbox = checkbox(
-                        "Invert black / white",
                         self.vector_image_config.invert_binary,
                     )
+                    .label("Invert black / white")
                     .on_toggle(UiMessage::InvertBinaryToggled);
 
                     col = col.push(invert_checkbox);
