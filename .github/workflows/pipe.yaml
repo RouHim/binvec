@@ -366,7 +366,7 @@ jobs:
           sed -i "s/pkgver=.*/pkgver=$VERSION/g" PKGBUILD
 
       - name: Publish AUR package
-        uses: KSXGitHub/github-actions-deploy-aur@v4.1.1
+        uses: KSXGitHub/github-actions-deploy-aur@v4.1.3
         with:
           pkgname: binvec
           pkgbuild: ./PKGBUILD
@@ -415,7 +415,7 @@ jobs:
           sed -i "s/pkgver=.*/pkgver=$VERSION/g" PKGBUILD.bin
 
       - name: Publish AUR Binary Package
-        uses: KSXGitHub/github-actions-deploy-aur@v4.1.1
+        uses: KSXGitHub/github-actions-deploy-aur@v4.1.3
         with:
           pkgname: binvec-bin
           pkgbuild: ./PKGBUILD.bin
