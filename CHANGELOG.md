@@ -1,3 +1,10 @@
+## [1.20.22](https://github.com/RouHim/binvec/compare/1.20.21...1.20.22) (2026-06-04)
+
+
+### Bug Fixes
+
+* **security:** update quinn-proto and rustls-webpki to fix CVEs ([318d9b0](https://github.com/RouHim/binvec/commit/318d9b06d5f04fc381f52e42cd8636f9642e9e30))
+
 ## [1.20.21](https://github.com/RouHim/binvec/compare/1.20.20...1.20.21) (2026-03-11)
 
 ## [1.20.20](https://github.com/RouHim/binvec/compare/1.20.19...1.20.20) (2026-02-21)
