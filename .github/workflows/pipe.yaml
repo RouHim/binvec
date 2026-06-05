@@ -319,7 +319,7 @@ jobs:
           fi
 
       - name: Upload artifact
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ env.VERSION }}
           files: target/release/binvec-${{ matrix.target }}*
