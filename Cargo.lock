@@ -405,7 +405,7 @@ dependencies = [
  "image",
  "rfd",
  "self_update",
- "visioncortex",
+ "visioncortex 0.9.3",
  "vtracer",
 ]
 
@@ -2257,7 +2257,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "07033963ba89ebaf1584d767badaa2e8fcec21aedea6b8c0346d487d49c28667"
 dependencies = [
  "cfg-if",
- "windows-targets 0.48.5",
+ "windows-targets 0.52.6",
 ]
 
 [[package]]
@@ -4683,6 +4683,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "visioncortex"
+version = "0.9.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "84af9c2ece99261bf0a14cff5162221350b7288e33a78534017ebf07c9389bff"
+dependencies = [
+ "bit-vec 0.6.3",
+ "flo_curves",
+ "num-traits",
+]
+
+[[package]]
 name = "vtracer"
 version = "0.6.4"
 source = "git+https://github.com/RouHim/vtracer#4080e64fcb9464dba35ec3edf3c29e8058fbf3f4"
@@ -4690,7 +4701,7 @@ dependencies = [
  "clap",
  "fastrand 1.9.0",
  "image",
- "visioncortex",
+ "visioncortex 0.8.10",
 ]
 
 [[package]]
