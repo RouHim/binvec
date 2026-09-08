@@ -4,6 +4,10 @@ use std::{env, io, process, thread};
 
 use self_update::cargo_crate_version;
 
+/// Marker set on the restart-after-update command so a binary that still
+/// reports an outdated version can be detected instead of looping forever.
+const RESTART_MARKER: &str = "BINVEC_UPDATED";
+
 /// Checks for updates
 /// If an update is available, download and install it
 /// If no update is available, do nothing
@@ -32,6 +36,12 @@ pub fn update() {
         }
         Ok(self_update::Status::Updated(version)) => {
             println!("binvec updated to {version}");
+            if env::var_os(RESTART_MARKER).is_some() {
+                eprintln!(
+                    "Already restarted for an update, but the new binary still reports an outdated version. Not restarting again to avoid an update loop."
+                );
+                return;
+            }
             restart_process(current_executable);
         }
     }
@@ -41,7 +51,11 @@ pub fn update() {
 fn restart_process(current_executable: PathBuf) {
     println!("Waiting 3s before restarting {current_executable:?} ...");
     thread::sleep(Duration::from_secs(3));
-    let err = exec(process::Command::new(current_executable.clone()).args(env::args().skip(1)));
+    let err = exec(
+        process::Command::new(current_executable.clone())
+            .args(env::args().skip(1))
+            .env(RESTART_MARKER, "1"),
+    );
     eprintln!("Error: Failed to restart process {current_executable:?}: {err}");
     std::process::exit(1);
 }
@@ -57,11 +71,11 @@ fn exec(command: &mut process::Command) -> io::Error {
 }
 
 #[cfg(windows)]
-fn exec(command: &mut process::Command) -> Result<(), io::Error> {
-    // On Windows, we cannot replace the current process, so we just spawn a new one
-    // and exit the current one.
+fn exec(command: &mut process::Command) -> io::Error {
+    // On Windows, we cannot replace the current process, so we spawn the new
+    // one and exit. Success never returns; failure returns the spawn error.
     match command.spawn() {
-        Ok(_) => return Ok(()), // Exit successfully, allowing cleanup
+        Ok(_) => std::process::exit(0),
         Err(err) => err,
     }
 }
