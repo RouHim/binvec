@@ -1,3 +1,11 @@
+## [1.20.28](https://github.com/RouHim/binvec/compare/1.20.27...1.20.28) (2026-09-08)
+
+
+### Bug Fixes
+
+* **security:** bump quinn-proto to 0.11.15 for GHSA-4w2j-m93h-cj5j ([d5b3879](https://github.com/RouHim/binvec/commit/d5b387946110d0aca785a583e77266ae88683d56))
+* stop infinite update-restart loop in release binaries ([6c3f78f](https://github.com/RouHim/binvec/commit/6c3f78fcc1819920cbce63547fba10acd0322a36))
+
 ## [1.20.27](https://github.com/RouHim/binvec/compare/1.20.26...1.20.27) (2026-07-22)
 
 ## [1.20.26](https://github.com/RouHim/binvec/compare/1.20.25...1.20.26) (2026-07-21)
