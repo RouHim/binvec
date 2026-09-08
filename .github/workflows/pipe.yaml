@@ -128,6 +128,8 @@ jobs:
     name: Build feature branch
     needs: [ check-repo, check-code-style, check-code, test ]
     runs-on: ubuntu-latest
+    env:
+      CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER: x86_64-w64-mingw32-gcc
     if: github.ref != 'refs/heads/main'
     strategy:
       fail-fast: false
@@ -143,6 +145,13 @@ jobs:
           profile: minimal
           toolchain: stable
 
+      - name: Install target toolchain and linkers
+        if: matrix.target != 'x86_64-unknown-linux-gnu'
+        run: |
+          rustup target add ${{ matrix.target }}
+          sudo apt-get update
+          sudo apt-get install -y mingw-w64
+
       - uses: Swatinem/rust-cache@v2
         with:
           cache-on-failure: true
@@ -150,16 +159,10 @@ jobs:
 
       - name: Build binary
         run: |
-          # Build the binary with regular cargo build
-          cargo build --release
-          
-          # Set the target directory path
-          CARGO_BUILD_TARGET=$(rustc -vV | grep host | cut -d' ' -f2)
-          echo "Using host target: ${CARGO_BUILD_TARGET}"
-          echo "CARGO_BUILD_TARGET=${CARGO_BUILD_TARGET}" >> $GITHUB_ENV
-          
-          echo "Binary built at: target/release/binvec"
-          ls -la "target/release/binvec" || echo "Binary not found!"
+          cargo build --release --target ${{ matrix.target }}
+
+          echo "Binary built at: target/${{ matrix.target }}/release/binvec"
+          ls -la "target/${{ matrix.target }}/release/binvec"* || echo "Binary not found!"
 
   create-release:
     name: Create new release
@@ -229,6 +232,11 @@ jobs:
       matrix:
         target: [ 'x86_64-unknown-linux-gnu', 'aarch64-unknown-linux-gnu', 'armv7-unknown-linux-gnueabihf', 'arm-unknown-linux-gnueabihf', 'x86_64-pc-windows-gnu' ]
     runs-on: ubuntu-latest
+    env:
+      CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: aarch64-linux-gnu-gcc
+      CARGO_TARGET_ARMV7_UNKNOWN_LINUX_GNUEABIHF_LINKER: arm-linux-gnueabihf-gcc
+      CARGO_TARGET_ARM_UNKNOWN_LINUX_GNUEABIHF_LINKER: arm-linux-gnueabihf-gcc
+      CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER: x86_64-w64-mingw32-gcc
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -259,7 +267,7 @@ jobs:
             echo "Error: VERSION environment variable is not set"
             exit 1
           fi
-          sed -i 's/version = "0.0.0"/version = "${{ env.VERSION }}"/g' Cargo.toml
+          sed -i -E 's/^version = "[^"]*"/version = "${{ env.VERSION }}"/' Cargo.toml
           echo "Cargo version is now" $(cargo metadata --no-deps --format-version 1 | jq -r ".packages[0].version")
 
       - name: Install rust toolchain
@@ -267,6 +275,18 @@ jobs:
         with:
           profile: minimal
           toolchain: stable
+
+      - name: Install target toolchain and linkers
+        run: |
+          rustup target add ${{ matrix.target }}
+          if [[ "${{ matrix.target }}" != "x86_64-unknown-linux-gnu" ]]; then
+            sudo apt-get update
+            case "${{ matrix.target }}" in
+              aarch64-unknown-linux-gnu) sudo apt-get install -y gcc-aarch64-linux-gnu ;;
+              armv7-unknown-linux-gnueabihf|arm-unknown-linux-gnueabihf) sudo apt-get install -y gcc-arm-linux-gnueabihf ;;
+              x86_64-pc-windows-gnu) sudo apt-get install -y mingw-w64 ;;
+            esac
+          fi
 
       - uses: Swatinem/rust-cache@v2
         with:
@@ -276,28 +296,20 @@ jobs:
 
       - name: Build and prepare binary for upload
         run: |
-          # Build the binary with regular cargo build
-          cargo build --release
-          
-          # Set the target directory path
-          CARGO_BUILD_TARGET=$(rustc -vV | grep host | cut -d' ' -f2)
-          echo "Using host target: ${CARGO_BUILD_TARGET}"
-          echo "CARGO_BUILD_TARGET=${CARGO_BUILD_TARGET}" >> $GITHUB_ENV
-          
-          ORIGINAL_BINARY_PATH="target/release/binvec"
-          
-          # Add .exe extension for Windows targets
+          cargo build --release --target ${{ matrix.target }}
+
+          ORIGINAL_BINARY_PATH="target/${{ matrix.target }}/release/binvec"
+
+          # Cargo appends .exe to binaries built for Windows targets
           if [[ "${{ matrix.target }}" == *"windows"* ]]; then
+            ORIGINAL_BINARY_PATH="${ORIGINAL_BINARY_PATH}.exe"
             RENAMED_BINARY_NAME="binvec-${{ matrix.target }}.exe"
           else
             RENAMED_BINARY_NAME="binvec-${{ matrix.target }}"
           fi
-          
-          DEST_DIR="target/release"
-          RENAMED_BINARY_PATH="${DEST_DIR}/${RENAMED_BINARY_NAME}"
 
-          echo "Original binary path: $ORIGINAL_BINARY_PATH"
-          echo "Will be renamed to: $RENAMED_BINARY_PATH"
+          DEST_DIR="target/${{ matrix.target }}/release"
+          RENAMED_BINARY_PATH="${DEST_DIR}/${RENAMED_BINARY_NAME}"
 
           if [ -f "$ORIGINAL_BINARY_PATH" ]; then
             echo "Binary found at: $ORIGINAL_BINARY_PATH"
@@ -322,7 +334,7 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ env.VERSION }}
-          files: target/release/binvec-${{ matrix.target }}*
+          files: target/${{ matrix.target }}/release/binvec-${{ matrix.target }}*
           name: Release ${{ env.VERSION }}
           token: ${{ secrets.GITHUB_TOKEN }}
           fail_on_unmatched_files: true

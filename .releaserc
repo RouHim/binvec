@@ -12,7 +12,7 @@
     "@semantic-release/release-notes-generator",
     "@semantic-release/changelog",
     ["@semantic-release/exec", {
-      "prepareCmd": "sed -i \"s/Version=1.0/Version=${nextRelease.version}/\" .desktop/binvec.desktop && sed -i 's/version = \"0.0.0\"/version = \"${nextRelease.version}\"/g' Cargo.toml"
+      "prepareCmd": "sed -i -E \"s/^Version=.*/Version=${nextRelease.version}/\" .desktop/binvec.desktop && sed -i -E 's/^version = \"[^\"]*\"/version = \"${nextRelease.version}\"/' Cargo.toml"
     }],
     ["@semantic-release/git", {
       "assets": ["CHANGELOG.md", ".desktop/binvec.desktop", "Cargo.toml"],
