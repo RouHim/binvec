@@ -1,3 +1,5 @@
+## [1.20.29](https://github.com/RouHim/binvec/compare/1.20.28...1.20.29) (2026-09-09)
+
 ## [1.20.28](https://github.com/RouHim/binvec/compare/1.20.27...1.20.28) (2026-09-08)
 
 
