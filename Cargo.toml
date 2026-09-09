@@ -1,6 +1,6 @@
 [package]
 name = "binvec"
-version = "1.20.29"
+version = "1.20.30"
 edition = "2024"
 
 [dependencies]
