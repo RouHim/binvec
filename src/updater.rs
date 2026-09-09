@@ -31,10 +31,10 @@ pub fn update() {
 
     match status {
         Err(err) => println!("Failed to update: {err}"),
-        Ok(self_update::Status::UpToDate(version)) => {
+        Ok(self_update::VersionStatus::UpToDate(version)) => {
             println!("binvec {version} is up to date");
         }
-        Ok(self_update::Status::Updated(version)) => {
+        Ok(self_update::VersionStatus::Updated(version)) => {
             println!("binvec updated to {version}");
             if env::var_os(RESTART_MARKER).is_some() {
                 eprintln!(
@@ -44,6 +44,8 @@ pub fn update() {
             }
             restart_process(current_executable);
         }
+        // `VersionStatus` is non-exhaustive; future variants need no handling.
+        Ok(_) => {}
     }
 }
 
