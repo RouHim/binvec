@@ -11,6 +11,8 @@ use std::path::PathBuf;
 const APP_NAME: &str = "BinVec";
 
 pub fn main() -> iced::Result {
+    prefer_dx12_and_vulkan_on_windows();
+
     updater::update();
 
     let window_settings = iced::window::Settings {
@@ -25,6 +27,26 @@ pub fn main() -> iced::Result {
         .theme(Theme::TokyoNight)
         .window(window_settings)
         .run()
+}
+
+/// Keeps the OpenGL backend out of the default graphics backends on Windows.
+///
+/// wgpu initializes every requested backend as soon as the instance is
+/// created, and `Backends::all()` (the default used by iced) includes OpenGL.
+/// On Windows, that backend creates a hidden window with a WGL context, which
+/// makes Windows load the OpenGL ICD of the installed GPU driver. If that
+/// driver component is broken or missing — as seen on hybrid-graphics
+/// laptops and in VMs — the driver interrupts startup with a modal
+/// "LoadLibrary failed with error 126" dialog.
+///
+/// Direct3D 12 and Vulkan cover Windows (WARP can serve as a software
+/// fallback), so only those two are requested by default. An explicitly set
+/// `WGPU_BACKEND` environment variable always wins.
+fn prefer_dx12_and_vulkan_on_windows() {
+    if cfg!(windows) && std::env::var_os("WGPU_BACKEND").is_none() {
+        // SAFETY: Runs first in `main`, before any other thread is spawned.
+        unsafe { std::env::set_var("WGPU_BACKEND", "dx12,vulkan") };
+    }
 }
 
 /// Represents the overall state of the UI.
