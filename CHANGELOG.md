@@ -1,3 +1,10 @@
+## [1.20.31](https://github.com/RouHim/binvec/compare/1.20.30...1.20.31) (2026-09-13)
+
+
+### Bug Fixes
+
+* **windows:** keep the OpenGL backend out of the default wgpu backends ([a86ca1a](https://github.com/RouHim/binvec/commit/a86ca1a9c8bf93220e914b5ee0dec32d884d175e))
+
 ## [1.20.30](https://github.com/RouHim/binvec/compare/1.20.29...1.20.30) (2026-09-09)
 
 ## [1.20.29](https://github.com/RouHim/binvec/compare/1.20.28...1.20.29) (2026-09-09)
