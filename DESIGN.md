@@ -221,7 +221,7 @@ The mode swatch is a 16×16 split square: ink/paper for BINARY, teal/red for COL
 - **State copy:** the empty, tracing, and failure blocks sit on a borderless paper knockout, so muted ink is never set directly over the checkerboard or the hatch.
 - **Tracing:** 3px outward registration offset on all four corners and all four edge ticks; a 1px teal scan line with a 6px teal wash sweeps the plate. When the render lands, the ticks settle back into register over ~96ms.
 - **No data / failure:** 45-degree hairline hatching at 14px spacing over the checkerboard.
-- **Zoom:** `FIT` is the default; `−` / `+` step by 1.25× between 5% and 400%; the plate scrolls to pan when the media exceeds the viewport.
+- **Zoom:** `FIT` is the default; `−` / `+` step by 1.25× between 5% and 400%, stepping from the unclamped current scale and never moving against the control: below 5%, `−` holds and `+` clamps to 5%; above 400%, `+` holds and `−` clamps to 400%; the plate scrolls to pan when the media exceeds the viewport. The vector proof's display box is capped at 2048 px on its longest edge and 4.2 M logical px of area, so its re-rasterized pixmap stays bounded at high zoom; the source proof keeps the full range.
 
 ### Theme Control
 A compact 2px-padded segment in the title block: `AUTO / LIGHT / DARK`. The active half is the current primary fill (ink in light, paper in dark); the frame is a hairline in the shell. Auto is the default; the explicit choice is persisted. The control sits before the live status and always shows the selected policy, while the client area shows the resolved mode.
@@ -237,7 +237,7 @@ The four crop corners are the state display. They sit 3px out of register while 
 ### Do:
 - **Do** keep the drawing as the largest, quietest surface in the window.
 - **Do** set every value, path, dimension, status, and mode name in mono.
-- **Do** show SOURCE and VECTOR at the same scale so the comparison is honest.
+- **Do** show SOURCE and VECTOR at the same scale so the comparison is honest, except above the vector proof's display cap.
 - **Do** keep the key scrollable and the title/record strips fixed at 800×600.
 - **Do** use the brand teal and red as swatches and semantic state, not as text on paper.
 - **Do** place state copy on a paper knockout. Muted ink directly over the checkerboard is below AA.

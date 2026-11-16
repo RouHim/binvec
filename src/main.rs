@@ -32,7 +32,21 @@ const FIGURE_PADDING: f32 = 24.0;
 const CAPTION_HEIGHT: f32 = 24.0;
 const CAPTION_GAP: f32 = 8.0;
 const PLATE_MARGIN: f32 = 24.0;
+const PLATE_FRAME: f32 = 1.0;
 const CHROME_RULES: f32 = 2.0;
+
+/// Manual zoom window: `−` / `+` step by `ZOOM_STEP` between these bounds.
+const MIN_ZOOM: f32 = 0.05;
+const MAX_ZOOM: f32 = 4.0;
+const ZOOM_STEP: f32 = 1.25;
+
+/// Logical-pixel ceiling for the vector proof's display box. iced_wgpu
+/// rasterizes SVG content at the widget bounds times the window scale factor
+/// on every size change, so the vector proof is capped by both its longest
+/// edge and its area to keep each raster allocation bounded. The source proof
+/// draws a fixed texture and keeps the full manual zoom range.
+const VECTOR_RASTER_MAX_EDGE: f32 = 2048.0;
+const VECTOR_RASTER_MAX_PIXELS: f32 = 4.0 * 1024.0 * 1024.0;
 
 const PLATE_PAPER: Color = Color::from_rgb8(0xF3, 0xF0, 0xE7);
 const PLATE_PAPER_RAISED: Color = Color::from_rgb8(0xF8, 0xF5, 0xEC);
@@ -448,6 +462,7 @@ impl UiState {
                     return Task::none();
                 };
 
+                self.drag_hovering = false;
                 self.image_path = Some(path.clone());
                 self.source_handle = Some(RasterHandle::from_path(path.clone()));
                 self.source_readable = false;
@@ -581,21 +596,25 @@ impl UiState {
                 Task::none()
             }
             UiMessage::ZoomIn => {
-                if self.source_size.is_none() || self.render_error.is_some() {
+                if !self.zoom_available() {
                     return Task::none();
                 }
+                // Step from the unclamped scale so a FIT scale outside
+                // 5%–400% still moves in the direction of the control.
                 let current = self.effective_zoom();
                 self.fit_zoom = false;
-                self.zoom = (current * 1.25).clamp(0.05, 4.0);
+                self.zoom = (current * ZOOM_STEP).clamp(MIN_ZOOM, MAX_ZOOM).max(current);
                 Task::none()
             }
             UiMessage::ZoomOut => {
-                if self.source_size.is_none() || self.render_error.is_some() {
+                if !self.zoom_available() {
                     return Task::none();
                 }
+                // Step from the unclamped scale and never grow past it, so a
+                // FIT scale outside 5%–400% cannot invert the direction.
                 let current = self.effective_zoom();
                 self.fit_zoom = false;
-                self.zoom = (current / 1.25).clamp(0.05, 4.0);
+                self.zoom = (current / ZOOM_STEP).clamp(MIN_ZOOM, MAX_ZOOM).min(current);
                 Task::none()
             }
             UiMessage::ZoomFit => {
@@ -947,6 +966,7 @@ impl UiState {
         container(stack)
             .width(Length::Fill)
             .height(Length::Fill)
+            .padding(PLATE_FRAME)
             .clip(true)
             .style(plate_frame_style)
             .into()
@@ -970,6 +990,7 @@ impl UiState {
                         .into(),
                     size,
                     viewport,
+                    false,
                 ),
                 None => container(
                     image(handle.clone())
@@ -999,6 +1020,7 @@ impl UiState {
                     .into(),
                 size,
                 viewport,
+                true,
             );
         }
 
@@ -1014,9 +1036,20 @@ impl UiState {
         media: Element<'a, UiMessage>,
         source_size: (u32, u32),
         viewport: Size,
+        bound_raster: bool,
     ) -> Element<'a, UiMessage> {
         let zoom = self.effective_zoom();
         let display = Size::new(source_size.0 as f32 * zoom, source_size.1 as f32 * zoom);
+        // iced_wgpu re-rasterizes SVG content at the widget bounds times the
+        // window scale factor, keyed by size, so the vector proof's display
+        // box is capped; manual zoom stays at 5%–400%, but the raster request
+        // stops growing once the cap is reached. Scroll geometry follows the
+        // capped box, so the plate never holds a small proof in a large void.
+        let display = if bound_raster {
+            Self::bounded_vector_display(display)
+        } else {
+            display
+        };
         let padding = 2.0 * PLATE_MARGIN;
         let content_size = Size::new(
             (display.width + padding).max(viewport.width),
@@ -1030,14 +1063,44 @@ impl UiState {
         )
         .width(Length::Fixed(content_size.width))
         .height(Length::Fixed(content_size.height))
-        .center_x(Length::Fill)
-        .center_y(Length::Fill);
+        .align_x(Alignment::Center)
+        .align_y(Alignment::Center);
 
         scrollable(inner)
+            .direction(scrollable::Direction::Both {
+                vertical: scrollable::Scrollbar::new(),
+                horizontal: scrollable::Scrollbar::new(),
+            })
             .width(Length::Fill)
             .height(Length::Fill)
             .style(scrollable_style)
             .into()
+    }
+
+    /// Bounds the raster iced_wgpu allocates for the vector proof. The display
+    /// box is capped by its longest edge and by its area, both in logical
+    /// pixels, so the raster stays a few tens of MiB even on a HiDPI window.
+    /// Sizes at or below both caps keep the full display extent, so the vector
+    /// proof stays aligned with the source proof at normal zoom.
+    fn bounded_vector_display(display: Size) -> Size {
+        let area = display.width * display.height;
+        if area <= 0.0 {
+            return display;
+        }
+
+        let longest = display.width.max(display.height);
+        let mut scale = (VECTOR_RASTER_MAX_EDGE / longest).min(1.0);
+        if area * scale * scale > VECTOR_RASTER_MAX_PIXELS {
+            scale = (VECTOR_RASTER_MAX_PIXELS / area).sqrt();
+        }
+        if scale >= 1.0 {
+            return display;
+        }
+
+        Size::new(
+            (display.width * scale).round().max(1.0),
+            (display.height * scale).round().max(1.0),
+        )
     }
 
     fn empty_state(&self) -> Element<'_, UiMessage> {
@@ -1453,7 +1516,7 @@ impl UiState {
 
     fn zoom_controls(&self) -> Element<'_, UiMessage> {
         let c = self.colors();
-        let enabled = self.source_size.is_some() && self.render_error.is_none();
+        let enabled = self.zoom_available();
         let percent = if enabled {
             format!("{:.0}%", self.effective_zoom() * 100.0)
         } else {
@@ -1489,24 +1552,25 @@ impl UiState {
     }
 
     fn status(&self) -> (&'static str, Color) {
+        let c = self.colors();
         if matches!(self.save_result, Some(Err(_))) {
-            ("SAVE FAILED", PLATE_RED_DARK)
+            ("SAVE FAILED", c.red_text)
         } else if self.render_error.is_some() {
             if self.source_size.is_some() {
-                ("TRACE FAILED", PLATE_RED_DARK)
+                ("TRACE FAILED", c.red_text)
             } else {
-                ("READ FAILED", PLATE_RED_DARK)
+                ("READ FAILED", c.red_text)
             }
         } else if self.is_saving {
-            ("WRITING", PLATE_INK)
+            ("WRITING", c.shell_text)
         } else if self.is_rendering {
-            ("TRACING", PLATE_INK)
+            ("TRACING", c.shell_text)
         } else if matches!(self.save_result, Some(Ok(_))) {
-            ("SAVED", PLATE_GREEN)
+            ("SAVED", c.green)
         } else if self.vector_handle.is_some() {
-            ("READY", PLATE_TEAL_DARK)
+            ("READY", c.teal_text)
         } else {
-            ("EMPTY", PLATE_MUTED)
+            ("EMPTY", c.shell_muted)
         }
     }
 
@@ -1531,12 +1595,18 @@ impl UiState {
 
     fn plate_viewport(&self) -> Size {
         Size::new(
-            (self.window_size.width - KEY_WIDTH - KEY_RULE - 2.0 * FIGURE_PADDING).max(120.0),
+            (self.window_size.width
+                - KEY_WIDTH
+                - KEY_RULE
+                - 2.0 * FIGURE_PADDING
+                - 2.0 * PLATE_FRAME)
+                .max(120.0),
             (self.window_size.height
                 - TOP_BAR_HEIGHT
                 - BOTTOM_BAR_HEIGHT
                 - CHROME_RULES
                 - 2.0 * FIGURE_PADDING
+                - 2.0 * PLATE_FRAME
                 - CAPTION_HEIGHT
                 - CAPTION_GAP)
                 .max(120.0),
@@ -1560,6 +1630,14 @@ impl UiState {
             self.fit_scale()
         } else {
             self.zoom
+        }
+    }
+
+    /// Whether the visible proof can be zoomed and panned.
+    fn zoom_available(&self) -> bool {
+        match self.proof {
+            Proof::Vector => self.vector_handle.is_some(),
+            Proof::Source => self.source_readable && self.source_handle.is_some(),
         }
     }
 
@@ -1957,6 +2035,7 @@ fn proof_button<'a>(
     enabled: bool,
     on_press: Option<UiMessage>,
 ) -> Element<'a, UiMessage> {
+    let on_press = enabled.then_some(on_press).flatten();
     button(text(label).size(11).font(SEMIBOLD).color(if active {
         c.primary_text
     } else if enabled {
@@ -1975,11 +2054,12 @@ fn zoom_button<'a>(
     label: &'a str,
     on_press: Option<UiMessage>,
 ) -> Element<'a, UiMessage> {
+    let enabled = on_press.is_some();
     button(
         text(label)
             .size(11)
             .font(Font::MONOSPACE)
-            .color(c.shell_text),
+            .color(if enabled { c.shell_text } else { c.shell_muted }),
     )
     .padding([4, 8])
     .on_press_maybe(on_press)

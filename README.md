@@ -16,7 +16,7 @@
 
 * Convert raster graphics to vector graphics with live previewing
 * Drag-and-drop image loading and a fit/zoom preview with panning
-* A source/vector proof toggle to compare the raster and the trace at the same scale
+* A source/vector proof toggle to compare the raster and the trace at the same scale, except above the vector proof's display cap
 * Automatic re-render with queued changes, so the preview never disagrees with the controls
 * Composed empty, tracing, and error states
 * Automatic light/dark theme that follows the OS, with a persisted AUTO / LIGHT / DARK override

@@ -124,6 +124,16 @@
           "#6FD3A3",
           "#B7E9D2"
         ]
+      },
+      "ochre-night": {
+        "role": "warning",
+        "displayName": "Night Ochre",
+        "canonical": "#E0B45A",
+        "tonalRamp": [
+          "#8A5A00",
+          "#E0B45A",
+          "#F2D9A0"
+        ]
       }
     },
     "typographyMeta": {
