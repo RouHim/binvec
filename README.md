@@ -15,6 +15,11 @@
 ## Features
 
 * Convert raster graphics to vector graphics with live previewing
+* Drag-and-drop image loading and a fit/zoom preview with panning
+* A source/vector proof toggle to compare the raster and the trace at the same scale
+* Automatic re-render with queued changes, so the preview never disagrees with the controls
+* Composed empty, tracing, and error states
+* Automatic light/dark theme that follows the OS, with a persisted AUTO / LIGHT / DARK override
 * Two conversion modes:
   * Black and white vectorization with threshold adjustment
   * Color vectorization with customizable color count and gradient steps
@@ -29,9 +34,16 @@
 * Built with Rust using the Iced UI toolkit for a responsive and native feel
 * Automatic updates
 
-## Screenshot
+## Screenshots
 
-<img src="https://raw.githubusercontent.com/RouHim/binvec/main/screenshot.jpg" width="500"/>
+<p align="center">
+    <img src="https://raw.githubusercontent.com/RouHim/binvec/main/screenshot.jpg" width="440"/>
+    <img src="https://raw.githubusercontent.com/RouHim/binvec/main/screenshot-dark.jpg" width="440"/>
+</p>
+
+<p align="center">
+    <i>Light follows the system; the manual theme control can pin Light or Dark. The proof plate stays lit paper in both modes.</i>
+</p>
 
 ## Installation
 

@@ -116,11 +116,15 @@ pub fn create_binary_vector(
 }
 
 /// Reads the image in memory
-pub fn load_image(image_path: &Path) -> DynamicImage {
-    image::ImageReader::open(image_path)
-        .unwrap()
+pub fn load_image(image_path: &Path) -> Result<DynamicImage, String> {
+    let reader = image::ImageReader::open(image_path).map_err(|error| error.to_string())?;
+    let reader = reader
         .with_guessed_format()
-        .unwrap()
-        .decode()
-        .unwrap()
+        .map_err(|error| error.to_string())?;
+    reader.decode().map_err(|error| error.to_string())
+}
+
+/// Returns the pixel dimensions of a decoded image.
+pub fn dimensions(image: &DynamicImage) -> (u32, u32) {
+    (image.width(), image.height())
 }
