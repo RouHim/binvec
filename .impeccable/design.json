@@ -1,0 +1,310 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-16T18:12:00Z",
+  "title": "Design System: BinVec",
+  "extensions": {
+    "colorMeta": {
+      "paper": {
+        "role": "neutral",
+        "displayName": "Plate Paper",
+        "canonical": "#F3F0E7",
+        "tonalRamp": [
+          "#FBF8F0",
+          "#F8F5EC",
+          "#F3F0E7",
+          "#E8E3D6",
+          "#D8D2C3"
+        ]
+      },
+      "ink": {
+        "role": "primary",
+        "displayName": "India Ink",
+        "canonical": "#15161A",
+        "tonalRamp": [
+          "#000000",
+          "#15161A",
+          "#2B2D33",
+          "#6E6A60",
+          "#D8D2C3"
+        ]
+      },
+      "teal": {
+        "role": "primary",
+        "displayName": "Proof Teal",
+        "canonical": "#00A8BE",
+        "tonalRamp": [
+          "#00707C",
+          "#00A8BE",
+          "#7FD9E6",
+          "#D7F4F8"
+        ]
+      },
+      "red": {
+        "role": "danger",
+        "displayName": "Errata Red",
+        "canonical": "#E14134",
+        "tonalRamp": [
+          "#7F1711",
+          "#B3261E",
+          "#E14134",
+          "#F5B5AF"
+        ]
+      },
+      "green": {
+        "role": "success",
+        "displayName": "Trace Green",
+        "canonical": "#2F6B4F",
+        "tonalRamp": [
+          "#173B2A",
+          "#2F6B4F",
+          "#6FA88A",
+          "#D5E8DE"
+        ]
+      },
+      "ochre": {
+        "role": "warning",
+        "displayName": "Plate Ochre",
+        "canonical": "#8A5A00",
+        "tonalRamp": [
+          "#4A3000",
+          "#8A5A00",
+          "#C89A3A",
+          "#F0E0BE"
+        ]
+      },
+      "shell-dark": {
+        "role": "neutral",
+        "displayName": "Ink-Room Shell",
+        "canonical": "#171614",
+        "tonalRamp": [
+          "#111110",
+          "#171614",
+          "#201E1A",
+          "#29251F",
+          "#3B3730"
+        ]
+      },
+      "shell-dark-text": {
+        "role": "primary",
+        "displayName": "Warm Paper Text",
+        "canonical": "#F1EBDD",
+        "tonalRamp": [
+          "#F1EBDD",
+          "#FFF8E8",
+          "#D8CFBD",
+          "#A39B8B"
+        ]
+      },
+      "teal-night": {
+        "role": "primary",
+        "displayName": "Night Proof Teal",
+        "canonical": "#3FD6E8",
+        "tonalRamp": [
+          "#1B8B98",
+          "#3FD6E8",
+          "#8FE9F3"
+        ]
+      },
+      "red-night": {
+        "role": "danger",
+        "displayName": "Night Errata Red",
+        "canonical": "#FF6B5E",
+        "tonalRamp": [
+          "#B33A30",
+          "#FF6B5E",
+          "#FFB0A8"
+        ]
+      },
+      "green-night": {
+        "role": "success",
+        "displayName": "Night Trace Green",
+        "canonical": "#6FD3A3",
+        "tonalRamp": [
+          "#3A8C65",
+          "#6FD3A3",
+          "#B7E9D2"
+        ]
+      },
+      "ochre-night": {
+        "role": "warning",
+        "displayName": "Night Ochre",
+        "canonical": "#E0B45A",
+        "tonalRamp": [
+          "#8A5A00",
+          "#E0B45A",
+          "#F2D9A0"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "title": {
+        "displayName": "Plate Title",
+        "purpose": "Only the empty, tracing, and failure titles on the plate."
+      },
+      "body": {
+        "displayName": "Instruction",
+        "purpose": "Helper text, errors, and instructions; wraps at the key measure."
+      },
+      "label": {
+        "displayName": "Reference Label",
+        "purpose": "Uppercase section labels, button labels, and status text."
+      },
+      "data": {
+        "displayName": "Plate Data",
+        "purpose": "Every value, path, dimension, status code, and mode name."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "trace-sweep",
+        "value": "16ms tick, 0.018 phase step per tick",
+        "purpose": "Indeterminate progress while a trace is running; no percentage is invented."
+      },
+      {
+        "name": "register-settle",
+        "value": "0.5px per 16ms tick, 3px to 0 in about 96ms",
+        "purpose": "The registration ticks snap back into register when the plate is ready."
+      },
+      {
+        "name": "reduce-motion",
+        "value": "BINVEC_REDUCE_MOTION=1 disables the sweep and the settle",
+        "purpose": "A reduced-motion path that keeps the textual TRACING/READY state."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "minimum-window",
+        "value": "800x600"
+      },
+      {
+        "name": "default-window",
+        "value": "950x700"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single confirming action; ink fill with paper text.",
+      "html": "<button class=\"ds-btn-primary\">SAVE SVG</button>",
+      "css": ".ds-btn-primary { background: #15161A; color: #F3F0E7; border: 1px solid #15161A; border-radius: 2px; padding: 8px 12px; font: 600 12px/1.2 system-ui, -apple-system, 'Segoe UI', sans-serif; text-transform: uppercase; } .ds-btn-primary:hover { background: #2B2D33; } .ds-btn-primary:active { background: #000000; } .ds-btn-primary:disabled { background: #F3F0E7; border-color: #D8D2C3; color: #6E6A60; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Open or alternate action; transparent with an ink hairline.",
+      "html": "<button class=\"ds-btn-secondary\">OPEN IMAGE</button>",
+      "css": ".ds-btn-secondary { background: transparent; color: #15161A; border: 1px solid #15161A; border-radius: 2px; padding: 8px 12px; font: 600 12px/1.2 system-ui, -apple-system, 'Segoe UI', sans-serif; text-transform: uppercase; } .ds-btn-secondary:hover { background: #F8F5EC; } .ds-btn-secondary:active { background: #E8E3D6; }"
+    },
+    {
+      "name": "Mode Segment",
+      "kind": "custom",
+      "refersTo": "segment-active",
+      "description": "BINARY/COLOR and VECTOR/SOURCE switches; the active half is an ink field.",
+      "html": "<div class=\"ds-segment\"><button class=\"is-active\"><span class=\"ds-swatch ds-swatch-binary\"></span>BINARY</button><button><span class=\"ds-swatch ds-swatch-color\"></span>COLOR</button></div>",
+      "css": ".ds-segment { display: inline-flex; gap: 2px; padding: 2px; border: 1px solid #15161A; border-radius: 2px; background: #F3F0E7; } .ds-segment button { display: inline-flex; align-items: center; gap: 8px; border: 0; border-radius: 1px; padding: 8px 12px; background: transparent; color: #15161A; font: 600 12px/1.2 system-ui, sans-serif; text-transform: uppercase; } .ds-segment button.is-active { background: #15161A; color: #F3F0E7; } .ds-swatch { display: inline-block; width: 16px; height: 16px; border: 1px solid currentColor; } .ds-swatch-binary { background: linear-gradient(90deg, #15161A 50%, #F3F0E7 50%); } .ds-swatch-color { background: linear-gradient(90deg, #00A8BE 50%, #E14134 50%); }"
+    },
+    {
+      "name": "Checked Checkbox",
+      "kind": "input",
+      "refersTo": "checkbox-checked",
+      "description": "16px ink switch used for alpha and inversion.",
+      "html": "<label class=\"ds-check\"><input type=\"checkbox\" checked><span>IGNORE ALPHA</span></label>",
+      "css": ".ds-check { display: inline-flex; align-items: center; gap: 8px; color: #15161A; font: 400 12px/1.2 system-ui, sans-serif; } .ds-check input { appearance: none; width: 16px; height: 16px; border: 1px solid #15161A; border-radius: 1px; background: #F3F0E7; } .ds-check input:checked { background: #15161A; } .ds-check input:checked::after { content: '\u2713'; display: block; color: #F3F0E7; font: 700 12px/14px system-ui, sans-serif; text-align: center; }"
+    },
+    {
+      "name": "Plate Slider",
+      "kind": "input",
+      "description": "2px rail with a teal filled side and an 8px paper handle.",
+      "html": "<input class=\"ds-slider\" type=\"range\" min=\"0\" max=\"255\" value=\"128\">",
+      "css": ".ds-slider { appearance: none; width: 100%; height: 16px; background: transparent; } .ds-slider::-webkit-slider-runnable-track { height: 2px; background: linear-gradient(90deg, #00A8BE 50%, #D8D2C3 50%); } .ds-slider::-webkit-slider-thumb { appearance: none; width: 8px; height: 16px; margin-top: -7px; background: #F3F0E7; border: 1px solid #15161A; border-radius: 1px; } .ds-slider::-moz-range-track { height: 2px; background: #D8D2C3; } .ds-slider::-moz-range-progress { height: 2px; background: #00A8BE; } .ds-slider::-moz-range-thumb { width: 8px; height: 16px; background: #F3F0E7; border: 1px solid #15161A; border-radius: 1px; }"
+    },
+    {
+      "name": "Proof Plate",
+      "kind": "custom",
+      "description": "The ink-framed figure with checkerboard, crop marks, hatching, and registration state.",
+      "html": "<figure class=\"ds-plate\"><div class=\"ds-crop ds-crop-tl\"></div><div class=\"ds-crop ds-crop-tr\"></div><div class=\"ds-crop ds-crop-bl\"></div><div class=\"ds-crop ds-crop-br\"></div><figcaption>FIG. 1 \u2014 VECTOR TRACE</figcaption></figure>",
+      "css": ".ds-plate { position: relative; width: 100%; height: 100%; border: 1px solid #15161A; background-color: #F3F0E7; background-image: conic-gradient(#E8E3D6 25%, transparent 0 50%, #E8E3D6 0 75%, transparent 0); background-size: 32px 32px; } .ds-crop { position: absolute; width: 14px; height: 14px; border-color: #15161A; border-style: solid; } .ds-crop-tl { left: 12px; top: 12px; border-width: 1px 0 0 1px; } .ds-crop-tr { right: 12px; top: 12px; border-width: 1px 1px 0 0; } .ds-crop-bl { left: 12px; bottom: 12px; border-width: 0 0 1px 1px; } .ds-crop-br { right: 12px; bottom: 12px; border-width: 0 1px 1px 0; } .ds-plate figcaption { position: absolute; left: 24px; top: -24px; color: #6E6A60; font: 600 11px/1.2 system-ui, sans-serif; text-transform: uppercase; }"
+    },
+    {
+      "name": "Reference Key",
+      "kind": "nav",
+      "refersTo": "key-column",
+      "description": "Fixed 304px control column with hairline rules and a scrolling body.",
+      "html": "<aside class=\"ds-key\"><section><h2>SOURCE</h2><p>studio-mark.png</p></section></aside>",
+      "css": ".ds-key { width: 304px; height: 100%; border-right: 1px solid #D8D2C3; background: #F3F0E7; overflow-y: auto; padding: 24px; box-sizing: border-box; } .ds-key h2 { margin: 0 0 8px; color: #6E6A60; font: 600 11px/1.2 system-ui, sans-serif; text-transform: uppercase; } .ds-key section { padding-bottom: 12px; border-bottom: 1px solid #D8D2C3; margin-bottom: 24px; } .ds-key p { margin: 0; color: #15161A; font: 400 13px/1.4 ui-monospace, monospace; }"
+    },
+    {
+      "name": "Record Strip",
+      "kind": "custom",
+      "description": "34px fixed footer with the export path and fit/zoom controls.",
+      "html": "<footer class=\"ds-record\"><span>SVG \u2192 studio-mark.svg</span><span>ZOOM \u2212 84% + FIT</span></footer>",
+      "css": ".ds-record { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 34px; padding: 0 24px; border-top: 1px solid #D8D2C3; color: #6E6A60; font: 400 11px/1.2 ui-monospace, monospace; }"
+    },
+    {
+      "name": "Theme Control",
+      "kind": "custom",
+      "description": "Compact AUTO / LIGHT / DARK segment in the title block; Auto follows the OS and the manual choice persists.",
+      "html": "<div class=\"ds-theme\"><button class=\"is-active\">AUTO</button><button>LIGHT</button><button>DARK</button></div>",
+      "css": ".ds-theme { display:inline-flex; gap:2px; padding:2px; border:1px solid #3B3730; border-radius:2px; background:#171614; } .ds-theme button { border:0; border-radius:1px; padding:4px 8px; background:transparent; color:#F1EBDD; font:600 11px/1.2 system-ui, sans-serif; } .ds-theme button.is-active { background:#F1EBDD; color:#171614; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Plate & Reference",
+    "overview": "BinVec is a proofing table, not a settings form. The drawing owns the window; a narrow reference key names the controls; the plate, crop marks and registration ticks carry the working state. Light mode is a paper table with a paper plate. Dark mode is an ink-room: the chrome goes near-black while the proof plate stays lit paper, so the trace and the source proof keep their contrast. A title-block AUTO / LIGHT / DARK control follows the OS by default and persists an explicit override.",
+    "keyCharacteristics": [
+      "Light paper shell and plate; dark ink-room shell with the same lit plate paper.",
+      "One figure per window; controls live in a 304px reference key.",
+      "AUTO / LIGHT / DARK control; system-following by default, persisted override.",
+      "Registration and proof state, not cards or shadows, communicate progress.",
+      "Every value, path, dimension, status and mode name is monospaced.",
+      "No shadows, gradients, glass, emoji or icon fonts."
+    ],
+    "rules": [
+      {
+        "name": "The Single-Plot Rule",
+        "body": "One filled ink swatch and one word name the active mode. A second accent never competes with the drawing.",
+        "section": "colors"
+      },
+      {
+        "name": "The Text-Safe Teal Rule",
+        "body": "Bright teal is a fill and a square, never small text. Use deep teal when the accent must be read.",
+        "section": "colors"
+      },
+      {
+        "name": "The Lit Plate Rule",
+        "body": "Dark mode darkens the shell, never the proof. The plate remains paper so ink traces and source proofs keep their contrast.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Scale Rule",
+        "body": "Labels, values, and captions share one compact size. Hierarchy comes from rules, weight, and ink, not inflated display type.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-By-Default Rule",
+        "body": "A shadow appears only if it describes a physically raised object. Nothing in BinVec is physically raised.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do keep the drawing as the largest, quietest surface in the window.",
+      "Do set every value, path, dimension, status, and mode name in mono.",
+      "Do show SOURCE and VECTOR at the same scale so the comparison is honest.",
+      "Do keep the key scrollable and the title/record strips fixed at 800x600.",
+      "Do let the shell go dark while the proof stays paper; the plate is the lit artifact in both modes."
+    ],
+    "donts": [
+      "Don't wrap controls in cards or add shadows to separate regions.",
+      "Don't use bright teal for small text; use deep teal.",
+      "Don't add a second accent for a single widget or state.",
+      "Don't use emoji, glyph icons, gradients, glass, or decorative status dots.",
+      "Don't hide the current mode, the source file, or the export path behind an interaction.",
+      "Don't invert the plate or the trace in dark mode; a black trace on a dark checkerboard is unreadable."
+    ]
+  }
+}
