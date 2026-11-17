@@ -1,3 +1,9 @@
+# [1.21.0](https://github.com/RouHim/binvec/compare/1.20.37...1.21.0) (2026-11-17)
+
+### Features
+
+* **ui:** redesign as plate reference with system-aware dark mode ([#46](https://github.com/RouHim/binvec/issues/46)) ([fc4a5a8](https://github.com/RouHim/binvec/commit/fc4a5a848618ac659d333006f8a3d7ae651004f6))
+
 ## [1.20.37](https://github.com/RouHim/binvec/compare/1.20.36...1.20.37) (2026-11-14)
 
 ## [1.20.36](https://github.com/RouHim/binvec/compare/1.20.35...1.20.36) (2026-11-13)
