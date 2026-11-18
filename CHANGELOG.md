@@ -1,3 +1,9 @@
+## [1.21.1](https://github.com/RouHim/binvec/compare/1.21.0...1.21.1) (2026-11-18)
+
+### Bug Fixes
+
+* **windows:** stop release builds from opening a console window ([9945116](https://github.com/RouHim/binvec/commit/994511636c1059f5353d6c5bcccf6cbd1f9ec2b3))
+
 # [1.21.0](https://github.com/RouHim/binvec/compare/1.20.37...1.21.0) (2026-11-17)
 
 ### Features
