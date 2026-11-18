@@ -1,3 +1,8 @@
+// Release builds use the Windows GUI subsystem, so double-clicking the
+// executable does not attach a console window. Debug builds keep the console
+// as a log sink.
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+
 mod image_processor;
 mod updater;
 
